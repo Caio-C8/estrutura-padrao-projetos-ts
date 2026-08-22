@@ -148,7 +148,7 @@ Por padrão, as portas de produção são publicadas em `127.0.0.1`. Coloque Cad
 
 ## Regras para manter a base reutilizável
 
-- Não coloque regra de negócio em `packages/config`, `types` ou `utils`.
+- Não coloque regra de negócio em `packages/config`, `contracts` ou `utils`.
 - Uma aplicação não deve importar arquivos internos de outra aplicação.
 - Compartilhe contratos estáveis por pacotes, usando dependências `workspace:*`.
 - Crie migrations somente em desenvolvimento; staging e produção usam `migrate deploy`.
