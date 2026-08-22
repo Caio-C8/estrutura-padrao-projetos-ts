@@ -10,7 +10,7 @@ out/
 .turbo/
 *.tsbuildinfo
 coverage/
-next-env.d.ts
+**/next-env.d.ts
 
 # Local environment files and secrets
 .env
