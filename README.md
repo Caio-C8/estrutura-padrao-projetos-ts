@@ -155,4 +155,7 @@ Por padrão, as portas de produção são publicadas em `127.0.0.1`. Coloque Cad
 - Não versione `.env.development`, `.env.staging` ou `.env.production`.
 - Trate imagens Docker como artefatos imutáveis e use `IMAGE_TAG` por versão/commit.
 
-Mais detalhes estão em [arquitetura](docs/architecture.md) e [ambientes](docs/environments.md).
+Mais detalhes estão em [arquitetura](docs/architecture.md),
+[contratos compartilhados](docs/contracts/README.md) e
+[ambientes](docs/environments.md). Consulte também o
+[índice completo da documentação](docs/README.md).
