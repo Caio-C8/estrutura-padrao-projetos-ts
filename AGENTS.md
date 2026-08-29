@@ -54,6 +54,12 @@ comportamento de um contrato externo, registre um objetivo em
 - Correções pequenas que não criam capacidade nem alteram comportamento externo
   não precisam de um objetivo separado.
 
+## API
+
+Antes de modificar `apps/api`, leia [apps/api/AGENTS.md](apps/api/AGENTS.md) e
+comece por [docs/apps/api/README.md](docs/apps/api/README.md). As instruções
+específicas da API complementam as regras gerais deste arquivo.
+
 ## Verificação
 
 Depois de modificar somente o package de contratos, execute no mínimo:

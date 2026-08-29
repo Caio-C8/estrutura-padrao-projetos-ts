@@ -1,18 +1,95 @@
 # Desenvolvimento da API
 
-Este diretório receberá a documentação específica da aplicação
-`apps/api`.
+Este diretório documenta o padrão de desenvolvimento da aplicação NestJS
+`apps/api` para pessoas e agentes.
 
-Conforme as decisões do projeto forem definidas, a documentação poderá abordar:
+## Objetivo
 
-- organização de módulos e responsabilidades;
-- padrões de controllers, services e casos de uso;
-- validação, autenticação e autorização;
-- persistência e transações;
-- tratamento de erros;
-- testes;
-- execução local e operação.
+A API é organizada em módulos por domínio. Cada camada possui uma
+responsabilidade clara:
 
-Nenhum desses padrões está definido por este README. Registre somente decisões
-confirmadas pelo contexto da aplicação e mantenha assuntos compartilhados com
-outros apps na documentação de [integrações](../../integrations/README.md).
+```text
+requisição HTTP
+      ↓
+DTO + validação Zod
+      ↓
+controller
+      ↓
+service
+      ↓
+repository
+      ↓
+Prisma
+```
+
+O retorno percorre o caminho inverso e é convertido para o contrato HTTP por um
+mapper antes de sair do controller.
+
+## Estado atual da base
+
+No estado atual:
+
+- a API possui apenas o health check;
+- `apps/api/src/modules` ainda não existe;
+- `apps/api` usa Zod 3 e ainda não depende de `nestjs-zod`;
+- `@repo/contracts` ainda não possui os contratos runtime descritos nestes
+  guias;
+- o schema Prisma ainda não possui models;
+- `@repo/database` ainda não expõe o namespace `Prisma` nem um provider
+  singleton do NestJS.
+
+Os exemplos desta documentação representam o padrão desejado, não código já
+implementado.
+
+## Pré-requisitos para um módulo
+
+Antes de desenvolver rotas de um domínio:
+
+1. confirme que os schemas de request e response existem em
+   `@repo/contracts`;
+2. confirme que os tipos de input e output foram derivados desses schemas;
+3. confirme que o model e os tipos necessários existem no Prisma;
+4. confirme que o client Prisma foi gerado;
+5. confirme que o provider singleton de banco pode ser injetado;
+6. confirme que `nestjs-zod` e o Pipe de validação estão configurados.
+
+Se os contratos ainda não existirem, um agente deve interromper a implementação
+do módulo e avisar o usuário. Não crie silenciosamente contratos ou semânticas de
+campos para desbloquear a API.
+
+## Documentos
+
+| Assunto                                  | Documento                                      |
+| ---------------------------------------- | ---------------------------------------------- |
+| Estrutura, fluxo e limites entre camadas | [Arquitetura](./architecture.md)               |
+| DTOs e validação de entrada              | [DTOs](./dtos.md)                              |
+| Tipos Prisma e mapeamento de resposta    | [Tipos e mappers](./types-and-mappers.md)      |
+| Acesso ao banco                          | [Repositories](./repositories.md)              |
+| Regras de negócio e orquestração         | [Services](./services.md)                      |
+| Rotas e respostas HTTP                   | [Controllers](./controllers.md)                |
+| Composição e dependências de módulos     | [Módulos](./modules.md)                        |
+| Posicionamento de funções utilitárias    | [Utilitários](./utilities.md)                  |
+| Ordem de implementação e testes          | [Workflow e testes](./workflow-and-testing.md) |
+| Documentações oficiais                   | [Referências](./references.md)                 |
+
+Assuntos que definem a comunicação entre API e consumidores devem ser
+documentados também em [Integrações](../../integrations/README.md). Contratos
+compartilhados seguem as regras de
+[docs/contracts](../../contracts/README.md).
+
+## Decisões pendentes por projeto
+
+Esta estrutura não deve escolher antecipadamente políticas que dependem do
+produto. Antes de implementar recursos relacionados, documente:
+
+- autenticação, autorização e significado de rota pública;
+- catálogo de erros, exceptions e filtros HTTP;
+- formato comum de paginação;
+- limites e propagação de transações entre services e repositories;
+- upload, armazenamento e entrega de arquivos;
+- logging, observabilidade e dados sensíveis;
+- versionamento de API e geração de OpenAPI.
+
+Quando uma dessas decisões afetar os consumidores, registre-a também em
+[Integrações](../../integrations/README.md) e, se mudar formatos compartilhados,
+em [Contratos](../../contracts/README.md).
