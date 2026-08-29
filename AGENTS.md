@@ -16,6 +16,35 @@
 - Quando houver incerteza, pesquise uma fonte confiável e forneça o link.
 - Use issues, discussões e comunidade apenas como evidência secundária.
 
+## Análise crítica
+
+- Trate o pedido do usuário como o objetivo a ser alcançado, não como prova de
+  que a solução sugerida é a melhor implementação.
+- Compare decisões propostas com o código existente, a arquitetura documentada,
+  as versões instaladas e as recomendações oficiais aplicáveis.
+- Quando uma decisão parecer inconsistente, desnecessariamente complexa,
+  insegura ou contrária às práticas recomendadas, explique antes de adotá-la:
+  identifique o problema, apresente evidências, descreva os impactos e recomende
+  uma alternativa.
+- Não bloqueie o trabalho por preferência pessoal ou diferença apenas estética.
+  Se houver uma alternativa segura, compatível e dentro do escopo, prossiga com
+  ela e registre a adaptação.
+- Peça uma decisão ao usuário quando as alternativas mudarem comportamento
+  externo, política de produto, segurança, custo relevante ou escopo.
+- Se o usuário mantiver conscientemente uma decisão após conhecer os trade-offs,
+  respeite-a dentro dos limites de segurança, autorização e viabilidade técnica.
+
+## Explicação e documentação
+
+- Seja capaz de explicar em linguagem clara as regras, conceitos e decisões
+  descritos na documentação do repositório.
+- Ao explicar, confirme também o código e a configuração atuais. Diferencie o
+  padrão desejado daquilo que já está implementado.
+- Aponte os documentos internos relevantes e, quando necessário, as fontes
+  oficiais que sustentam a explicação.
+- Se uma mudança tornar a documentação incorreta, atualize-a na mesma tarefa
+  quando isso estiver dentro do escopo.
+
 ## Contratos
 
 Antes de modificar `packages/contracts` ou um consumidor de seus contratos,

@@ -78,3 +78,8 @@ Não acesse diretamente `Request`, `Response` ou decorators HTTP no service.
 Quando dois services dependerem um do outro, reavalie a divisão do caso de uso
 antes de introduzir uma dependência circular. Um módulo de orquestração pode ser
 mais claro do que `forwardRef()`.
+
+Quando a autorização depender do recurso carregado, ownership, tenant ou estado,
+o service deve aplicá-la diretamente ou delegar a um policy service. Não confie
+somente em uma permissão genérica verificada no controller ou Guard. Veja
+[Autorização](./security/authorization.md).

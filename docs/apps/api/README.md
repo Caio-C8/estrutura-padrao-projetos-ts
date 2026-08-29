@@ -59,18 +59,20 @@ campos para desbloquear a API.
 
 ## Documentos
 
-| Assunto                                  | Documento                                      |
-| ---------------------------------------- | ---------------------------------------------- |
-| Estrutura, fluxo e limites entre camadas | [Arquitetura](./architecture.md)               |
-| DTOs e validação de entrada              | [DTOs](./dtos.md)                              |
-| Tipos Prisma e mapeamento de resposta    | [Tipos e mappers](./types-and-mappers.md)      |
-| Acesso ao banco                          | [Repositories](./repositories.md)              |
-| Regras de negócio e orquestração         | [Services](./services.md)                      |
-| Rotas e respostas HTTP                   | [Controllers](./controllers.md)                |
-| Composição e dependências de módulos     | [Módulos](./modules.md)                        |
-| Posicionamento de funções utilitárias    | [Utilitários](./utilities.md)                  |
-| Ordem de implementação e testes          | [Workflow e testes](./workflow-and-testing.md) |
-| Documentações oficiais                   | [Referências](./references.md)                 |
+| Assunto                                  | Documento                                            |
+| ---------------------------------------- | ---------------------------------------------------- |
+| Estrutura, fluxo e limites entre camadas | [Arquitetura](./architecture.md)                     |
+| DTOs e validação de entrada              | [DTOs](./dtos.md)                                    |
+| Tipos Prisma e mapeamento de resposta    | [Tipos e mappers](./types-and-mappers.md)            |
+| Acesso ao banco                          | [Repositories](./repositories.md)                    |
+| Regras de negócio e orquestração         | [Services](./services.md)                            |
+| Rotas e respostas HTTP                   | [Controllers](./controllers.md)                      |
+| Composição e dependências de módulos     | [Módulos](./modules.md)                              |
+| Posicionamento de funções utilitárias    | [Utilitários](./utilities.md)                        |
+| Ordem de implementação e testes          | [Workflow e testes](./workflow-and-testing.md)       |
+| Políticas e validações de segurança      | [Segurança](./security/README.md)                    |
+| Guards, Interceptors, Filters e Pipes    | [Ciclo da requisição](./request-lifecycle/README.md) |
+| Documentações oficiais                   | [Referências](./references.md)                       |
 
 Assuntos que definem a comunicação entre API e consumidores devem ser
 documentados também em [Integrações](../../integrations/README.md). Contratos
@@ -89,6 +91,10 @@ produto. Antes de implementar recursos relacionados, documente:
 - upload, armazenamento e entrega de arquivos;
 - logging, observabilidade e dados sensíveis;
 - versionamento de API e geração de OpenAPI.
+
+As decisões de segurança devem seguir o processo descrito em
+[Segurança da API](./security/README.md). Elas são definidas durante o baseline
+e a implementação de cada rota, não somente em uma revisão posterior.
 
 Quando uma dessas decisões afetar os consumidores, registre-a também em
 [Integrações](../../integrations/README.md) e, se mudar formatos compartilhados,

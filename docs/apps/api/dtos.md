@@ -103,3 +103,10 @@ Antes de criar um DTO:
 
 Se o contrato estiver ausente ou ambíguo, o agente deve avisar o usuário antes
 de implementar o módulo.
+
+## Limite de segurança
+
+Um DTO validado confirma o formato definido pelo schema, mas não autentica o
+cliente nem autoriza acesso ao recurso. Limites dependentes de identidade, banco
+ou estado continuam no service ou policy apropriado. Consulte
+[Segurança de input e output](./security/input-and-output.md).

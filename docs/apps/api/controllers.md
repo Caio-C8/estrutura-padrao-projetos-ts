@@ -34,6 +34,21 @@ export class RecursoController {
 O exemplo presume que o DTO foi criado como classe por `createZodDto` e que o
 Pipe de validação está ativo.
 
+## Decisões de segurança da rota
+
+Antes de implementar cada handler, defina:
+
+- se a rota é pública ou autenticada;
+- qual permissão ou policy é necessária;
+- se existe autorização por objeto, propriedade, usuário ou tenant;
+- quais campos podem entrar e sair;
+- se upload, URL externa ou operação cara exige proteção adicional;
+- se o limite de requisições difere do baseline.
+
+Registre essas decisões na matriz descrita em
+[Testes de segurança](./security/testing.md). Uma rota sem decorator local ainda
+pode estar protegida por um Guard global; confirme a composição real.
+
 ## Paginação
 
 Quando o service retornar dados e metadados, mapeie apenas os itens:
@@ -67,3 +82,6 @@ uso quando decorators nativos ou já existentes resolverem o problema.
 Rotas públicas e regras de permissão devem seguir a política de autenticação do
 projeto. Enquanto ela não estiver documentada, não presuma nomes de decorators
 nem comportamentos de autorização.
+
+Decorators apenas declaram metadados. Confirme qual Guard os interpreta e leia
+[Guards](./request-lifecycle/guards.md) antes de criar uma abstração nova.

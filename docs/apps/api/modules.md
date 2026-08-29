@@ -54,3 +54,21 @@ export class AppModule {}
 
 Depois, inicialize a aplicação ou compile o módulo para detectar providers não
 resolvidos e imports ausentes.
+
+## Componentes transversais
+
+Guards, Interceptors, Filters e Pipes compartilhados podem ser registrados por
+tokens como `APP_GUARD`, `APP_INTERCEPTOR`, `APP_FILTER` e `APP_PIPE`. Esse
+registro mantém injeção de dependência e aplica o componente globalmente.
+
+Antes de registrar:
+
+1. confirme que a política é realmente global;
+2. documente exceções e precedência;
+3. verifique a ordem no ciclo da requisição;
+4. cubra a composição com teste E2E.
+
+Strategies e componentes de autenticação devem ser providers do módulo de
+autenticação quando essa solução existir. Consulte
+[Ciclo da requisição](./request-lifecycle/README.md) e
+[Baseline de segurança](./security/baseline.md).

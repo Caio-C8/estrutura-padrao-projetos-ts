@@ -10,7 +10,9 @@ Antes de criar um módulo, confirme:
 - Prisma Client gerado;
 - provider singleton do banco disponível para injeção;
 - `nestjs-zod` e `ZodValidationPipe` configurados;
-- política aplicável de autenticação, erros e paginação.
+- política aplicável de autenticação, autorização, erros e paginação;
+- matriz de segurança das novas rotas;
+- controles globais dos quais o módulo depende.
 
 Se os contratos necessários não existirem, um agente deve parar e avisar o
 usuário. A criação dos contratos é uma etapa anterior e deve seguir
@@ -26,26 +28,38 @@ usuário. A criação dos contratos é uma etapa anterior e deve seguir
 6. implementar service;
 7. implementar mappers;
 8. criar DTOs a partir dos schemas existentes;
-9. implementar controller;
-10. configurar o módulo e registrá-lo no `AppModule`;
-11. adicionar testes e executar as verificações.
+9. definir acesso, autorização por recurso, exposição e limites de cada rota;
+10. implementar controller e aplicar os componentes existentes;
+11. criar um Guard, Interceptor, Filter, Pipe ou decorator somente se uma
+    responsabilidade ainda não estiver atendida;
+12. configurar o módulo e registrá-lo no `AppModule`;
+13. adicionar testes funcionais e de segurança;
+14. executar as verificações.
 
 A ordem pode variar quando testes forem escritos antes da implementação, mas as
 responsabilidades das camadas não mudam.
 
 ## Estratégia de testes
 
-| Alvo       | Verificação principal                                      |
-| ---------- | ---------------------------------------------------------- |
-| Mapper     | conversão exata para o contrato de response                |
-| Service    | regras e orquestração com repositories/services simulados  |
-| Controller | encaminhamento de parâmetros e escolha do mapper           |
-| Repository | query e payload reais em banco de teste controlado         |
-| Module     | resolução de providers, imports e exports                  |
-| E2E        | validação do boundary, autorização, status e response HTTP |
+| Alvo         | Verificação principal                                      |
+| ------------ | ---------------------------------------------------------- |
+| Mapper       | conversão exata para o contrato de response                |
+| Service      | regras e orquestração com repositories/services simulados  |
+| Controller   | encaminhamento de parâmetros e escolha do mapper           |
+| Repository   | query e payload reais em banco de teste controlado         |
+| Module       | resolução de providers, imports e exports                  |
+| E2E          | validação do boundary, autorização, status e response HTTP |
+| Guard/policy | permissão, negação padrão e escopo do recurso              |
+| Interceptor  | ordem, efeito transversal e redaction                      |
+| Filter       | contrato público sem detalhes internos                     |
 
 Casos importantes incluem sucesso, ausência de registro, conflitos de regra,
 paginação, relações opcionais e valores que exigem serialização.
+
+Adicione também os casos aplicáveis de
+[Testes de segurança](./security/testing.md), principalmente credenciais
+ausentes ou inválidas, acesso a recurso de outra identidade, propriedades
+proibidas, limites de entrada e vazamento de informações em erros e responses.
 
 ## Comandos de verificação
 

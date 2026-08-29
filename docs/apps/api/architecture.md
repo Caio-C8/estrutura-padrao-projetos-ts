@@ -13,6 +13,12 @@ Estrutura inicial:
 ```text
 apps/api/src/
 ├── common/
+│   ├── decorators/
+│   ├── filters/
+│   ├── guards/
+│   ├── interceptors/
+│   ├── middleware/
+│   ├── pipes/
 │   └── utils/
 │       └── <dominio>/
 └── modules/
@@ -33,6 +39,10 @@ Crie outros arquivos ou diretórios somente quando houver responsabilidade
 concreta. Um módulo pode ter mais de um controller quando suas rotas formarem
 grupos diferentes.
 
+Os diretórios transversais em `common` também são opcionais. Autenticação e suas
+Strategies pertencem preferencialmente a `modules/auth`; componentes exclusivos
+de um domínio podem permanecer dentro dele.
+
 ## Responsabilidades
 
 | Camada     | Faz                                               | Não faz                             |
@@ -48,7 +58,15 @@ grupos diferentes.
 ## Fluxo de entrada
 
 ```text
-Body / Query / Params
+Requisição HTTP
+        ↓
+Middleware
+        ↓
+Guards
+        ↓
+Interceptors de entrada
+        ↓
+Body / Query / Params + Pipes
         ↓
 ZodValidationPipe
         ↓
@@ -63,9 +81,17 @@ Repository
 Prisma
 ```
 
+Na saída, Interceptors são resolvidos em ordem inversa. Uma exceção não tratada
+desvia para Exception Filters. Veja o
+[ciclo da requisição](./request-lifecycle/README.md) antes de posicionar um
+componente transversal.
+
 O service deve receber dados já validados pelo boundary. Validações que dependem
 de banco, permissões ou estado do sistema pertencem ao service, não ao schema
 Zod.
+
+Validação de formato não substitui autenticação nem autorização. Cada rota deve
+seguir as decisões de [segurança](./security/README.md).
 
 ## Fluxo de saída
 

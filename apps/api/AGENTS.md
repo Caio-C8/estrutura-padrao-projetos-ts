@@ -8,6 +8,12 @@ Estas regras complementam o `AGENTS.md` da raiz para qualquer alteração em
 Antes de implementar, leia [a documentação da API](../../docs/apps/api/README.md)
 e somente os capítulos relacionados à tarefa.
 
+Para rotas, autenticação, autorização, dados externos ou componentes
+transversais, leia também:
+
+- [Segurança](../../docs/apps/api/security/README.md);
+- [Ciclo da requisição](../../docs/apps/api/request-lifecycle/README.md).
+
 ## Pré-condições
 
 - Confirme primeiro os contratos de request e response em `@repo/contracts`.
@@ -16,6 +22,11 @@ e somente os capítulos relacionados à tarefa.
 - Confirme o model Prisma, o client gerado, o provider singleton de banco e a
   configuração do `nestjs-zod`.
 - Não invente políticas de autenticação, erros, paginação ou transações.
+- Antes de criar ou alterar uma rota, defina se ela é pública, como autentica,
+  quais permissões exige, quais regras de recurso aplica, quais campos pode
+  expor e se precisa de limite especial.
+- Se uma política de segurança necessária não estiver definida, apresente o
+  risco e solicite a decisão do usuário antes de escolher um comportamento.
 
 ## Arquitetura obrigatória
 
@@ -34,6 +45,14 @@ e somente os capítulos relacionados à tarefa.
   retorno para tipos de `@repo/contracts`.
 - Antes de criar um decorator customizado, explique a necessidade e peça
   autorização ao usuário.
+- Não crie Guard, Interceptor, Filter, Middleware, Pipe ou Strategy apenas para
+  completar uma estrutura. Primeiro identifique a responsabilidade, o escopo e
+  a posição correta no ciclo da requisição.
+- Não trate validação Zod, CORS ou autenticação como substitutos de autorização.
+- Aplique autorização por recurso no service ou policy apropriado quando a
+  decisão depender de dados carregados do banco.
+- Use contratos e mappers como allowlist de campos de saída; não retorne models
+  Prisma diretamente.
 - Em cada module, registre controllers e providers, exporte somente services e
   importe os módulos dos services externos.
 - Reavalie os limites antes de usar `forwardRef()` para uma dependência circular.
@@ -50,3 +69,8 @@ e somente os capítulos relacionados à tarefa.
 Execute os checks relevantes descritos em
 [workflow e testes](../../docs/apps/api/workflow-and-testing.md). Não encerre a
 tarefa com falhas conhecidas sem relatá-las claramente.
+
+Ao explicar uma implementação, relacione-a à documentação da API e diferencie
+o padrão planejado do estado realmente implementado. Questione propostas que
+contrariem o ciclo do NestJS, os limites das camadas ou controles de segurança,
+apresentando evidências e uma alternativa concreta.

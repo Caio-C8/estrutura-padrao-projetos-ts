@@ -116,3 +116,7 @@ Nunca inclua em logs ou respostas:
 - cookies ou cabeçalhos de autorização;
 - documentos pessoais completos;
 - conteúdo sigiloso enviado em formulários.
+
+A API é responsável por aplicar esse contrato em seu Exception Filter sem
+expor detalhes internos. Regras de classificação, logging e redaction estão em
+[Secrets, logs e erros](../apps/api/security/secrets-logging-and-errors.md).
