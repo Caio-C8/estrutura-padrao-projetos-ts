@@ -2,14 +2,23 @@ import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { AppModule } from "../src/app.module";
+import { DATABASE_CLIENT } from "../src/common/database/database.constants";
 
 describe("health endpoint", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
+    const databaseClientMock = {
+      $connect: jest.fn(),
+      $disconnect: jest.fn(),
+    };
+
     const module = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(DATABASE_CLIENT)
+      .useValue(databaseClientMock)
+      .compile();
 
     app = module.createNestApplication();
     app.setGlobalPrefix("api");
@@ -17,7 +26,9 @@ describe("health endpoint", () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 
   it("returns the service status", async () => {
