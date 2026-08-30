@@ -18,6 +18,7 @@ quando forem tomadas.
 - autorizar a operação e também o recurso acessado;
 - retornar somente propriedades previstas no contrato de response;
 - aplicar menor privilégio a usuários, serviços e credenciais;
+- manter credenciais de autenticação do navegador em cookies `HttpOnly`;
 - não registrar secrets, credenciais ou dados pessoais desnecessários;
 - limitar consumo de recursos proporcionalmente ao risco da operação;
 - tratar integrações externas como entradas não confiáveis;

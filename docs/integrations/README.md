@@ -1,35 +1,57 @@
 # Integrações entre aplicações
 
-Este diretório receberá a documentação dos fluxos que atravessam a API e uma ou
-mais aplicações consumidoras.
+Este diretório documenta fluxos, acordos e dependências que atravessam duas ou
+mais unidades do monorepo.
 
-Conforme as integrações forem definidas, a documentação poderá abordar:
+## Integrações atuais
 
-- responsabilidades de cada lado da comunicação;
-- protocolos, endpoints e configuração por ambiente;
+- [Aplicação web e API](./web-api/README.md).
+
+Quando um app mobile, worker ou novo frontend for adicionado, crie documentação
+própria para sua integração. Não presuma que transporte, cache ou autenticação
+do navegador sejam adequados a outro runtime.
+
+## Limite
+
+Registre aqui:
+
+- responsabilidades de cada lado;
+- protocolo, endpoints e configuração por ambiente;
 - autenticação e propagação de identidade;
-- contratos, serialização e formato de erros;
+- contratos, serialização e erros;
 - compatibilidade e versionamento;
+- timeout, retry, cache e invalidação;
 - tratamento de falhas;
-- testes de integração e observabilidade.
+- observabilidade e testes integrados.
 
-Não duplique aqui detalhes internos da API ou de um app. Este espaço deve
-documentar somente acordos, fluxos e dependências entre unidades diferentes.
+Limites, métricas e comportamento sob carga seguem o
+[baseline de performance](../performance/contracts-and-integrations.md).
 
-## Acordos de segurança entre aplicações
+Não duplique detalhes internos de página, controller, service ou repository.
+Esses assuntos permanecem na documentação de cada app.
 
-Quando uma integração for implementada, documente aqui:
+## Segurança entre aplicações
+
+Cada integração deve definir:
 
 - como identidade e credenciais são transportadas;
-- onde tokens ou cookies podem ser armazenados;
-- origens CORS e uso de credentials por ambiente;
+- onde tokens ou cookies podem existir;
+- origens CORS e uso de credentials;
 - necessidade e fluxo de proteção CSRF;
 - renovação, expiração, revogação e logout;
 - propagação de correlation ID;
-- campos sensíveis que não atravessam a integração;
-- comportamento do consumidor diante de `401`, `403`, `429` e indisponibilidade;
-- limites e timeouts relevantes para web, mobile ou outro cliente.
+- campos sensíveis que não atravessam a fronteira;
+- comportamento diante de `401`, `403`, `429` e indisponibilidade;
+- limites e timeouts;
+- cache público ou privado.
 
-A implementação interna dos controles continua em
-[Segurança da API](../apps/api/security/README.md). O formato compartilhado de
-requests, responses e erros continua em [Contratos](../contracts/README.md).
+Para navegadores, credenciais de autenticação devem usar cookies `HttpOnly` e
+não podem ser armazenadas em Web Storage. A integração ainda precisa definir
+quem emite e encaminha o cookie, seus demais atributos e a proteção CSRF. Outros
+runtimes, como mobile nativo e comunicação entre serviços, exigem política
+própria.
+
+A implementação dos controles internos da API continua em
+[Segurança da API](../apps/api/security/README.md). A segurança de renderização
+e do navegador fica em [Segurança web](../apps/web/security.md). Formatos
+compartilhados permanecem em [Contratos](../contracts/README.md).

@@ -211,6 +211,20 @@ PaginatedResponseSchema
 Derive o tipo com `z.output`. Não mantenha uma interface manual paralela com os
 mesmos campos.
 
+## Limites de consumo
+
+Contratos que controlam trabalho variável devem possuir limites coerentes com a
+operação:
+
+- máximo de itens em paginação e arrays;
+- tamanho de strings, filtros e estruturas aninhadas;
+- quantidade e tamanho de arquivos;
+- resposta resumida quando a detalhada carregar relações ou conteúdo caro.
+
+Não defina um único número para todos os domínios. A estrutura padrão exige que
+o limite seja finito e testado; o contexto do projeto define seu valor. Consulte
+[Performance de contratos e integrações](../performance/contracts-and-integrations.md).
+
 ## Refinements
 
 Use `.refine()` ou `.superRefine()` para relações locais do payload, como:

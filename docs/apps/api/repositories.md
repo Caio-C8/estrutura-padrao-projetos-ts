@@ -95,3 +95,15 @@ delete
 
 Não esconda um fluxo de negócio com várias decisões dentro de um único método
 de repository. A composição de múltiplas operações pertence ao service.
+
+## Performance
+
+- selecione somente campos e relações exigidos pelo consumidor;
+- evite N+1 e observe a quantidade de queries por operação;
+- não ofereça listagem sem paginação e limite finito;
+- mantenha ordenação determinística para paginação;
+- proponha índice a partir de query real e confirme seu plano no banco;
+- não aumente pool ou aplique cache dentro do repository para esconder query
+  lenta.
+
+Consulte [Performance do banco](../../performance/database.md).

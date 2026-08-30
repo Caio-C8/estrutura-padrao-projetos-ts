@@ -13,6 +13,8 @@ Antes de criar um módulo, confirme:
 - política aplicável de autenticação, autorização, erros e paginação;
 - matriz de segurança das novas rotas;
 - controles globais dos quais o módulo depende.
+- limites de entrada, paginação, payload e concorrência;
+- métricas e cenário de performance proporcionais ao risco da rota.
 
 Se os contratos necessários não existirem, um agente deve parar e avisar o
 usuário. A criação dos contratos é uma etapa anterior e deve seguir
@@ -29,12 +31,13 @@ usuário. A criação dos contratos é uma etapa anterior e deve seguir
 7. implementar mappers;
 8. criar DTOs a partir dos schemas existentes;
 9. definir acesso, autorização por recurso, exposição e limites de cada rota;
-10. implementar controller e aplicar os componentes existentes;
-11. criar um Guard, Interceptor, Filter, Pipe ou decorator somente se uma
+10. definir queries, concorrência, timeout e métricas dos caminhos críticos;
+11. implementar controller e aplicar os componentes existentes;
+12. criar um Guard, Interceptor, Filter, Pipe ou decorator somente se uma
     responsabilidade ainda não estiver atendida;
-12. configurar o módulo e registrá-lo no `AppModule`;
-13. adicionar testes funcionais e de segurança;
-14. executar as verificações.
+13. configurar o módulo e registrá-lo no `AppModule`;
+14. adicionar testes funcionais, de segurança e de performance aplicáveis;
+15. executar as verificações.
 
 A ordem pode variar quando testes forem escritos antes da implementação, mas as
 responsabilidades das camadas não mudam.
@@ -60,6 +63,10 @@ Adicione também os casos aplicáveis de
 [Testes de segurança](./security/testing.md), principalmente credenciais
 ausentes ou inválidas, acesso a recurso de outra identidade, propriedades
 proibidas, limites de entrada e vazamento de informações em erros e responses.
+
+Para caminhos com listagem, upload, integração externa ou processamento caro,
+adicione evidência conforme [Performance da API](./performance.md). Teste com
+volume representativo quando o comportamento depender da quantidade de dados.
 
 ## Comandos de verificação
 

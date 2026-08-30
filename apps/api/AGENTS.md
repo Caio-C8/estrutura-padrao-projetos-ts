@@ -12,6 +12,7 @@ Para rotas, autenticação, autorização, dados externos ou componentes
 transversais, leia também:
 
 - [Segurança](../../docs/apps/api/security/README.md);
+- [Performance](../../docs/apps/api/performance.md);
 - [Ciclo da requisição](../../docs/apps/api/request-lifecycle/README.md).
 
 ## Pré-condições
@@ -25,6 +26,8 @@ transversais, leia também:
 - Antes de criar ou alterar uma rota, defina se ela é pública, como autentica,
   quais permissões exige, quais regras de recurso aplica, quais campos pode
   expor e se precisa de limite especial.
+- Defina limites de paginação, body, arrays, upload, concorrência e payload
+  conforme o custo da operação.
 - Se uma política de segurança necessária não estiver definida, apresente o
   risco e solicite a decisão do usuário antes de escolher um comportamento.
 
@@ -57,6 +60,12 @@ transversais, leia também:
   importe os módulos dos services externos.
 - Reavalie os limites antes de usar `forwardRef()` para uma dependência circular.
 - Ao concluir um domínio, registre seu module no `AppModule`.
+- Evite N+1, over-fetching e listagens sem limite; confirme queries e índices
+  com evidência proporcional ao risco.
+- Paralelize somente operações independentes e limite fan-out conforme pool e
+  dependências.
+- Preserve métricas por rota normalizada para duração, volume, falhas,
+  saturação e dependências, sem labels sensíveis ou de alta cardinalidade.
 
 ## Utilitários
 

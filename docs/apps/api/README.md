@@ -25,6 +25,9 @@ Prisma
 O retorno percorre o caminho inverso e é convertido para o contrato HTTP por um
 mapper antes de sair do controller.
 
+Segurança e performance participam desse fluxo desde os contratos e queries até
+a resposta e a observabilidade; não são revisões executadas somente ao final.
+
 ## Estado atual da base
 
 No estado atual:
@@ -71,6 +74,7 @@ campos para desbloquear a API.
 | Posicionamento de funções utilitárias    | [Utilitários](./utilities.md)                        |
 | Ordem de implementação e testes          | [Workflow e testes](./workflow-and-testing.md)       |
 | Políticas e validações de segurança      | [Segurança](./security/README.md)                    |
+| Limites, métricas e eficiência           | [Performance](./performance.md)                      |
 | Guards, Interceptors, Filters e Pipes    | [Ciclo da requisição](./request-lifecycle/README.md) |
 | Documentações oficiais                   | [Referências](./references.md)                       |
 
@@ -90,6 +94,7 @@ produto. Antes de implementar recursos relacionados, documente:
 - limites e propagação de transações entre services e repositories;
 - upload, armazenamento e entrega de arquivos;
 - logging, observabilidade e dados sensíveis;
+- metas, limites e alertas de performance para os fluxos críticos;
 - versionamento de API e geração de OpenAPI.
 
 As decisões de segurança devem seguir o processo descrito em

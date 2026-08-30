@@ -25,6 +25,8 @@ Estas fontes fundamentam o padrão descrito neste diretório:
 - [Prisma: tipos para estruturas parciais](https://www.prisma.io/docs/orm/prisma-client/type-safety/operating-against-partial-structures-of-model-types)
 - [Prisma: type utilities](https://www.prisma.io/docs/orm/prisma-client/client-extensions/type-utilities)
 - [OWASP API Security Top 10 — 2023](https://owasp.org/API-Security/editions/2023/en/0x11-t10/)
+- [OWASP: Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+- [OWASP: CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
 
 Antes de implementar, confira a documentação correspondente às versões
 instaladas no repositório. Exemplos de documentação não substituem a verificação

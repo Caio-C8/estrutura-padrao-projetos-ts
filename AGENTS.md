@@ -89,6 +89,38 @@ Antes de modificar `apps/api`, leia [apps/api/AGENTS.md](apps/api/AGENTS.md) e
 comece por [docs/apps/api/README.md](docs/apps/api/README.md). As instruções
 específicas da API complementam as regras gerais deste arquivo.
 
+## Web
+
+Antes de modificar `apps/web`, leia [apps/web/AGENTS.md](apps/web/AGENTS.md) e
+comece por [docs/apps/web/README.md](docs/apps/web/README.md).
+
+Quando a tarefa envolver chamadas à API, autenticação, contratos de response,
+cache remoto ou hooks de dados, leia também
+[docs/integrations/web-api/README.md](docs/integrations/web-api/README.md).
+
+Uma tarefa pode implementar página e integração em conjunto; nesse caso, aplique
+as instruções das duas áreas.
+
+## Performance
+
+Antes de alterar caminho crítico, query, listagem, upload, integração externa,
+cache, concorrência, build ou infraestrutura, leia
+[docs/performance/README.md](docs/performance/README.md) e o capítulo da camada
+afetada.
+
+- Considere performance durante o desenho, não somente depois da implementação.
+- Defina limites finitos para trabalho controlado por entrada externa.
+- Observe no mínimo duração por percentis, volume, falhas, saturação, dados
+  processados e tempo das dependências quando aplicáveis.
+- Não invente metas numéricas universais; registre metas e alertas conforme o
+  contexto do projeto.
+- Não use média isolada para concluir que um fluxo atende performance.
+- Não adicione cache, índice, paralelismo, memoização ou nova tecnologia sem
+  identificar o gargalo e a semântica afetada.
+- Compare cenários equivalentes antes e depois de uma otimização.
+- Métricas, logs e traces não podem usar credenciais, dados pessoais, IDs ou
+  URLs brutas como labels.
+
 ## Verificação
 
 Depois de modificar somente o package de contratos, execute no mínimo:

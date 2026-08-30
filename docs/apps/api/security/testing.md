@@ -17,6 +17,11 @@ tratada como pendência, não como autorização implícita.
 ### Autenticação
 
 - credencial ausente, inválida, expirada e revogada;
+- login e renovação emitem credencial de navegador com `HttpOnly` e os atributos
+  `Secure`, `SameSite`, `Path`, `Domain` e prefixo definidos pelo ambiente;
+- logout expira a credencial no servidor;
+- nenhum fluxo exige ler credencial de autenticação por JavaScript;
+- proteção CSRF cobre as operações autenticadas que alteram estado;
 - rota pública acessível sem relaxar rotas protegidas;
 - identidade anexada à requisição sem campos desnecessários;
 - respostas sem enumeração indevida de contas.

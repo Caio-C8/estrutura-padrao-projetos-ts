@@ -32,16 +32,17 @@ não representam necessariamente código já implementado.
 
 ## Por onde começar
 
-| Necessidade                                  | Documento                        |
-| -------------------------------------------- | -------------------------------- |
-| Entender responsabilidades e dependências    | [Arquitetura](./architecture.md) |
-| Criar ou revisar um schema                   | [Convenções](./conventions.md)   |
-| Padronizar mensagens e respostas de erro     | [Erros](./errors.md)             |
-| Integrar com NestJS ou Next.js               | [Integrações](./integrations.md) |
-| Definir testes                               | [Testes](./testing.md)           |
-| Consultar implementações conceituais         | [Exemplos](./examples.md)        |
-| Consultar o baseline ou registrar objetivos  | [Roadmap](./roadmap.md)          |
-| Verificar APIs e decisões em fontes oficiais | [Referências](./references.md)   |
+| Necessidade                                  | Documento                                                   |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| Entender responsabilidades e dependências    | [Arquitetura](./architecture.md)                            |
+| Criar ou revisar um schema                   | [Convenções](./conventions.md)                              |
+| Padronizar mensagens e respostas de erro     | [Erros](./errors.md)                                        |
+| Integrar com NestJS ou Next.js               | [Integrações](./integrations.md)                            |
+| Definir testes                               | [Testes](./testing.md)                                      |
+| Limitar custo de requests e responses        | [Performance](../performance/contracts-and-integrations.md) |
+| Consultar implementações conceituais         | [Exemplos](./examples.md)                                   |
+| Consultar o baseline ou registrar objetivos  | [Roadmap](./roadmap.md)                                     |
+| Verificar APIs e decisões em fontes oficiais | [Referências](./references.md)                              |
 
 ## Vocabulário
 

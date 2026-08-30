@@ -16,6 +16,51 @@ Antes de implementar, defina:
 
 Não escolha JWT ou Passport apenas porque aparecem em um exemplo do framework.
 
+## Credenciais de autenticação em navegadores
+
+Quando o consumidor for um navegador, toda credencial que autentica o usuário,
+incluindo identificador de sessão, access token ou refresh token, deve ficar em
+cookie `HttpOnly`. Não armazene essas credenciais em `localStorage`,
+`sessionStorage`, estado persistido do React ou qualquer mecanismo legível por
+JavaScript.
+
+O servidor responsável pela sessão deve criar, renovar e expirar o cookie. Como
+baseline, defina explicitamente:
+
+- `HttpOnly` em todos os ambientes;
+- `Secure` em homologação e produção, sempre sob HTTPS;
+- `SameSite=Strict` quando o fluxo permitir ou `SameSite=Lax` quando navegações
+  externas legítimas precisarem preservar a sessão;
+- `SameSite=None` somente quando a topologia realmente exigir contexto
+  cross-site, sempre junto de `Secure` e proteção CSRF explícita;
+- `Path` com o menor escopo compatível, usando `/` quando a sessão atende toda a
+  aplicação;
+- ausência de `Domain` quando não houver compartilhamento entre subdomínios;
+- expiração curta e políticas de renovação, revogação, rotação e logout;
+- prefixo `__Host-` quando forem atendidos `Secure`, `Path=/` e ausência de
+  `Domain`.
+
+`HttpOnly` protege a confidencialidade da credencial contra leitura por scripts,
+mas não impede o navegador de enviá-la nem bloqueia ações autenticadas causadas
+por XSS ou CSRF. Cookies de autenticação exigem uma política CSRF compatível,
+além de proteção contra XSS, CORS restrito e validação de origem quando
+aplicável.
+
+A regra não torna todo cookie obrigatoriamente `HttpOnly`. Um cookie de
+preferência ou um token CSRF que precise ser copiado pelo JavaScript para um
+header pode ser legível, desde que nunca funcione como credencial de
+autenticação e tenha escopo e integridade definidos. A credencial de sessão
+permanece `HttpOnly`.
+
+Para mobile nativo ou comunicação entre serviços, documente armazenamento e
+transporte próprios do runtime; não replique automaticamente a política de
+cookies do navegador.
+
+Consulte as recomendações de
+[gerenciamento de sessão da OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+e de
+[prevenção de CSRF](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
+
 ## Módulo de autenticação
 
 Quando houver autenticação, mantenha-a como domínio explícito:

@@ -57,6 +57,8 @@ Não adote esse desenho sem definir:
 
 - [ ] configuração validada ao iniciar;
 - [ ] política de autenticação definida;
+- [ ] credenciais de navegador usam cookie `HttpOnly` e não Web Storage;
+- [ ] `Secure`, `SameSite`, escopo, expiração, renovação e logout definidos;
 - [ ] resposta pública de erros definida;
 - [ ] CORS restrito aos consumidores esperados;
 - [ ] necessidade de CSRF avaliada conforme o transporte de credenciais;
