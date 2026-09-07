@@ -32,7 +32,82 @@ está documentada ou planejada.
 
 ## Objetivos específicos do projeto
 
-Esta seção permanece vazia na estrutura padrão.
+O objetivo abaixo existe temporariamente para validar, de ponta a ponta, como a
+estrutura se comporta. Ao iniciar um projeto real a partir deste repositório, o
+exemplo de Produto e este objetivo devem ser removidos; o novo projeto registra
+somente objetivos do seu próprio domínio.
+
+### CONTRACTS-001 — Validar contratos do domínio Produto com Zod 4
+
+**Status:** em andamento
+
+**Contexto**
+
+O domínio `Produto` será o primeiro fluxo compartilhado entre banco, API e Web.
+Ele precisa validar em runtime tipos e representações diferentes, incluindo
+strings formatadas, enums, booleanos, inteiros, decimais, floats, datas, campos
+anuláveis e valores que não atravessam JSON como existem no Prisma.
+
+O package passou a depender de Zod 4 e já possui testes próprios com o runner
+nativo do Node executado por `tsx`. A API ainda usa Zod 3 e deverá ser alinhada
+com Zod 4 antes da integração dos DTOs.
+
+**Escopo**
+
+- adicionar Zod 4 como dependência runtime de `@repo/contracts`;
+- alinhar o uso direto de Zod pela API com a versão 4;
+- adicionar infraestrutura mínima de testes ao package de contratos;
+- criar contratos de body para criação e atualização de produto;
+- criar contratos de params e query de listagem;
+- criar responses resumida, detalhada e paginada;
+- derivar e exportar tipos de input e output a partir dos schemas;
+- documentar semântica, limites, serialização e casos de teste;
+- validar `@repo/contracts` e os consumidores afetados.
+
+Ficam fora deste objetivo:
+
+- contratos de `AvaliacaoProduto`, que serão a próxima evolução do domínio;
+- DTOs, controllers, services e repositories da API;
+- formulário, operações HTTP e página Web;
+- upload e armazenamento de arquivos;
+- autenticação e autorização.
+
+**Consumidores afetados**
+
+- `apps/api`, que usará os schemas nos DTOs e validará os boundaries HTTP;
+- `apps/web`, que usará schemas compatíveis nos formulários e validará
+  responses externas.
+
+**Critérios de aceite**
+
+- [ ] Zod 4 configurado sem múltiplas majors no fluxo do domínio;
+- [x] runner e script de testes disponíveis em `@repo/contracts`;
+- [ ] contratos e exports públicos revisados;
+- [ ] tipos de input e output derivados dos schemas;
+- [ ] create, update, params, query e responses cobertos por testes;
+- [ ] ausência, `undefined`, `null` e string vazia testados onde aplicável;
+- [ ] limites de strings e paginação testados;
+- [ ] `Decimal`, `BigInt` e `DateTime` serializados explicitamente;
+- [ ] lint, typecheck e testes de contratos aprovados;
+- [ ] consumidores afetados validados;
+- [ ] documentação atualizada.
+
+**Decisões**
+
+- O schema Zod será a fonte de verdade dos contratos runtime.
+- Contratos serão nomeados pela operação e pelo boundary.
+- `@repo/contracts` permanecerá independente de `@repo/database`.
+- O CRUD de Produto será contratado antes do sub-recurso Avaliação.
+- Campos internos ou controlados pelo servidor não entrarão no body apenas para
+  aumentar cobertura de tipos.
+- Responses usarão strings para `Decimal`, `BigInt` e datas ISO 8601 para
+  `DateTime`.
+- `dataValidade` será uma data de calendário `YYYY-MM-DD`; datas que representam
+  instantes continuarão usando ISO 8601 com offset.
+- Schemas específicos do domínio permanecerão em `src/produto`; uma primitive
+  só irá para `common` depois de reutilização real e testes.
+- A definição final de paginação, limites, normalização do SKU e semântica de
+  campos anuláveis deve ser confirmada antes da implementação.
 
 Ao reutilizar o repositório, adicione aqui somente objetivos necessários ao
 contexto real da nova aplicação. Um objetivo pode representar:

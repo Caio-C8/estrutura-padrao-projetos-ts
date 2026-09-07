@@ -1,3 +1,6 @@
+export * from "./common";
+export * from "./produto";
+
 export type AppEnvironment = "development" | "staging" | "production" | "test";
 
 export interface HealthResponse {

@@ -22,9 +22,11 @@ A regra central é:
 
 ## Estado atual
 
-O package já se chama `@repo/contracts` e é consumido por `apps/web` e
-`apps/api`. Neste momento, ele contém tipos básicos do health check, ainda não
-depende de Zod e ainda não possui testes próprios.
+O package já se chama `@repo/contracts`, é consumido por `apps/web` e
+`apps/api` e usa Zod 4 para os contratos runtime. Ele possui testes próprios
+com o runner nativo do Node executado por `tsx`. O domínio temporário de
+Produto está sendo usado para validar a arquitetura antes da integração com a
+API e a Web.
 
 Os documentos deste diretório descrevem tanto as decisões aprovadas quanto o
 plano para construir a camada de validação. Exemplos marcados como conceituais

@@ -2,19 +2,43 @@
 
 ## Estado atual
 
-`@repo/contracts` ainda não possui runner nem script de testes. Antes de
-implementar primitives, normalizers e schemas em escala, adicione a
-infraestrutura de testes ao package e ao pipeline do Turborepo.
-
-Enquanto isso, os comandos disponíveis são:
+`@repo/contracts` usa o runner nativo do Node, executado por `tsx`, e mantém os
+testes TypeScript próximos aos schemas. Os comandos disponíveis são:
 
 ```bash
 pnpm --filter @repo/contracts lint
 pnpm --filter @repo/contracts typecheck
+pnpm --filter @repo/contracts test
 ```
 
-Depois que o script `test` for criado, ele também deve ser alcançado por
-`pnpm test` e `pnpm check` na raiz.
+O script também deve continuar alcançável pelos comandos agregados da raiz.
+
+## Organização dos arquivos
+
+Prefira um arquivo `*.test.ts` por contrato ou por grupo pequeno de primitives
+fortemente relacionadas. Mantenha fixtures e helpers de teste em arquivos que
+não terminem em `*.test.ts`, para que o runner não os execute como suítes.
+
+Exemplo:
+
+```text
+src/
+  test-utils.ts
+  common/
+    resposta.schema.ts
+    resposta.schema.test.ts
+  produto/
+    produto.fixtures.ts
+    produto-fields.schema.test.ts
+    create-produto.schema.test.ts
+    update-produto.schema.test.ts
+    list-produtos-query.schema.test.ts
+    produto-response.schema.test.ts
+```
+
+Os testes unitários devem importar diretamente o módulo sob teste. Adicione um
+teste pequeno pelo entrypoint público do package para detectar exports
+esquecidos sem acoplar todas as suítes aos arquivos de barrel.
 
 ## Estratégia
 
