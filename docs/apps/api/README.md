@@ -37,9 +37,10 @@ No estado atual:
 - `apps/api` usa Zod 3 e ainda não depende de `nestjs-zod`;
 - `@repo/contracts` ainda não possui os contratos runtime descritos nestes
   guias;
-- o schema Prisma ainda não possui models;
-- `@repo/database` ainda não expõe o namespace `Prisma` nem um provider
-  singleton do NestJS.
+- o schema Prisma já possui o primeiro model do projeto, `Produto`;
+- `@repo/database` ainda não expõe o namespace `Prisma`;
+- a API já possui um `DatabaseModule` que cria, injeta e encerra um único
+  Prisma Client por processo.
 
 Os exemplos desta documentação representam o padrão desejado, não código já
 implementado.

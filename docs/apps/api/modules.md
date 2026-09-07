@@ -25,9 +25,9 @@ obter outra instância.
 
 ## Banco de dados
 
-O módulo deve importar o módulo de infraestrutura que disponibiliza o client
-Prisma singleton, salvo se esse provider for global por decisão explícita do
-projeto. A base ainda precisa definir essa integração.
+O módulo deve importar `DatabaseModule`, que disponibiliza o client Prisma
+compartilhado por token de injeção. Esse módulo não é global; cada módulo de
+domínio que usa banco declara o import explicitamente.
 
 ## Dependências entre domínios
 

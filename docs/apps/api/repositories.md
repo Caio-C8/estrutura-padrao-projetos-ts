@@ -74,10 +74,9 @@ export class RecursoRepository {
 }
 ```
 
-O token, o provider e o ciclo de vida do client precisam ser definidos por
-`@repo/database` e pela integração NestJS da API. A base atual ainda não possui
-esse provider singleton; portanto, o exemplo não deve ser copiado como se ele já
-existisse.
+O token `DATABASE_CLIENT`, o provider e o ciclo de vida do client já são
+definidos pelo `DatabaseModule` da API. O módulo de domínio importa esse módulo
+e o repository injeta o mesmo token; não instancia outro Prisma Client.
 
 ## Granularidade dos métodos
 
