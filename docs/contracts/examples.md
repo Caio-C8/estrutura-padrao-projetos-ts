@@ -42,6 +42,7 @@ import * as z from "zod";
 export const BooleanQuerySchema = z.stringbool({
   truthy: ["true", "1"],
   falsy: ["false", "0"],
+  case: "insensitive",
 });
 ```
 
@@ -50,11 +51,31 @@ export const BooleanQuerySchema = z.stringbool({
 ```ts
 import * as z from "zod";
 
+const PageQuerySchema = z
+  .string()
+  .regex(/^[0-9]+$/, {
+    error: "A página deve conter somente dígitos.",
+  })
+  .transform((value) => Number(value))
+  .pipe(z.number().int().min(1));
+
+const LimitQuerySchema = z
+  .string()
+  .regex(/^[0-9]+$/, {
+    error: "O limite deve conter somente dígitos.",
+  })
+  .transform((value) => Number(value))
+  .pipe(z.number().int().min(1).max(100));
+
 export const PaginationQuerySchema = z.strictObject({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
+  page: PageQuerySchema.default(1),
+  limit: LimitQuerySchema.default(20),
 });
 ```
+
+Esse contrato aceita os valores textuais presentes na URL e entrega números
+validados à aplicação. Ele não aceita valores de outros tipos apenas porque
+seriam convertíveis pela função `Number()` do JavaScript.
 
 ## Codec de data e hora
 

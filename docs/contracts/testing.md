@@ -23,7 +23,8 @@ Exemplo:
 
 ```text
 src/
-  test-utils.ts
+  contract-assertions.ts
+  public-api.test.ts
   common/
     resposta.schema.ts
     resposta.schema.test.ts
@@ -74,10 +75,30 @@ comportamento.
 | Input     | Resultado esperado |
 | --------- | ------------------ |
 | `"true"`  | `true`             |
+| `"TRUE"`  | `true`             |
 | `"1"`     | `true`             |
 | `"false"` | `false`            |
+| `"FALSE"` | `false`            |
 | `"0"`     | `false`            |
 | `"abc"`   | erro               |
+| `true`    | erro               |
+| `1`       | erro               |
+
+### Inteiro em query
+
+| Input    | Resultado esperado                                |
+| -------- | ------------------------------------------------- |
+| `"1"`    | `1`                                               |
+| `"01"`   | decisão explícita do contrato                     |
+| `"1.5"`  | erro                                              |
+| `"1e2"`  | erro                                              |
+| `"0x10"` | erro                                              |
+| `""`     | erro, salvo quando houver um normalizer explícito |
+| `true`   | erro                                              |
+| `null`   | erro                                              |
+
+Além dos limites da operação, teste inteiros maiores que o intervalo seguro do
+JavaScript quando o output do contrato for `number`.
 
 ### String vazia opcional
 

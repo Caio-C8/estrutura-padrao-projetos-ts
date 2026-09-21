@@ -83,14 +83,14 @@ Ficam fora deste objetivo:
 - [ ] Zod 4 configurado sem múltiplas majors no fluxo do domínio;
 - [x] runner e script de testes disponíveis em `@repo/contracts`;
 - [ ] contratos e exports públicos revisados;
-- [ ] tipos de input e output derivados dos schemas;
-- [ ] create, update, params, query e responses cobertos por testes;
-- [ ] ausência, `undefined`, `null` e string vazia testados onde aplicável;
-- [ ] limites de strings e paginação testados;
-- [ ] `Decimal`, `BigInt` e `DateTime` serializados explicitamente;
+- [x] tipos de input e output derivados dos schemas;
+- [x] create, update, params, query e responses cobertos por testes;
+- [x] ausência, `undefined`, `null` e string vazia testados onde aplicável;
+- [x] limites de strings e paginação testados;
+- [x] `Decimal`, `BigInt` e `DateTime` serializados explicitamente;
 - [ ] lint, typecheck e testes de contratos aprovados;
 - [ ] consumidores afetados validados;
-- [ ] documentação atualizada.
+- [x] documentação atualizada.
 
 **Decisões**
 
@@ -104,10 +104,21 @@ Ficam fora deste objetivo:
   `DateTime`.
 - `dataValidade` será uma data de calendário `YYYY-MM-DD`; datas que representam
   instantes continuarão usando ISO 8601 com offset.
+- URLs de manual aceitarão somente os protocolos HTTP e HTTPS.
+- Booleanos recebidos em query serão interpretados sem diferença entre letras
+  maiúsculas e minúsculas, dentro do vocabulário explicitamente permitido.
+- Página e limite serão recebidos como strings formadas somente por dígitos e
+  convertidos para `number` depois da validação da representação. A página terá
+  default 1; o limite terá default 20 e máximo 50.
+- `createdAt` e `updatedAt` permanecerão em inglês por convenção técnica.
+- Preço representa um valor estritamente positivo, com mínimo de `0.01`.
+- `quantidadeVendas` será serializada como string inteira não negativa com no
+  máximo 19 dígitos.
 - Schemas específicos do domínio permanecerão em `src/produto`; uma primitive
   só irá para `common` depois de reutilização real e testes.
-- A definição final de paginação, limites, normalização do SKU e semântica de
-  campos anuláveis deve ser confirmada antes da implementação.
+- O SKU será normalizado com trim e letras maiúsculas. Campos anuláveis em
+  update usarão `null` para limpeza explícita e propriedade ausente para
+  preservar o valor atual.
 
 Ao reutilizar o repositório, adicione aqui somente objetivos necessários ao
 contexto real da nova aplicação. Um objetivo pode representar:

@@ -100,21 +100,36 @@ Use `z.stringbool()` com o vocabulário aceito pelo contrato:
 export const BooleanQuerySchema = z.stringbool({
   truthy: ["true", "1"],
   falsy: ["false", "0"],
+  case: "insensitive",
 });
 ```
 
-Valores fora dessas listas devem produzir erro.
+Valores fora dessas listas devem produzir erro. Declare `case: "insensitive"`
+quando essa semântica fizer parte do contrato, mesmo sendo o comportamento
+padrão do Zod 4, para tornar a decisão explícita e protegê-la com testes.
 
 ## Números em query
 
-Coercion é adequada quando a representação externa é textual:
+Uma query HTTP possui representação textual. Valide essa representação antes
+de convertê-la, para impedir que valores aceitos por `Number(input)`, como
+booleanos, `null`, string vazia, notação científica ou hexadecimal, atravessem
+o contrato acidentalmente:
 
 ```ts
-const PageSchema = z.coerce.number().int().min(1);
+const PageSchema = z
+  .string()
+  .regex(/^[0-9]+$/)
+  .transform((value) => Number(value))
+  .pipe(z.number().int().min(1));
 ```
 
-No Zod 4, o input de schemas `z.coerce.*` é `unknown`. Use coerção
-conscientemente e teste valores limítrofes.
+O schema anterior recebe `string` e produz `number`. Defaults aplicados depois
+do pipe devem pertencer ao tipo de output, como `.default(1)`.
+
+No Zod 4, o input de schemas `z.coerce.*` é `unknown` e a coerção numérica usa
+`Number(input)`. Quando `z.coerce.number()` for necessário, restrinja primeiro
+o tipo e o formato de entrada com um schema anterior e um pipe. Teste também
+valores limítrofes e representações alternativas que o contrato não aceita.
 
 ## Datas
 
