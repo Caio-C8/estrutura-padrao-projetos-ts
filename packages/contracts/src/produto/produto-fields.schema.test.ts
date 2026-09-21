@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { esperaInvalidos, parseValido } from "../test-utils";
+import { esperaInvalidos, parseValido } from "../contract-assertions";
 import {
   DataValidadeProdutoSchema,
   DescricaoProdutoSchema,
@@ -76,11 +76,13 @@ describe("UrlManualProdutoSchema", () => {
     assert.equal(parseValido(UrlManualProdutoSchema, url), url);
   });
 
-  it("rejeita uma referência que não seja URL", () => {
+  it("rejeita uma referência que não seja URL ou URL HTTP/HTTPS válida", () => {
     esperaInvalidos(UrlManualProdutoSchema, [
       "",
       "manual.pdf",
       "/uploads/manual.pdf",
+      "ftp://example.com/manual.pdf",
+      "mailto:suporte@example.com",
       123,
       null,
     ]);
@@ -108,8 +110,7 @@ describe("EstoqueProdutoSchema", () => {
 describe("PrecoProdutoSchema", () => {
   it("aceita as representações decimais definidas", () => {
     const casos = [
-      ["0", "0"],
-      ["0.00", "0.00"],
+      ["0.01", "0.01"],
       ["19.9", "19.9"],
       [" 19.90 ", "19.90"],
       ["9999999999.99", "9999999999.99"],
@@ -123,6 +124,8 @@ describe("PrecoProdutoSchema", () => {
   it("rejeita representações ambíguas ou fora dos limites", () => {
     esperaInvalidos(PrecoProdutoSchema, [
       "",
+      "0",
+      "0.00",
       "-1.00",
       "19,90",
       "19.999",

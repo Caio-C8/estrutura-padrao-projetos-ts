@@ -22,7 +22,7 @@ export function criarProdutoDetalhadoValido() {
     estoque: 10,
     preco: "19.90",
     pesoKg: 1.5,
-    quantidadeVendas: "100",
+    quantidadeVendas: "9".repeat(19),
     dataValidade: "2027-09-05",
     disponivelEm: "2026-09-06T15:00:00.000Z",
     createdAt: "2026-09-05T12:00:00.000Z",

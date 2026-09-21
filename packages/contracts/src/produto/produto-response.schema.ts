@@ -4,11 +4,15 @@ import {
   criarRespostaSucessoPaginadaSchema,
   criarRespostaSucessoSchema,
 } from "../common";
+import { UrlManualProdutoSchema } from "./produto-fields.schema";
 
 const PrecoProdutoResponseSchema = z
   .string()
   .regex(/^(?:0|[1-9][0-9]{0,9})\.[0-9]{2}$/, {
     error: "O preço da resposta deve possuir exatamente duas casas decimais.",
+  })
+  .refine((preco) => preco !== "0" && preco !== "0.0" && preco !== "0.00", {
+    error: "O preço da resposta deve ser maior ou igual a 0.01.",
   });
 
 const QuantidadeVendasResponseSchema = z
@@ -28,7 +32,7 @@ export const ProdutoDetalhadoResponseSchema = z.strictObject({
   sku: z.string().min(1).max(64).uppercase(),
   nome: z.string().min(1).max(64),
   descricao: z.string().min(1).max(2_000).nullable(),
-  urlManual: z.url().max(2_048).nullable(),
+  urlManual: UrlManualProdutoSchema.nullable(),
   status: StatusProdutoSchema,
   emDestaque: z.boolean(),
   estoque: z.number().int().min(0),

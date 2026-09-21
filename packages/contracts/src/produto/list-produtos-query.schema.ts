@@ -1,34 +1,51 @@
 import * as z from "zod";
 import { StatusProdutoSchema } from "./status-produto.schema";
 
-const PaginaQuerySchema = z.coerce
-  .number({
-    error: "A página deve ser um número.",
+const PaginaQuerySchema = z
+  .string({
+    error: "A página deve ser informada como um número inteiro.",
   })
-  .int({
-    error: "A página deve ser um número inteiro.",
+  .regex(/^[0-9]+$/, {
+    error: "A página deve conter somente dígitos.",
   })
-  .min(1, {
-    error: "A página deve ser maior ou igual a 1.",
-  });
+  .transform((valor) => Number(valor))
+  .pipe(
+    z
+      .number()
+      .int({
+        error: "A página deve ser um número inteiro.",
+      })
+      .min(1, {
+        error: "A página deve ser maior ou igual a 1.",
+      }),
+  );
 
-const LimiteQuerySchema = z.coerce
-  .number({
-    error: "O limite deve ser um número.",
+const LimiteQuerySchema = z
+  .string({
+    error: "O limite deve ser informado como um número inteiro.",
   })
-  .int({
-    error: "O limite deve ser um número inteiro.",
+  .regex(/^[0-9]+$/, {
+    error: "O limite deve conter somente dígitos.",
   })
-  .min(1, {
-    error: "O limite deve ser um número maior ou igual a 1.",
-  })
-  .max(50, {
-    error: "O limite deve ser um número menor ou igual a 50.",
-  });
+  .transform((valor) => Number(valor))
+  .pipe(
+    z
+      .number()
+      .int({
+        error: "O limite deve ser um número inteiro.",
+      })
+      .min(1, {
+        error: "O limite deve ser um número maior ou igual a 1.",
+      })
+      .max(50, {
+        error: "O limite deve ser um número menor ou igual a 50.",
+      }),
+  );
 
 const EmDestaqueQuerySchema = z.stringbool({
   truthy: ["true", "1"],
   falsy: ["false", "0"],
+  case: "insensitive",
   error: "O filtro para 'em destaque' deve ser true, false, 1 ou 0.",
 });
 

@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { esperaInvalido, esperaInvalidos, parseValido } from "../test-utils";
+import {
+  esperaInvalido,
+  esperaInvalidos,
+  parseValido,
+} from "../contract-assertions";
 import {
   criarProdutoDetalhadoValido,
   criarProdutoResumoValido,
@@ -42,6 +46,7 @@ describe("ProdutoDetalhadoResponseSchema", () => {
     esperaInvalidos(ProdutoDetalhadoResponseSchema, [
       { ...produto, preco: 19.9 },
       { ...produto, preco: "19.9" },
+      { ...produto, quantidadeVendas: "9".repeat(20) },
       { ...produto, quantidadeVendas: 100 },
       { ...produto, createdAt: new Date() },
       { ...produto, updatedAt: "2026-09-06T15:00:00-03:00" },

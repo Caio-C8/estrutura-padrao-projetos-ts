@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { esperaInvalidos, parseValido } from "../test-utils";
+import { esperaInvalidos, parseValido } from "../contract-assertions";
 import { StatusProduto, StatusProdutoSchema } from "./status-produto.schema";
 
 describe("StatusProdutoSchema", () => {

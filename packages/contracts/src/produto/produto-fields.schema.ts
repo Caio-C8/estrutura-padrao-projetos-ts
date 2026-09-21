@@ -33,7 +33,8 @@ export const DescricaoProdutoSchema = z
 
 export const UrlManualProdutoSchema = z
   .url({
-    error: "A URL do manual deve ser válida.",
+    protocol: /^https?$/,
+    error: "A URL do manual deve ser uma URL HTTP ou HTTPS válida.",
   })
   .max(2_048, {
     error: "A URL do manual deve possuir no máximo 2.048 caracteres.",
@@ -52,6 +53,9 @@ export const PrecoProdutoSchema = z
   .regex(/^(?:0|[1-9][0-9]{0,9})(?:\.[0-9]{1,2})?$/, {
     error:
       "O preço deve ser um decimal positivo com até 10 dígitos inteiros e 2 casas decimais.",
+  })
+  .refine((preco) => preco !== "0" && preco !== "0.0" && preco !== "0.00", {
+    error: "O preço deve ser maior ou igual a 0.01.",
   });
 
 export const PesoKgProdutoSchema = z.number().positive({
