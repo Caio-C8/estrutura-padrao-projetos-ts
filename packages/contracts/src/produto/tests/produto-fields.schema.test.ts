@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { esperaInvalidos, parseValido } from "../contract-assertions";
+import { esperaInvalidos, parseValido } from "../../contract-assertions";
 import {
   DataValidadeProdutoSchema,
   DescricaoProdutoSchema,
@@ -11,7 +11,7 @@ import {
   PrecoProdutoSchema,
   SkuProdutoSchema,
   UrlManualProdutoSchema,
-} from "./produto-fields.schema";
+} from "../produto-fields.schema";
 
 describe("SkuProdutoSchema", () => {
   it("remove espaços externos e converte para maiúsculas", () => {

@@ -1,4 +1,4 @@
-import { StatusProduto } from "./status-produto.schema";
+import { StatusProduto } from "../status-produto.schema";
 
 export const PRODUTO_ID_VALIDO = "875035dc-7f98-4096-b062-11b72d07c427";
 

@@ -4,3 +4,8 @@ export * from "./create-produto.schema";
 export * from "./update-produto.schema";
 export * from "./list-produtos-query.schema";
 export * from "./produto-response.schema";
+export * from "./avaliacao-produto-params.schema";
+export * from "./avaliacao-produto-response.schema";
+export * from "./create-avaliacao-produto.schema";
+export * from "./list-avaliacoes-produto-query.schema";
+export * from "./update-avaliacao-produto.schema";

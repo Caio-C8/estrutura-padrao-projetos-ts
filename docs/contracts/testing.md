@@ -2,8 +2,9 @@
 
 ## Estado atual
 
-`@repo/contracts` usa o runner nativo do Node, executado por `tsx`, e mantém os
-testes TypeScript próximos aos schemas. Os comandos disponíveis são:
+`@repo/contracts` usa o runner nativo do Node, executado por `tsx`, e agrupa os
+testes TypeScript em diretórios `tests` dentro da respectiva feature. Os
+comandos disponíveis são:
 
 ```bash
 pnpm --filter @repo/contracts lint
@@ -26,15 +27,26 @@ src/
   contract-assertions.ts
   public-api.test.ts
   common/
+    paginacao-query.schema.ts
     resposta.schema.ts
-    resposta.schema.test.ts
+    tests/
+      paginacao-query.schema.test.ts
+      resposta.schema.test.ts
   produto/
-    produto.fixtures.ts
-    produto-fields.schema.test.ts
-    create-produto.schema.test.ts
-    update-produto.schema.test.ts
-    list-produtos-query.schema.test.ts
-    produto-response.schema.test.ts
+    tests/
+      avaliacao-produto.fixtures.ts
+      produto.fixtures.ts
+      avaliacao-produto-fields.schema.test.ts
+      avaliacao-produto-params.schema.test.ts
+      create-avaliacao-produto.schema.test.ts
+      update-avaliacao-produto.schema.test.ts
+      list-avaliacoes-produto-query.schema.test.ts
+      avaliacao-produto-response.schema.test.ts
+      produto-fields.schema.test.ts
+      create-produto.schema.test.ts
+      update-produto.schema.test.ts
+      list-produtos-query.schema.test.ts
+      produto-response.schema.test.ts
 ```
 
 Os testes unitários devem importar diretamente o módulo sob teste. Adicione um

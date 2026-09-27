@@ -82,13 +82,13 @@ Ficam fora deste objetivo:
 
 - [ ] Zod 4 configurado sem múltiplas majors no fluxo do domínio;
 - [x] runner e script de testes disponíveis em `@repo/contracts`;
-- [ ] contratos e exports públicos revisados;
+- [x] contratos e exports públicos revisados;
 - [x] tipos de input e output derivados dos schemas;
 - [x] create, update, params, query e responses cobertos por testes;
 - [x] ausência, `undefined`, `null` e string vazia testados onde aplicável;
 - [x] limites de strings e paginação testados;
 - [x] `Decimal`, `BigInt` e `DateTime` serializados explicitamente;
-- [ ] lint, typecheck e testes de contratos aprovados;
+- [x] lint, typecheck e testes de contratos aprovados;
 - [ ] consumidores afetados validados;
 - [x] documentação atualizada.
 
@@ -119,6 +119,96 @@ Ficam fora deste objetivo:
 - O SKU será normalizado com trim e letras maiúsculas. Campos anuláveis em
   update usarão `null` para limpeza explícita e propriedade ausente para
   preservar o valor atual.
+
+### CONTRACTS-002 — Criar contratos do sub-recurso AvaliacaoProduto
+
+**Status:** em andamento
+
+**Contexto**
+
+`AvaliacaoProduto` é um sub-recurso de Produto e exercita contratos de rotas
+aninhadas, params compostos, relação 1:N e uma segunda listagem paginada. Essa
+segunda ocorrência também justificou extrair a semântica compartilhada de
+paginação para `common`.
+
+**Estado atual**
+
+- a primitive `PaginacaoQuerySchema` foi criada e já é consumida pelas queries
+  de Produto e Avaliação;
+- fields, params, create, update, query e responses de avaliação possuem uma
+  implementação inicial;
+- a paginação comum e os schemas de avaliação possuem testes próprios;
+- os novos schemas foram adicionados aos barrels e ao teste da API pública;
+- `nota` usa `number` inteiro de 1 a 5 também na response, preservando a
+  representação JSON natural do `Int` do Prisma;
+- a query e o schema de response da listagem usam o singular `Produto`, pois a
+  coleção pertence ao produto identificado no path;
+- o type alias da response de listagem também foi alinhado ao singular;
+- lint, typecheck e os 104 testes do package passam;
+- o filtro `pesquisa` consulta exclusivamente o campo `autorNome`.
+
+**Escopo**
+
+- criar fields semânticos para autor, nota e comentário;
+- criar params da coleção e do item aninhado;
+- criar contratos de body para criação e atualização;
+- criar query paginada de listagem com filtros explícitos;
+- criar responses detalhada, resumida, de item e de listagem;
+- extrair e testar a paginação compartilhada;
+- derivar e exportar tipos de input e output;
+- revisar exports públicos e documentar as semânticas.
+
+Ficam fora deste objetivo:
+
+- controllers, services e repositories da API;
+- existência do produto e pertencimento da avaliação ao produto;
+- autenticação e autorização;
+- inclusão automática de avaliações nas responses de Produto.
+
+**Consumidores afetados**
+
+- `apps/api`, nas futuras rotas aninhadas de avaliações;
+- `apps/web`, na futura listagem e edição de avaliações.
+
+**Critérios de aceite**
+
+- [x] implementação inicial de fields, params, create e update;
+- [x] implementação inicial de query e responses;
+- [x] paginação compartilhada extraída para `common`;
+- [x] query definida para a coleção aninhada de um produto;
+- [x] nomes do schema e dos tipos da query alinhados ao escopo singular;
+- [x] nome do type alias da response de listagem alinhado ao escopo singular;
+- [x] campos consultados pelo filtro `pesquisa` definidos;
+- [x] representação de `nota` corrigida na response;
+- [x] paginação comum coberta por testes próprios;
+- [x] contratos de avaliação cobertos por testes;
+- [x] ausência, `undefined`, `null` e string vazia testados;
+- [x] schemas e tipos exportados pelos barrels;
+- [x] teste da API pública atualizado;
+- [x] lint, typecheck e testes aprovados após a cobertura nova;
+- [x] documentação atualizada para o estado da implementação.
+
+**Decisões**
+
+- Os contratos permanecerão dentro da feature `produto`.
+- `produtoId` virá do path e não do body de criação.
+- Operações de item receberão `produtoId` e `avaliacaoId` como UUIDs.
+- `autorNome` terá trim, mínimo de um e máximo de 80 caracteres.
+- `nota` será um `number` inteiro de 1 a 5 em bodies e responses.
+- `comentario` será opcional no create e anulável no update e na response.
+- `recomenda` terá default `true` somente no create.
+- Update vazio ou contendo somente propriedades `undefined` será inválido.
+- Listagens reutilizarão página default 1, limite default 20 e máximo 50.
+- A query e a response de listagem representam avaliações do único produto
+  identificado por `produtoId` no path e usam `Produto` no singular.
+- A response resumida conterá `id`, `produtoId`, `autorNome`, `nota` e
+  `createdAt`; a detalhada também conterá comentário, recomendação e
+  `updatedAt`.
+- `createdAt` e `updatedAt` permanecerão em inglês e serão strings UTC com
+  precisão de milissegundos.
+- A existência do produto e o pertencimento da avaliação serão regras do
+  service, não dos schemas Zod.
+- O filtro `pesquisa` consultará somente `autorNome`.
 
 Ao reutilizar o repositório, adicione aqui somente objetivos necessários ao
 contexto real da nova aplicação. Um objetivo pode representar:

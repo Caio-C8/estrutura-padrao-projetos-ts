@@ -5,14 +5,14 @@ import {
   esperaInvalido,
   esperaInvalidos,
   parseValido,
-} from "../contract-assertions";
+} from "../../contract-assertions";
 import {
   ErroCampoSchema,
   MetaPaginacaoSchema,
   RespostaErroSchema,
   criarRespostaSucessoPaginadaSchema,
   criarRespostaSucessoSchema,
-} from "./resposta.schema";
+} from "../resposta.schema";
 
 const ID_VALIDO = "875035dc-7f98-4096-b062-11b72d07c427";
 

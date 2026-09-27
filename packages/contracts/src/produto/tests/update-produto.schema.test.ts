@@ -4,9 +4,9 @@ import {
   esperaInvalido,
   esperaInvalidos,
   parseValido,
-} from "../contract-assertions";
-import { StatusProduto } from "./status-produto.schema";
-import { UpdateProdutoSchema } from "./update-produto.schema";
+} from "../../contract-assertions";
+import { StatusProduto } from "../status-produto.schema";
+import { UpdateProdutoSchema } from "../update-produto.schema";
 
 describe("UpdateProdutoSchema", () => {
   it("atualiza somente os campos informados e não aplica defaults", () => {

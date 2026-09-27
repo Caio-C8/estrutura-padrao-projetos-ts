@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { esperaInvalidos, parseValido } from "../contract-assertions";
-import { ListProdutosQuerySchema } from "./list-produtos-query.schema";
-import { StatusProduto } from "./status-produto.schema";
+import { esperaInvalidos, parseValido } from "../../contract-assertions";
+import { ListProdutosQuerySchema } from "../list-produtos-query.schema";
+import { StatusProduto } from "../status-produto.schema";
 
 describe("ListProdutosQuerySchema", () => {
   it("aplica os valores padrão na query vazia", () => {

@@ -4,7 +4,7 @@ import {
   esperaInvalido,
   esperaInvalidos,
   parseValido,
-} from "../contract-assertions";
+} from "../../contract-assertions";
 import {
   criarProdutoDetalhadoValido,
   criarProdutoResumoValido,
@@ -14,7 +14,7 @@ import {
   ProdutoDetalhadoResponseSchema,
   ProdutoResponseSchema,
   ProdutoResumoResponseSchema,
-} from "./produto-response.schema";
+} from "../produto-response.schema";
 
 describe("ProdutoDetalhadoResponseSchema", () => {
   it("aceita a representação serializada completa", () => {

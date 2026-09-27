@@ -4,10 +4,10 @@ import {
   esperaInvalido,
   esperaInvalidos,
   parseValido,
-} from "../contract-assertions";
-import { CreateProdutoSchema } from "./create-produto.schema";
+} from "../../contract-assertions";
+import { CreateProdutoSchema } from "../create-produto.schema";
 import { criarProdutoMinimoValido } from "./produto.fixtures";
-import { StatusProduto } from "./status-produto.schema";
+import { StatusProduto } from "../status-produto.schema";
 
 describe("CreateProdutoSchema", () => {
   it("valida o payload mínimo, normaliza e aplica defaults", () => {

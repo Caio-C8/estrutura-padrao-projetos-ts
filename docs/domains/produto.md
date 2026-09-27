@@ -38,11 +38,19 @@ marcada como concluída depois das verificações correspondentes.
 - [x] `dataValidade` alinhada como `DATE` no banco e `YYYY-MM-DD` no contrato;
 - [x] schemas de campos de Produto extraídos dentro da própria feature;
 - [x] contratos de criação e atualização implementados e testados;
-- [x] query de listagem com filtros, coerção e paginação implementada e testada;
+- [x] query de listagem com filtros, conversão e paginação implementada e
+      testada;
 - [x] schemas de resposta comum, detalhada, resumida e paginada implementados;
 - [x] testes separados por contrato, com fixtures e helpers privados;
-- [ ] decisões semânticas dos contratos confirmadas;
+- [x] decisões semânticas dos contratos de Produto confirmadas;
 - [x] contratos Zod implementados;
+- [x] objetivo `CONTRACTS-002` registrado no roadmap de contratos;
+- [x] implementação inicial dos schemas de `AvaliacaoProduto` criada;
+- [x] paginação compartilhada extraída para `common`;
+- [x] schemas de `AvaliacaoProduto` testados e exportados;
+- [x] query de avaliações definida para a coleção aninhada de um produto;
+- [x] nomenclatura da response de listagem alinhada ao singular;
+- [x] filtro `pesquisa` definido exclusivamente sobre `autorNome`;
 - [ ] CRUD da API implementado;
 - [ ] página Web implementada.
 
@@ -67,11 +75,11 @@ quando um domínio real precisar deles.
 | `sku`              | `String`           | string                                      |
 | `nome`             | `String`           | string                                      |
 | `descricao`        | `String?`          | string ou `null`                            |
-| `urlManual`        | `String?`          | URL em string ou `null`                     |
+| `urlManual`        | `String?`          | URL HTTP/HTTPS ou `null`                    |
 | `status`           | `StatusProduto`    | enum textual do contrato                    |
 | `emDestaque`       | `Boolean`          | boolean                                     |
 | `estoque`          | `Int`              | number inteiro                              |
-| `preco`            | `Decimal`          | string decimal                              |
+| `preco`            | `Decimal`          | string decimal maior ou igual a `0.01`      |
 | `pesoKg`           | `Float?`           | number finito ou `null`                     |
 | `quantidadeVendas` | `BigInt`           | string inteira para preservar precisão JSON |
 | `dataValidade`     | `DateTime?`/`Date` | string `YYYY-MM-DD` ou `null`               |
@@ -142,7 +150,7 @@ O índice composto atende a consulta planejada de avaliações por produto e
 ordenação por criação. Relações não serão carregadas automaticamente em toda
 consulta de produto.
 
-### Semântica e contratos futuros
+### Semântica dos contratos
 
 - `nota` aceitará somente inteiros de 1 a 5;
 - `autorNome` será obrigatório, terá trim e limite finito;
@@ -153,6 +161,12 @@ consulta de produto.
 - a resposta básica de produto não incluirá uma coleção ilimitada de
   avaliações;
 - listagens de avaliações terão paginação, limite e ordenação determinística.
+
+A implementação inicial usa a paginação comum, aceita pesquisa textual e o
+filtro case-insensitive `recomenda` com os valores `true`, `false`, `1` e `0`.
+Como a coleção pertence ao produto identificado no path, a query e o schema de
+response da listagem usam `Produto` no singular. O filtro `pesquisa` consulta
+exclusivamente o campo `autorNome`.
 
 Rotas conceituais:
 
@@ -171,27 +185,48 @@ decoração.
 ## Contratos de Produto
 
 O primeiro conjunto de contratos foi implementado em
-`packages/contracts/src/produto` e ainda não inclui `AvaliacaoProduto`:
+`packages/contracts/src/produto`. A mesma feature agora também contém a
+implementação inicial de `AvaliacaoProduto`:
 
 ```text
 produto/
 ├── status-produto.schema.ts
-├── status-produto.schema.test.ts
 ├── produto-fields.schema.ts
-├── produto-fields.schema.test.ts
 ├── create-produto.schema.ts
-├── create-produto.schema.test.ts
 ├── update-produto.schema.ts
-├── update-produto.schema.test.ts
 ├── list-produtos-query.schema.ts
-├── list-produtos-query.schema.test.ts
 ├── produto-params.schema.ts
-├── produto-params.schema.test.ts
 ├── produto-response.schema.ts
-├── produto-response.schema.test.ts
-├── produto.fixtures.ts
+├── avaliacao-produto-fields.schema.ts
+├── avaliacao-produto-params.schema.ts
+├── create-avaliacao-produto.schema.ts
+├── update-avaliacao-produto.schema.ts
+├── list-avaliacoes-produto-query.schema.ts
+├── avaliacao-produto-response.schema.ts
+├── tests/
+│   ├── avaliacao-produto.fixtures.ts
+│   ├── produto.fixtures.ts
+│   ├── status-produto.schema.test.ts
+│   ├── produto-fields.schema.test.ts
+│   ├── create-produto.schema.test.ts
+│   ├── update-produto.schema.test.ts
+│   ├── list-produtos-query.schema.test.ts
+│   ├── produto-params.schema.test.ts
+│   ├── produto-response.schema.test.ts
+│   ├── avaliacao-produto-fields.schema.test.ts
+│   ├── avaliacao-produto-params.schema.test.ts
+│   ├── create-avaliacao-produto.schema.test.ts
+│   ├── update-avaliacao-produto.schema.test.ts
+│   ├── list-avaliacoes-produto-query.schema.test.ts
+│   └── avaliacao-produto-response.schema.test.ts
 └── index.ts
 ```
+
+Os arquivos de avaliação possuem testes próprios e foram adicionados ao barrel
+da feature. A paginação compartilhada foi criada em
+`src/common/paginacao-query.schema.ts`, possui cobertura própria e é exportada
+pelo barrel de `common`. O teste da API pública inclui os novos exports. Lint,
+typecheck e os 104 testes do package passam.
 
 Os contratos previstos são:
 
@@ -216,14 +251,15 @@ As decisões aplicadas atualmente são:
 - campos anuláveis do update aceitam `null` como limpeza explícita;
 - paginação começa em 1, usa limite padrão 20 e máximo 50;
 - preço entra como string decimal e sai com exatamente duas casas;
+- preço precisa ser maior ou igual a `0.01`;
+- `urlManual` aceita somente URLs HTTP e HTTPS;
+- paginação aceita somente strings formadas por dígitos antes da conversão;
 - `disponivelEm` aceita UTC ou offset no input e exige UTC com milissegundos na
   response.
 
-Ainda deve ser decidido se `urlManual` aceita qualquer URL compatível com
-WHATWG, como ocorre com `z.url()`, ou somente HTTP/HTTPS, com `z.httpUrl()`.
-Também deve ser decidido se a coerção de paginação ficará restrita a strings
-numéricas; `z.coerce.number()` aceita qualquer entrada convertível por
-`Number()`.
+### Revisões pendentes de AvaliacaoProduto
+
+- confirmar se os campos da response resumida atendem à futura listagem.
 
 ## Alcance das validações
 
@@ -384,11 +420,11 @@ O contrato de upload deverá definir quantidade, extensões permitidas, tamanho
 máximo e representação `multipart/form-data`. MIME informado pelo cliente não
 será tratado como prova suficiente do conteúdo.
 
-## Decisões pendentes do model
+## Observações sobre migrations
 
-- decidir se os campos Prisma `createdAt` e `updatedAt` serão renomeados para
-  `criadoEm` e `atualizadoEm`, preservando as colunas `snake_case`;
-- confirmar se excluir um produto deve apagar definitivamente suas avaliações.
+Os campos `createdAt` e `updatedAt` permanecem em inglês por convenção técnica.
+A relação usa definitivamente `onDelete: Cascade` neste exemplo didático, de
+modo que excluir um produto também exclui suas avaliações.
 
 A migration `20260905151731_adicionar_avaliacao_corrigir_colunas` adiciona
 `updated_at` como coluna obrigatória sem valor default. Ela foi aplicada com

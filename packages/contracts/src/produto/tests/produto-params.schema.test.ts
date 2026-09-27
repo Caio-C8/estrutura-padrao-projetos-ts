@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { esperaInvalidos, parseValido } from "../contract-assertions";
+import { esperaInvalidos, parseValido } from "../../contract-assertions";
 import { PRODUTO_ID_VALIDO } from "./produto.fixtures";
-import { ProdutoParamsSchema } from "./produto-params.schema";
+import { ProdutoParamsSchema } from "../produto-params.schema";
 
 describe("ProdutoParamsSchema", () => {
   it("aceita um UUID válido", () => {
