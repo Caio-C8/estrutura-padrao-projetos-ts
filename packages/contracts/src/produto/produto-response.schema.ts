@@ -11,7 +11,7 @@ const PrecoProdutoResponseSchema = z
   .regex(/^(?:0|[1-9][0-9]{0,9})\.[0-9]{2}$/, {
     error: "O preço da resposta deve possuir exatamente duas casas decimais.",
   })
-  .refine((preco) => preco !== "0" && preco !== "0.0" && preco !== "0.00", {
+  .refine((preco) => preco !== "0.00", {
     error: "O preço da resposta deve ser maior ou igual a 0.01.",
   });
 
