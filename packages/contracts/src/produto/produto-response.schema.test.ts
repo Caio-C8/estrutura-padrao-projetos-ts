@@ -46,6 +46,8 @@ describe("ProdutoDetalhadoResponseSchema", () => {
     esperaInvalidos(ProdutoDetalhadoResponseSchema, [
       { ...produto, preco: 19.9 },
       { ...produto, preco: "19.9" },
+      { ...produto, preco: "0.00" },
+      { ...produto, urlManual: "ftp://example.com/manual.pdf" },
       { ...produto, quantidadeVendas: "9".repeat(20) },
       { ...produto, quantidadeVendas: 100 },
       { ...produto, createdAt: new Date() },
