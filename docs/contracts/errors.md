@@ -60,22 +60,36 @@ formato estável da aplicação:
 
 ```json
 {
-  "code": "VALIDATION_ERROR",
-  "errors": [
+  "status": 400,
+  "sucesso": false,
+  "codigo": "VALIDACAO_ENTRADA_INVALIDA",
+  "mensagem": "Os dados informados são inválidos.",
+  "erros": [
     {
-      "path": "titulo",
-      "code": "too_small",
-      "message": "Este campo é obrigatório."
+      "campo": "titulo",
+      "codigo": "TOO_SMALL",
+      "mensagem": "Este campo é obrigatório."
     }
-  ]
+  ],
+  "requisicaoId": "019d0123-4567-789a-bcde-f0123456789a"
 }
 ```
 
 Preserve no mínimo:
 
-- `path`: campo ou posição que pode ser corrigida;
-- `code`: categoria estável do erro;
-- `message`: orientação legível.
+- `status`: status HTTP entre 400 e 599;
+- `sucesso`: sempre `false`;
+- `codigo`: categoria pública e estável do erro;
+- `mensagem`: orientação geral legível;
+- `erros[].campo`: campo ou posição que pode ser corrigida;
+- `erros[].codigo`: categoria estável da falha de campo;
+- `erros[].mensagem`: orientação específica para correção;
+- `requisicaoId`: identificador que correlaciona resposta e diagnóstico
+  interno.
+
+Os códigos públicos usam `SNAKE_CASE` maiúsculo. Códigos internos do Zod, como
+`too_small`, precisam ser mapeados para a representação pública acordada; não
+devem ser copiados para a resposta sem conversão explícita.
 
 O formatter pode usar as ferramentas de
 [formatação de erros do Zod](https://zod.dev/error-formatting), mas o contrato
@@ -96,7 +110,7 @@ possível, para o campo em que o usuário consegue corrigir o problema.
 
 ## Frontend
 
-O frontend deve mapear erros por `path` e apresentar uma mensagem próxima ao
+O frontend deve mapear erros por `campo` e apresentar uma mensagem próxima ao
 campo correspondente. Erros sem campo específico podem aparecer em uma área
 geral do formulário.
 

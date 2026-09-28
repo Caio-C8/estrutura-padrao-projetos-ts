@@ -3,6 +3,8 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { AppModule } from "../src/app.module";
 import { DATABASE_CLIENT } from "../src/common/database/database.constants";
+import { RespostaErroSchema } from "@repo/contracts";
+import * as z from "zod";
 
 describe("health endpoint", () => {
   let app: INestApplication;
@@ -42,5 +44,31 @@ describe("health endpoint", () => {
       response.body.environment,
     );
     expect(response.body.timestamp).toEqual(expect.any(String));
+  });
+
+  it("returns the public error contract for an unknown route", async () => {
+    const response = await request(app.getHttpServer()).get(
+      "/api/rota-inexistente",
+    );
+
+    expect(response.status).toBe(404);
+
+    const resultado = RespostaErroSchema.safeParse(response.body);
+
+    expect(resultado.success).toBe(true);
+
+    if (!resultado.success) {
+      throw new Error("A resposta não atende ao contrato público de erro.");
+    }
+
+    expect(resultado.data).toMatchObject({
+      status: 404,
+      sucesso: false,
+      codigo: "RECURSO_NAO_ENCONTRADO",
+      mensagem: "O recurso solicitado não foi encontrado.",
+      erros: [],
+    });
+
+    expect(z.uuid().safeParse(resultado.data.requisicaoId).success).toBe(true);
   });
 });

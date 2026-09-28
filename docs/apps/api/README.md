@@ -34,13 +34,19 @@ No estado atual:
 
 - a API possui apenas o health check;
 - `apps/api/src/modules` ainda não existe;
-- `apps/api` usa Zod 3 e ainda não depende de `nestjs-zod`;
-- `@repo/contracts` ainda não possui os contratos runtime descritos nestes
-  guias;
-- o schema Prisma já possui o primeiro model do projeto, `Produto`;
+- `apps/api` usa Zod 4 e depende de `nestjs-zod` 5;
+- `@repo/contracts` usa Zod 4 e já possui contratos runtime de `Produto` e do
+  sub-recurso `AvaliacaoProduto`;
+- o schema Prisma já possui os models `Produto` e `AvaliacaoProduto`;
 - `@repo/database` ainda não expõe o namespace `Prisma`;
 - a API já possui um `DatabaseModule` que cria, injeta e encerra um único
-  Prisma Client por processo.
+  Prisma Client por processo;
+- `ZodValidationPipe` e `ZodSerializerInterceptor` já estão registrados
+  globalmente no `AppModule`;
+- o filtro responsável por converter exceções para `RespostaErroSchema` está
+  implementado em `src/common/filters` e registrado globalmente no `AppModule`;
+- os caminhos do filtro possuem testes unitários, e o envelope de erro 404 de
+  uma rota inexistente é verificado por teste E2E.
 
 Os exemplos desta documentação representam o padrão desejado, não código já
 implementado.

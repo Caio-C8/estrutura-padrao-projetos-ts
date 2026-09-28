@@ -5,7 +5,8 @@
 O backend deve validar body, query e params nos boundaries antes de chamar a
 camada de aplicação.
 
-A integração prevista é um Pipe personalizado:
+A integração usa classes criadas com `createZodDto` e o `ZodValidationPipe` de
+`nestjs-zod`:
 
 ```text
 HTTP request
@@ -21,33 +22,23 @@ erro 400  output validado
            service
 ```
 
-Exemplo conceitual:
+O Pipe e o Interceptor de serialização já estão registrados globalmente no
+`AppModule`. Os DTOs ainda precisam ser implementados. O filtro que converte
+exceções para `RespostaErroSchema` também está implementado e registrado
+globalmente.
+
+Configuração global:
 
 ```ts
-import {
-  BadRequestException,
-  Injectable,
-  type PipeTransform,
-} from "@nestjs/common";
-import * as z from "zod";
+import { APP_PIPE } from "@nestjs/core";
+import { ZodValidationPipe } from "nestjs-zod";
 
-@Injectable()
-export class ZodValidationPipe<T extends z.ZodType> implements PipeTransform<
-  unknown,
-  z.output<T>
-> {
-  constructor(private readonly schema: T) {}
-
-  transform(value: unknown): z.output<T> {
-    const result = this.schema.safeParse(value);
-
-    if (!result.success) {
-      throw new BadRequestException(formatValidationError(result.error));
-    }
-
-    return result.data;
-  }
-}
+const providers = [
+  {
+    provide: APP_PIPE,
+    useClass: ZodValidationPipe,
+  },
+];
 ```
 
 O código definitivo deve:
@@ -58,10 +49,15 @@ O código definitivo deve:
 - ser testado com controllers reais;
 - não consultar banco durante a validação estrutural.
 
-O `ValidationPipe` nativo do NestJS usa `class-validator` e
-`class-transformer`. O Zod será integrado por Pipe personalizado porque este
-monorepo precisa compartilhar schemas runtime com o frontend. Pipes são o ponto
-oficial do NestJS para validação e transformação antes do route handler.
+Pipes são o ponto oficial do NestJS para validação e transformação antes do
+route handler. O package `nestjs-zod` conecta os schemas compartilhados aos
+metadados runtime exigidos pelo NestJS sem redefinir os contratos na API.
+
+Para validar responses em runtime, use o `ZodSerializerInterceptor` com um DTO
+de response declarado por `@ZodResponse`. Esse interceptor valida e serializa o
+valor retornado, mas não deve inventar nem adicionar o envelope de sucesso. O
+controller continua responsável por retornar exatamente a estrutura definida
+em `@repo/contracts`, depois que o mapper converteu os dados do Prisma.
 
 ## Next.js
 
