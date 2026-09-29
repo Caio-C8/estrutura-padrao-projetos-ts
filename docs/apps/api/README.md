@@ -45,8 +45,15 @@ No estado atual:
   globalmente no `AppModule`;
 - o filtro responsável por converter exceções para `RespostaErroSchema` está
   implementado em `src/common/filters` e registrado globalmente no `AppModule`;
-- os caminhos do filtro possuem testes unitários, e o envelope de erro 404 de
-  uma rota inexistente é verificado por teste E2E.
+- o middleware funcional de `requisicaoId` está implementado em
+  `src/common/middleware` e registrado no `AppModule` para todos os métodos e
+  caminhos;
+- a API gera seu próprio UUID por requisição, ignora `X-Request-Id` enviado pelo
+  cliente, devolve o identificador nesse header e o expõe pela configuração de
+  CORS;
+- os caminhos do filtro e do middleware possuem testes unitários; testes E2E
+  confirmam o header em sucesso, o mesmo identificador no header e no corpo de
+  erro e a rejeição do identificador enviado pelo cliente.
 
 Os exemplos desta documentação representam o padrão desejado, não código já
 implementado.

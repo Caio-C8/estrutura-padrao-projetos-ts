@@ -15,14 +15,11 @@ import {
 import { ZodSerializationException, ZodValidationException } from "nestjs-zod";
 import { randomUUID } from "node:crypto";
 import * as z from "zod";
+import { type RequisicaoComId } from "../middleware/requisicao-id.middleware";
 
 const MAXIMO_ERROS_CAMPO = 100;
 const MAXIMO_CAMPO = 200;
 const MAXIMO_MENSAGEM = 500;
-
-type RequisicaoComId = {
-  requisicaoId?: string;
-};
 
 type ErroHttpGenerico = Pick<RespostaErro, "codigo" | "mensagem">;
 

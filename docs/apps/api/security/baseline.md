@@ -31,7 +31,9 @@ Avalie o registro global de:
 - Pipe de validação;
 - Guard de autenticação padrão;
 - Guard de rate limiting;
-- Interceptor de correlação e observabilidade;
+- Middleware para criar e propagar o contexto inicial de correlação;
+- Interceptor para consumir esse contexto em métricas e tracing, quando
+  necessário;
 - Exception Filter para o contrato público de erros.
 
 Use providers `APP_GUARD`, `APP_INTERCEPTOR`, `APP_FILTER` e `APP_PIPE` quando o

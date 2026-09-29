@@ -18,6 +18,18 @@ ApiError
 O formato definitivo depende do contrato público de erros. Não exponha stack,
 query, path interno, credencial ou mensagem bruta de infraestrutura.
 
+## Identificador da requisição
+
+A API gera um UUID novo para cada requisição e o retorna no header
+`X-Request-Id`. Um valor enviado pelo cliente nesse header é ignorado. Nas
+respostas de erro, o mesmo identificador também aparece em `requisicaoId` no
+corpo validado por `RespostaErroSchema`.
+
+O header está exposto por CORS para que o cliente no navegador possa lê-lo. A
+camada de integração pode preservar esse valor em seu erro normalizado e
+apresentá-lo como referência de suporte, mas não deve usá-lo como credencial,
+identidade, chave de cache ou label de métrica.
+
 ## Categorias para a interface
 
 A integração deve permitir distinguir:

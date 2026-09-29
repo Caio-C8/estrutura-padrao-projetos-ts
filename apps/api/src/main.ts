@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
 import type { EnvironmentVariables } from "./environment";
+import { CABECALHO_REQUISICAO_ID } from "./common/middleware/requisicao-id.middleware";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,7 @@ async function bootstrap() {
   app.enableCors({
     origin: origins,
     credentials: true,
+    exposedHeaders: [CABECALHO_REQUISICAO_ID],
   });
 
   app.enableShutdownHooks();

@@ -19,6 +19,19 @@ middlewares precisam ser configurados antes das rotas que devem atingir.
 
 Consulte [Middleware no NestJS](https://docs.nestjs.com/middleware).
 
+### Estado atual da correlação
+
+O middleware funcional em
+`apps/api/src/common/middleware/requisicao-id.middleware.ts` gera um UUID por
+requisição, armazena-o em `request.requisicaoId` e prepara o header
+`X-Request-Id` da resposta. Ele ignora um identificador enviado pelo cliente e
+está registrado no `AppModule` para todos os métodos e caminhos.
+
+O header está exposto pela configuração de CORS. Testes E2E confirmam sua
+presença em respostas de sucesso e confirmam que o filtro usa o mesmo
+identificador no header e no corpo de erro. O filtro preserva a geração de um
+UUID como fallback defensivo caso receba uma request sem o contexto esperado.
+
 ## Pipes
 
 Pipes validam e transformam argumentos antes do controller. Na estrutura deste

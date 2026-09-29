@@ -1,4 +1,9 @@
-import { Module } from "@nestjs/common";
+import {
+  type MiddlewareConsumer,
+  Module,
+  type NestModule,
+  RequestMethod,
+} from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -7,6 +12,7 @@ import { DatabaseModule } from "./common/database/database.module";
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod";
 import { ApiExceptionFilter } from "./common/filters/api-exception.filter";
+import { requisicaoIdMiddleware } from "./common/middleware/requisicao-id.middleware";
 
 @Module({
   imports: [
@@ -25,4 +31,11 @@ import { ApiExceptionFilter } from "./common/filters/api-exception.filter";
     { provide: APP_FILTER, useClass: ApiExceptionFilter },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(requisicaoIdMiddleware).forRoutes({
+      path: "{*rota}",
+      method: RequestMethod.ALL,
+    });
+  }
+}

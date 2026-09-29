@@ -34,8 +34,14 @@ No estado atual:
 - ainda não existe cliente HTTP central;
 - ainda não existem operações ou hooks de API;
 - não foi escolhida biblioteca de cache remoto como TanStack Query ou SWR;
-- o mecanismo de autenticação, o fluxo CSRF e o formato público de erros
-  continuam pendentes;
+- o formato público de erros está definido por `RespostaErroSchema` e aplicado
+  pelo filtro global da API;
+- o mecanismo de autenticação e o fluxo CSRF continuam pendentes;
+- a API gera um UUID por requisição e o devolve em `X-Request-Id`; ela ignora
+  esse header quando enviado pelo cliente, e a configuração de CORS permite que
+  o navegador leia o header da resposta;
+- respostas de erro também incluem o mesmo valor em `requisicaoId`, conforme o
+  contrato compartilhado;
 - credenciais de autenticação no navegador já possuem o baseline de cookie
   `HttpOnly`, sem Web Storage.
 
@@ -117,11 +123,10 @@ Antes de implementar a primeira integração real, definir:
 
 - native `fetch`, Axios, Ky ou outra implementação do cliente;
 - biblioteca de cache remoto no cliente;
-- formato público de erro;
 - política de timeout e retry;
 - mecanismo de autenticação e transporte de identidade fora do navegador;
 - responsável por emitir o cookie, `credentials`, atributos e fluxo CSRF;
-- propagação de correlation ID;
+- propagação de correlation ID para futuras dependências e serviços externos;
 - regras de cache e revalidação;
 - observabilidade sem vazamento de dados.
 
