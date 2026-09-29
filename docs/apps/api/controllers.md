@@ -6,8 +6,9 @@ O controller é a ponte entre HTTP e o caso de uso. Cada método deve:
 
 1. receber body, query e params já descritos por DTOs;
 2. encaminhar os valores ao service;
-3. passar o retorno pelo mapper;
-4. declarar um tipo de response proveniente de `@repo/contracts`.
+3. passar os dados de domínio retornados pelo service pelo mapper;
+4. montar o envelope de sucesso definido pelo contrato da operação;
+5. declarar e validar uma response proveniente de `@repo/contracts`.
 
 Ele não deve implementar regras de negócio, consultar Prisma, acessar um
 repository, formatar manualmente dados complexos ou usar `try/catch` para
@@ -16,23 +17,48 @@ substituir a política central de erros.
 ## Exemplo
 
 ```ts
+import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import type { RecursoResponse } from "@repo/contracts";
+import { ZodResponse } from "nestjs-zod";
 
 @Controller("recursos")
 export class RecursoController {
   constructor(private readonly recursoService: RecursoService) {}
 
   @Post()
+  @ZodResponse({ status: HttpStatus.CREATED, type: RecursoResponseDto })
   async create(@Body() body: CreateRecursoDto): Promise<RecursoResponse> {
     const recurso = await this.recursoService.create(body);
 
-    return RecursoResponseMapper.toHttp(recurso);
+    return {
+      status: HttpStatus.CREATED,
+      sucesso: true,
+      mensagem: "Recurso criado com sucesso.",
+      dados: RecursoResponseMapper.toHttp(recurso),
+    };
   }
 }
 ```
 
 O exemplo presume que o DTO foi criado como classe por `createZodDto` e que o
-Pipe de validação está ativo.
+Pipe de validação e o `ZodSerializerInterceptor` estão ativos. O DTO de response
+também deve ser derivado do schema compartilhado correspondente.
+
+## Envelope de sucesso
+
+O envelope de sucesso não é criado por um interceptor genérico. O controller
+retorna explicitamente a estrutura definida em `@repo/contracts`, incluindo
+`status`, `sucesso`, `mensagem`, `dados` e, quando aplicável, `meta`.
+
+Essa escolha mantém visíveis as diferenças entre operações: status e mensagem
+podem variar, respostas paginadas possuem `meta` e uma rota `204 No Content`
+não possui corpo. Um interceptor global precisaria inferir ou configurar essas
+diferenças, esconderia parte do contrato no ciclo transversal e aumentaria o
+risco de produzir um envelope diferente do schema declarado.
+
+O `ZodSerializerInterceptor` continua transversal, mas possui outra
+responsabilidade: validar e serializar a resposta final declarada por
+`@ZodResponse`. Ele não adiciona propriedades ao retorno do controller.
 
 ## Decisões de segurança da rota
 
@@ -57,17 +83,21 @@ Quando o service retornar dados e metadados, mapeie apenas os itens:
 const result = await this.recursoService.list(query);
 
 return {
-  data: result.items.map(RecursoResponseMapper.toHttp),
+  status: HttpStatus.OK,
+  sucesso: true,
+  mensagem: "Recursos encontrados com sucesso.",
+  dados: result.items.map(RecursoResponseMapper.toHttp),
   meta: {
     total: result.total,
-    page: result.page,
-    limit: result.limit,
+    pagina: result.page,
+    ultimaPagina: result.lastPage,
+    limite: result.limit,
   },
 };
 ```
 
-O formato exato precisa existir em `@repo/contracts`; não invente `data`,
-`items`, `meta` ou nomes de campos somente no controller.
+O formato exato precisa existir em `@repo/contracts`; não invente `dados`,
+`meta` ou nomes de campos somente no controller.
 
 ## Decorators, Pipes e Guards
 

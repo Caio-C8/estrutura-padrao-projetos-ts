@@ -7,7 +7,7 @@ transformar o fluxo baseado em `Observable`.
 
 Usos apropriados incluem:
 
-- correlação, métricas e tracing;
+- consumo do contexto de correlação em métricas e tracing;
 - timeout;
 - cache quando semanticamente seguro;
 - transformação transversal de response já definida pelo contrato;
@@ -38,3 +38,16 @@ transformação, documente e teste a ordem esperada.
 
 Para componentes globais que usam injeção de dependência, prefira registro por
 `APP_INTERCEPTOR` no módulo correspondente.
+
+## Estado atual da serialização
+
+O `ZodSerializerInterceptor` está registrado globalmente e valida a resposta
+final indicada por `@ZodResponse`. Ele funciona como proteção contra response
+incompatível e exposição acidental de propriedades que o schema não permite.
+
+Não existe um segundo interceptor para criar envelopes de sucesso. Cada
+controller monta explicitamente o envelope previsto pelo contrato da operação;
+o interceptor de serialização recebe essa estrutura pronta e a valida. Um novo
+interceptor só deve ser criado quando surgir uma responsabilidade transversal
+que ainda não esteja atendida, como métricas ou tracing, com ordem e testes
+definidos.
