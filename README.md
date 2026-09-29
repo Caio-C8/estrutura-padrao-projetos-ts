@@ -38,9 +38,17 @@ Qualquer diretório adicionado diretamente em `apps/*` ou `packages/*` é descob
 
 ## Pré-requisitos
 
-- Node.js 24.19.0;
-- pnpm 11.19.0, administrado pelo Corepack;
-- Docker com Docker Compose para PostgreSQL e para execução conteinerizada.
+| Ferramenta                | Versão          | Uso no projeto                                                         | Instalação                                                                                                                         |
+| ------------------------- | --------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Git                       | atual suportada | Clonar o repositório e versionar as alterações                         | [Downloads oficiais](https://git-scm.com/downloads/)                                                                               |
+| NVM                       | atual suportada | Instalar e alternar a versão fixada do Node.js                         | [Windows](https://docs.nvm-windows.com/install/installers/) · [macOS/Linux](https://github.com/nvm-sh/nvm#installing-and-updating) |
+| Node.js                   | 24.19.0         | Executar pnpm, scripts, API e aplicação web localmente                 | Instale pelo NVM ou use o [download oficial da versão 24.19.0](https://nodejs.org/download/release/v24.19.0/)                      |
+| pnpm                      | 11.19.0         | Instalar dependências e executar o monorepo                            | Ativado pelo Corepack incluído no Node.js; consulte a [documentação do pnpm](https://pnpm.io/installation)                         |
+| Docker com Docker Compose | atual suportada | Executar o PostgreSQL e, opcionalmente, toda a aplicação em containers | [Docker Desktop](https://docs.docker.com/desktop/) · [Docker Engine e Compose](https://docs.docker.com/compose/install/)           |
+
+O NVM é recomendado, mas não obrigatório: use o gerenciador correspondente ao seu sistema operacional ou instale diretamente a versão exata do Node.js. No Windows, NVM for Windows e `nvm-sh` são ferramentas diferentes; use NVM for Windows fora do WSL e `nvm-sh` dentro do WSL, macOS ou Linux. Depois de instalar uma ferramenta que altera o `PATH`, feche e reabra o terminal ou o VS Code.
+
+O Docker Desktop já inclui Docker Engine e Docker Compose. Não é necessário instalar PostgreSQL ou Prisma separadamente: o PostgreSQL 17 é iniciado pelo Docker Compose e o Prisma é instalado como dependência do workspace.
 
 As versões são fixadas em `.nvmrc`, `package.json`, Docker e CI. Em uma máquina nova ou depois de trocar a versão do Node, prepare o ambiente com:
 
@@ -51,6 +59,9 @@ corepack enable
 corepack prepare pnpm@11.19.0 --activate
 node --version
 pnpm --version
+docker --version
+docker compose version
+git --version
 ```
 
 No Windows, se `pnpm --version` ainda mostrar uma instalação global antiga, localize todos os executáveis com `where.exe pnpm`, remova a instalação global com `npm uninstall --global pnpm`, reabra o terminal e execute novamente `corepack enable`. Enquanto o `PATH` não for corrigido, use `corepack pnpm <comando>` para garantir a versão declarada pelo projeto.
