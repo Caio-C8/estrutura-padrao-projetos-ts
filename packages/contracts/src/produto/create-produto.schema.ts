@@ -4,6 +4,7 @@ import {
   DataValidadeProdutoSchema,
   DescricaoProdutoSchema,
   DisponivelEmProdutoSchema,
+  EmDestaqueSchema,
   EstoqueProdutoSchema,
   NomeProdutoSchema,
   PesoKgProdutoSchema,
@@ -23,7 +24,7 @@ export const CreateProdutoSchema = z.strictObject({
 
   status: StatusProdutoSchema.default(StatusProduto.RASCUNHO),
 
-  emDestaque: z.boolean().default(true),
+  emDestaque: EmDestaqueSchema.default(true),
 
   estoque: EstoqueProdutoSchema.default(0),
 

@@ -10,6 +10,11 @@ Um erro de validação deve permitir que o consumidor responda:
 
 Mensagens técnicas do Zod não devem chegar diretamente ao usuário final.
 
+Para formulários, o consumidor deve usar `erros[].campo` para posicionar o
+erro, `erros[].codigo` para decisões programáticas e `erros[].mensagem` para o
+texto apresentado. A mensagem pode evoluir sem obrigar o frontend a interpretar
+frases; o código público é a parte estável para lógica.
+
 ## Mensagens globais
 
 Use a configuração global para mensagens genéricas e reutilizáveis:
@@ -39,6 +44,11 @@ Exemplos de categorias globais:
 | string curta  | Deve possuir pelo menos X caracteres. |
 | string longa  | Deve possuir no máximo X caracteres.  |
 | enum inválido | Opção inválida.                       |
+
+A configuração global é apenas um fallback. Quando o schema conhece a
+semântica do campo, prefira uma mensagem específica que explique como corrigir
+o valor. Por exemplo, “Informe o estoque usando um número inteiro” é mais útil
+que “Formato ou tipo de dado inválido”.
 
 ## Mensagens específicas
 
@@ -114,8 +124,19 @@ O frontend deve mapear erros por `campo` e apresentar uma mensagem próxima ao
 campo correspondente. Erros sem campo específico podem aparecer em uma área
 geral do formulário.
 
+Um mesmo campo pode possuir mais de uma issue, por exemplo uma de tipo e outra
+de tamanho. Se a interface exibir somente uma mensagem por campo, preserve a
+primeira recebida em vez de sobrescrevê-la durante a criação do mapa. A API pode
+manter todas as issues no array para consumidores que decidam apresentá-las.
+
 O frontend não deve depender de propriedades internas de `ZodError` recebidas
 pela rede. Ele depende apenas do contrato de erro da aplicação.
+
+Controles HTML frequentemente produzem strings mesmo quando representam
+números ou booleanos. Essa representação pertence ao contrato do formulário e
+deve ser convertida antes da chamada HTTP. O body JSON da API não deve passar a
+coagir qualquer string apenas para acomodar o formulário, pois isso altera e
+torna ambíguo o contrato externo.
 
 ## Logs e dados sensíveis
 

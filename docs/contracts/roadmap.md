@@ -49,8 +49,8 @@ strings formatadas, enums, booleanos, inteiros, decimais, floats, datas, campos
 anuláveis e valores que não atravessam JSON como existem no Prisma.
 
 O package passou a depender de Zod 4 e já possui testes próprios com o runner
-nativo do Node executado por `tsx`. A API ainda usa Zod 3 e deverá ser alinhada
-com Zod 4 antes da integração dos DTOs.
+nativo do Node executado por `tsx`. A API também usa Zod 4 e os DTOs de Produto
+já estão integrados ao `ZodValidationPipe` e ao `ZodSerializerInterceptor`.
 
 **Escopo**
 
@@ -122,7 +122,7 @@ Ficam fora deste objetivo:
 
 ### CONTRACTS-002 — Criar contratos do sub-recurso AvaliacaoProduto
 
-**Status:** em andamento
+**Status:** concluído
 
 **Contexto**
 
@@ -144,7 +144,9 @@ paginação para `common`.
 - a query e o schema de response da listagem usam o singular `Produto`, pois a
   coleção pertence ao produto identificado no path;
 - o type alias da response de listagem também foi alinhado ao singular;
-- lint, typecheck e os 104 testes do package passam;
+- a cobertura de `CONTRACTS-002` permanece implementada; o package possui agora
+  107 testes definidos, cuja reexecução completa está registrada em
+  `CONTRACTS-003`;
 - o filtro `pesquisa` consulta exclusivamente o campo `autorNome`.
 
 **Escopo**
@@ -167,8 +169,9 @@ Ficam fora deste objetivo:
 
 **Consumidores afetados**
 
-- `apps/api`, nas futuras rotas aninhadas de avaliações;
-- `apps/web`, na futura listagem e edição de avaliações.
+- `apps/api`, nas próximas rotas aninhadas de avaliações;
+- `apps/web`, em uma futura listagem e edição de avaliações, deliberadamente
+  adiadas até a conclusão do CRUD da API.
 
 **Critérios de aceite**
 
@@ -209,6 +212,80 @@ Ficam fora deste objetivo:
 - A existência do produto e o pertencimento da avaliação serão regras do
   service, não dos schemas Zod.
 - O filtro `pesquisa` consultará somente `autorNome`.
+
+### CONTRACTS-003 — Tornar mensagens de validação de Produto amigáveis
+
+**Status:** em andamento
+
+**Contexto**
+
+Ao exercitar o `POST /produtos`, erros de tipo sem mensagem específica do
+schema chegaram ao contrato público com o texto padrão em inglês do Zod, como
+`Invalid input: expected number, received string`. O frontend precisa associar
+o erro ao campo e apresentar uma orientação clara, sem expor terminologia da
+biblioteca ao usuário final.
+
+**Escopo**
+
+- definir mensagens específicas para tipos e formatos dos campos de entrada de
+  `Produto`;
+- preservar os códigos públicos estáveis produzidos pelo filtro da API;
+- adicionar testes das mensagens que fazem parte da experiência do formulário;
+- validar o consumidor API afetado;
+- documentar a diferença entre o contrato JSON da API e a representação textual
+  dos controles HTML.
+
+Ficam fora deste objetivo:
+
+- coerção indiscriminada de strings para booleanos ou números no body JSON;
+- tradução automática de todas as mensagens de qualquer domínio;
+- internacionalização dinâmica e seleção de idioma por requisição;
+- alteração do formato público de `RespostaErroSchema`.
+
+**Consumidores afetados**
+
+- `apps/api`, que devolve as mensagens geradas pelos schemas no erro público;
+- `apps/web`, que poderá consumir essas mensagens no futuro, mas não faz parte
+  desta etapa.
+
+**Critérios de aceite**
+
+- [x] nenhum erro coberto de `Produto` expõe a mensagem padrão em inglês do
+      Zod;
+- [x] mensagens indicam como corrigir o campo sem exigir conhecimento de Zod;
+- [x] tipos aceitos pelo body JSON permanecem inalterados;
+- [x] mensagens específicas possuem testes;
+- [x] lint e typecheck de contratos passam;
+- [x] lint, typecheck, testes e build da API passam;
+- [ ] suíte completa de contratos reexecutada após a inclusão dos testes;
+- [x] documentação atualizada.
+
+**Estado atual**
+
+- mensagens específicas foram adicionadas aos fields de `Produto` e ao enum de
+  status;
+- create e update reutilizam o schema amigável de `emDestaque`;
+- três testes específicos cobrem o payload observado na API, tipos inválidos em
+  todos os campos de entrada e a reutilização das mensagens no update;
+- o teste que reduz issues por campo preserva a primeira mensagem em vez de
+  sobrescrevê-la com uma issue posterior;
+- lint e typecheck de `@repo/contracts` passam, mas a suíte completa precisa ser
+  reexecutada porque o processo `tsx` encerrou com `ENOMEM` antes de carregar os
+  testes nesta revisão;
+- lint, typecheck, as 7 suítes com 60 testes e o build da API passam;
+- a integração Web foi deliberadamente adiada; a próxima implementação será o
+  CRUD de `AvaliacaoProduto` na API.
+
+**Decisões**
+
+- mensagens específicas permanecem próximas aos schemas que conhecem a
+  semântica do campo;
+- o frontend usa `campo` para posicionamento, `codigo` para lógica estável e
+  `mensagem` para apresentação;
+- inputs HTML textuais serão convertidos ou validados por um contrato de
+  formulário antes da montagem do payload da API;
+- o body da API não aceitará `"false"`, `"10"` ou `"0.1"` como substitutos de
+  `false`, `10` ou `0.1`.
 
 Ao reutilizar o repositório, adicione aqui somente objetivos necessários ao
 contexto real da nova aplicação. Um objetivo pode representar:

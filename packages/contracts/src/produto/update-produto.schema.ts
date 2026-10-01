@@ -3,6 +3,7 @@ import {
   DataValidadeProdutoSchema,
   DescricaoProdutoSchema,
   DisponivelEmProdutoSchema,
+  EmDestaqueSchema,
   EstoqueProdutoSchema,
   NomeProdutoSchema,
   PesoKgProdutoSchema,
@@ -24,7 +25,7 @@ export const UpdateProdutoSchema = z
 
     status: StatusProdutoSchema.optional(),
 
-    emDestaque: z.boolean().optional(),
+    emDestaque: EmDestaqueSchema.optional(),
 
     estoque: EstoqueProdutoSchema.optional(),
 

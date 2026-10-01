@@ -1,7 +1,9 @@
 import * as z from "zod";
 
 export const SkuProdutoSchema = z
-  .string()
+  .string({
+    error: "Informe um SKU válido.",
+  })
   .trim()
   .min(1, {
     error: "O SKU é obrigatório.",
@@ -12,7 +14,9 @@ export const SkuProdutoSchema = z
   .toUpperCase();
 
 export const NomeProdutoSchema = z
-  .string()
+  .string({
+    error: "Informe um nome válido.",
+  })
   .trim()
   .min(1, {
     error: "O nome é obrigatório.",
@@ -22,7 +26,9 @@ export const NomeProdutoSchema = z
   });
 
 export const DescricaoProdutoSchema = z
-  .string()
+  .string({
+    error: "Informe uma descrição válida.",
+  })
   .trim()
   .min(1, {
     error: "A descrição não pode ser vazia.",
@@ -40,15 +46,23 @@ export const UrlManualProdutoSchema = z
     error: "A URL do manual deve possuir no máximo 2.048 caracteres.",
   });
 
+export const EmDestaqueSchema = z.boolean({
+  error: "Selecione se o produto deve ficar em destaque.",
+});
+
 export const EstoqueProdutoSchema = z
-  .number()
+  .number({
+    error: "Informe um estoque válido usando um número inteiro.",
+  })
   .int({ error: "O estoque deve ser um número inteiro." })
   .min(0, {
     error: "O estoque não pode ser negativo.",
   });
 
 export const PrecoProdutoSchema = z
-  .string()
+  .string({
+    error: "Informe um preço válido com no máximo duas casas decimais.",
+  })
   .trim()
   .regex(/^(?:0|[1-9][0-9]{0,9})(?:\.[0-9]{1,2})?$/, {
     error:
@@ -58,15 +72,19 @@ export const PrecoProdutoSchema = z
     error: "O preço deve ser maior ou igual a 0.01.",
   });
 
-export const PesoKgProdutoSchema = z.number().positive({
-  error: "O peso deve ser maior que zero.",
-});
+export const PesoKgProdutoSchema = z
+  .number({
+    error: "Informe um peso válido usando um número maior que zero.",
+  })
+  .positive({
+    error: "O peso deve ser maior que zero.",
+  });
 
 export const DataValidadeProdutoSchema = z.iso.date({
-  error: "A data de validade deve estar no formato YYYY-MM-DD.",
+  error: "A data de validade deve estar em um formato válido.",
 });
 
 export const DisponivelEmProdutoSchema = z.iso.datetime({
   offset: true,
-  error: "A data de disponibilidade deve estar no formato ISO 8601.",
+  error: "A data de disponibilidade deve estar em um formato válido.",
 });
