@@ -2,15 +2,26 @@
 
 ## Durante a feature
 
-Antes de implementar uma rota, registre uma matriz de acesso:
+Antes de implementar uma rota, registre uma matriz de acesso. A matriz abaixo
+distingue as rotas atuais de Produto das rotas planejadas de avaliação:
 
-| Rota                | Pública | Identidade          | Permissão        | Regra do recurso | Campos sensíveis      | Limite especial |
-| ------------------- | ------- | ------------------- | ---------------- | ---------------- | --------------------- | --------------- |
-| `POST /recursos`    | não     | política do projeto | `recurso:create` | —                | nenhum                | padrão          |
-| `GET /recursos/:id` | não     | política do projeto | `recurso:read`   | escopo permitido | campo interno omitido | padrão          |
+| Rota                                                  | Estado    | Pública | Identidade  | Permissão | Regra do recurso              | Campos sensíveis      | Limite especial |
+| ----------------------------------------------------- | --------- | ------- | ----------- | --------- | ----------------------------- | --------------------- | --------------- |
+| `POST /produtos`                                      | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | body contratual |
+| `GET /produtos`                                       | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | até 50 itens    |
+| `GET /produtos/:id`                                   | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | padrão          |
+| `PATCH /produtos/:id`                                 | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | body contratual |
+| `DELETE /produtos/:id`                                | ativa     | sim     | não exigida | —         | —                             | resposta sem corpo    | padrão          |
+| `POST /produtos/:produtoId/avaliacoes`                | planejada | sim     | não exigida | —         | produto deve existir          | allowlist do contrato | body contratual |
+| `GET /produtos/:produtoId/avaliacoes`                 | planejada | sim     | não exigida | —         | produto deve existir          | allowlist do contrato | até 50 itens    |
+| `GET /produtos/:produtoId/avaliacoes/:avaliacaoId`    | planejada | sim     | não exigida | —         | avaliação pertence ao produto | allowlist do contrato | padrão          |
+| `PATCH /produtos/:produtoId/avaliacoes/:avaliacaoId`  | planejada | sim     | não exigida | —         | avaliação pertence ao produto | allowlist do contrato | body contratual |
+| `DELETE /produtos/:produtoId/avaliacoes/:avaliacaoId` | planejada | sim     | não exigida | —         | avaliação pertence ao produto | resposta sem corpo    | padrão          |
 
-Substitua os exemplos pelas decisões reais. Uma coluna sem decisão deve ser
-tratada como pendência, não como autorização implícita.
+A exposição sem autenticação foi escolhida apenas para o exemplo didático de
+`Produto` e `AvaliacaoProduto`. Ela não define o baseline de um domínio real.
+Uma coluna sem decisão deve ser tratada como pendência, não como autorização
+implícita.
 
 ## Testes mínimos por controle
 

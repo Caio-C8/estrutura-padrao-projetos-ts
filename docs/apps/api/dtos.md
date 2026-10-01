@@ -47,6 +47,27 @@ Depois do Pipe, o service deve trabalhar preferencialmente com o output
 confiável. Se input e output divergirem por transform, preprocess, default ou
 codec, não os trate como equivalentes nem use cast para esconder a diferença.
 
+O dado bruto recebido pelo boundary corresponde a `z.input`. O
+`ZodValidationPipe` executa o schema e entrega ao controller o `z.output`.
+Portanto, o service recebe o tipo `Data`, não o tipo `Input`:
+
+```text
+request HTTP (z.input)
+        ↓ ZodValidationPipe
+controller (z.output)
+        ↓
+service (z.output)
+```
+
+No domínio `Produto`, essa diferença é observável mesmo quando vários campos
+continuam sendo strings: `sku` é normalizado, defaults tornam `status`,
+`emDestaque` e `estoque` obrigatórios no output, e query params como `pagina`,
+`limite` e `emDestaque` são transformados de strings HTTP em números ou boolean.
+
+Tipos TypeScript não executam validação. Ao chamar o service diretamente em um
+teste ou fluxo interno, o chamador deve fornecer dados já validados e
+normalizados ou passar explicitamente pelo schema antes da chamada.
+
 ## Body, query e params
 
 Crie DTOs separados quando os boundaries forem diferentes:

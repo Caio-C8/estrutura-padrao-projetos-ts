@@ -51,8 +51,47 @@ marcada como concluída depois das verificações correspondentes.
 - [x] query de avaliações definida para a coleção aninhada de um produto;
 - [x] nomenclatura da response de listagem alinhada ao singular;
 - [x] filtro `pesquisa` definido exclusivamente sobre `autorNome`;
-- [ ] CRUD da API implementado;
-- [ ] página Web implementada.
+- [x] namespace `Prisma` e tipos dos models didáticos exportados por
+      `@repo/database`;
+- [x] payloads Prisma resumido e detalhado de `Produto` definidos na API;
+- [x] repository de `Produto` implementado com seleções explícitas e listagem
+      paginada;
+- [x] service de `Produto` implementado com paginação e tradução dos erros de
+      persistência conhecidos;
+- [x] mappers de persistência e response de `Produto` implementados;
+- [x] testes unitários dos mappers de persistência e response de `Produto`
+      implementados;
+- [x] testes unitários do service de `Produto` implementados;
+- [x] DTOs de entrada e response de `Produto` implementados;
+- [x] controller de `Produto` implementado com `@ZodSerializerDto`, envelopes
+      explícitos e exclusão sem corpo;
+- [x] testes unitários do controller de `Produto` implementados;
+- [x] `ProdutoModule` criado e registrado na aplicação;
+- [x] mensagens amigáveis de validação implementadas, reutilizadas no create e
+      update e cobertas por testes específicos;
+- [x] CRUD da API implementado;
+- [ ] testes E2E específicos das rotas de Produto implementados;
+- [ ] CRUD aninhado de `AvaliacaoProduto` implementado na API;
+- [ ] página Web implementada, deliberadamente adiada até a conclusão do CRUD
+      de `AvaliacaoProduto`.
+
+## Decisões do primeiro CRUD da API
+
+- as rotas de `Produto` e `AvaliacaoProduto` serão públicas neste exemplo
+  didático, sem autenticação ou autorização;
+- enquanto não existir um Guard global de autenticação, não será criado um
+  decorator `@Public()` sem comportamento real;
+- uma exclusão concluída responderá `204 No Content`, sem envelope e sem corpo;
+- após o `204`, a interface pode apresentar uma mensagem própria da operação,
+  como "Produto excluído com sucesso";
+- erros de exclusão continuam usando o contrato público de erro da API;
+- se futuramente a mensagem precisar vir da API, a operação deverá mudar
+  explicitamente para `200 OK` e ganhar um contrato de response no qual `dados`
+  seja `null`; esse não é o contrato atual.
+
+Essas escolhas valem somente para o domínio didático. Um domínio real deve
+reavaliar autenticação, autorização e política de exclusão antes de expor suas
+rotas.
 
 ## Convenções de persistência
 
@@ -66,6 +105,20 @@ O model desejado cobre `String`, `Boolean`, `Int`, `Decimal`, `Float`, `BigInt`,
 `DateTime`, enum, campos anuláveis e uma relação 1:N. Listas escalares, `Json` e
 `Bytes` deixam de ser requisitos desta etapa; devem ser adicionados somente
 quando um domínio real precisar deles.
+
+A listagem inicial de produtos pesquisa, com comparação case-insensitive, nos
+campos `sku`, `nome` e `descricao`. Os resultados são ordenados por `createdAt`
+decrescente e usam `id` decrescente como desempate determinístico. O limite
+máximo continua sendo 50 itens por página.
+
+Os mappers possuem testes unitários para criação, atualização, filtros de
+listagem, propriedades opcionais e anuláveis, além das conversões de `Decimal`,
+`BigInt`, `DATE` e `DateTime`. As respostas produzidas também são validadas
+pelos schemas compartilhados. Após essa etapa, lint, typecheck e as 5 suítes com
+44 testes da API passam. O service também possui testes unitários para criação,
+listagem paginada, busca, atualização, exclusão e tradução dos erros Prisma
+`P2002` e `P2025`; com essa cobertura, lint, typecheck e as 6 suítes com 55
+testes da API passam.
 
 ## Representações entre camadas
 
@@ -213,6 +266,7 @@ produto/
 │   ├── list-produtos-query.schema.test.ts
 │   ├── produto-params.schema.test.ts
 │   ├── produto-response.schema.test.ts
+│   ├── produto-validation-messages.schema.test.ts
 │   ├── avaliacao-produto-fields.schema.test.ts
 │   ├── avaliacao-produto-params.schema.test.ts
 │   ├── create-avaliacao-produto.schema.test.ts
@@ -225,8 +279,19 @@ produto/
 Os arquivos de avaliação possuem testes próprios e foram adicionados ao barrel
 da feature. A paginação compartilhada foi criada em
 `src/common/paginacao-query.schema.ts`, possui cobertura própria e é exportada
-pelo barrel de `common`. O teste da API pública inclui os novos exports. Lint,
-typecheck e os 104 testes do package passam.
+pelo barrel de `common`. O teste da API pública inclui os novos exports.
+
+O package possui agora 107 testes definidos. Três deles exercitam as mensagens
+de validação de Produto com o payload observado na API, valores de tipo inválido
+para todos os campos de entrada e a reutilização das mensagens no update. O
+helper do teste preserva a primeira issue de cada campo, reproduzindo a política
+recomendada para formulários que exibem uma mensagem por input.
+
+Nesta revisão, lint e typecheck de `@repo/contracts` passam. A execução da suíte
+completa não chegou a carregar os testes porque o processo `tsx` encerrou com
+`ENOMEM` no ambiente local; portanto, essa execução ainda precisa ser repetida
+com memória disponível. Na API, lint, typecheck, as 7 suítes com 60 testes e o
+build passam.
 
 Os contratos previstos são:
 
@@ -257,9 +322,47 @@ As decisões aplicadas atualmente são:
 - `disponivelEm` aceita UTC ou offset no input e exige UTC com milissegundos na
   response.
 
+Os campos de entrada de Produto e o enum de status possuem mensagens amigáveis
+em português para erros de tipo e formato. Create e update reutilizam os mesmos
+schemas semânticos, inclusive para `emDestaque`. Essa mudança altera somente o
+texto público do erro: números e booleanos no body JSON continuam exigindo seus
+tipos JSON reais, sem coerção de strings como `"10"` ou `"false"`.
+
 ### Revisões pendentes de AvaliacaoProduto
 
 - confirmar se os campos da response resumida atendem à futura listagem.
+
+## Próxima etapa: CRUD de AvaliacaoProduto na API
+
+Os contratos compartilhados e o model Prisma já existem. A próxima etapa não
+deve alterar a semântica desses contratos sem uma necessidade encontrada na
+implementação. O trabalho seguirá a mesma separação usada no CRUD de Produto:
+
+1. definir os payloads Prisma e seleções resumida e detalhada da avaliação;
+2. implementar os mappers de persistência e response, com testes unitários;
+3. implementar o repository com paginação, filtros e consultas sempre
+   restringidas por `produtoId`;
+4. implementar o service, incluindo existência do produto, pertencimento da
+   avaliação e tradução dos erros conhecidos de persistência;
+5. criar os DTOs a partir dos schemas já exportados por `@repo/contracts`;
+6. implementar o controller com as rotas aninhadas e responses declaradas;
+7. registrar controller e providers no `ProdutoModule`;
+8. adicionar testes unitários e E2E proporcionais ao comportamento das rotas.
+
+As rotas planejadas continuam públicas somente para este exemplo didático:
+
+```text
+POST   /api/produtos/:produtoId/avaliacoes
+GET    /api/produtos/:produtoId/avaliacoes
+GET    /api/produtos/:produtoId/avaliacoes/:avaliacaoId
+PATCH  /api/produtos/:produtoId/avaliacoes/:avaliacaoId
+DELETE /api/produtos/:produtoId/avaliacoes/:avaliacaoId
+```
+
+Operações de item não podem consultar apenas `avaliacaoId`: devem também
+restringir por `produtoId` ou verificar explicitamente o pertencimento. A
+exclusão seguirá a decisão do CRUD de Produto e responderá `204 No Content`, sem
+corpo. A página Web fica fora desta etapa.
 
 ## Alcance das validações
 

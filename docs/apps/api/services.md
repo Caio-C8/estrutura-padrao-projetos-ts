@@ -72,6 +72,27 @@ export type PaginatedResult<T> = {
 O service não deve produzir a representação HTTP final. O controller passa os
 models ou payloads pelo mapper correspondente.
 
+## Orquestração versus transformação mecânica
+
+O tamanho da classe, isoladamente, não determina se uma função deve sair do
+service. Preserve no service o que expressa o caso de uso:
+
+- ordem e composição das operações;
+- decisões dependentes de estado, permissão ou banco;
+- significado de ausência, conflito e demais falhas do domínio;
+- cálculo e composição do resultado do caso de uso.
+
+Conversões puras entre representações podem ficar em um mapper direcional do
+próprio domínio. Por exemplo, um `ProdutoPersistenceMapper` pode converter
+`CreateProdutoData` e `UpdateProdutoData` em inputs Prisma, ou transformar uma
+query validada em `Prisma.ProdutoWhereInput`. Esse mapper não consulta o banco,
+não injeta dependências, não lança exceptions e não decide o fluxo do caso de
+uso.
+
+Não extraia cada função privada somente para reduzir a quantidade de linhas. A
+extração deve produzir uma responsabilidade nomeável e testável, sem esconder a
+regra que o service precisa orquestrar.
+
 ## Limites
 
 Não acesse diretamente `Request`, `Response` ou decorators HTTP no service.

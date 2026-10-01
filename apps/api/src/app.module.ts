@@ -8,11 +8,11 @@ import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { validateEnvironment } from "./environment";
-import { DatabaseModule } from "./common/database/database.module";
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod";
 import { ApiExceptionFilter } from "./common/filters/api-exception.filter";
 import { requisicaoIdMiddleware } from "./common/middleware/requisicao-id.middleware";
+import { ProdutoModule } from "./modules/produto/produto.module";
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { requisicaoIdMiddleware } from "./common/middleware/requisicao-id.middle
       isGlobal: true,
       validate: validateEnvironment,
     }),
-    DatabaseModule,
+    ProdutoModule,
   ],
   controllers: [AppController],
   providers: [

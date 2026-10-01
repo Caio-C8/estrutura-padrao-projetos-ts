@@ -42,8 +42,14 @@ Para componentes globais que usam injeção de dependência, prefira registro po
 ## Estado atual da serialização
 
 O `ZodSerializerInterceptor` está registrado globalmente e valida a resposta
-final indicada por `@ZodResponse`. Ele funciona como proteção contra response
-incompatível e exposição acidental de propriedades que o schema não permite.
+final indicada por `@ZodSerializerDto`. Ele funciona como proteção contra
+response incompatível e exposição acidental de propriedades que o schema não
+permite.
+
+O baseline atual não possui `@nestjs/swagger`. No `nestjs-zod` 5.5,
+`@ZodResponse` depende desse package em runtime porque também registra a
+response OpenAPI. Enquanto Swagger não for uma capacidade adotada pelo projeto,
+o controller combina `@ZodSerializerDto` e `@HttpCode`.
 
 Não existe um segundo interceptor para criar envelopes de sucesso. Cada
 controller monta explicitamente o envelope previsto pelo contrato da operação;

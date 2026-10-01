@@ -31,14 +31,24 @@ export type RecursoCompleto = Prisma.RecursoGetPayload<
 O repository deve reutilizar `recursoCompletoArgs`. Isso evita que o tipo diga
 que uma relação existe enquanto a query deixa de carregá-la.
 
-Esse exemplo pressupõe que `@repo/database` exporte o namespace `Prisma`, o que
-ainda precisa ser implementado na base atual.
+O namespace `Prisma` e os tipos dos models didáticos já são exportados por
+`@repo/database`. A API não precisa importar diretamente de `@prisma/client`.
 
 ## Responsabilidade do mapper
 
 Um mapper converte um model ou payload Prisma para um tipo de resposta definido
 em `@repo/contracts`. Ele deve ser puro: não consulta o banco, não injeta
 dependências, não aplica regra de negócio e não lança exceções de domínio.
+
+Também é permitido criar um mapper direcional de persistência quando o caso de
+uso precisar converter outputs validados dos contratos em inputs Prisma. Use um
+nome que revele a direção, como `ProdutoPersistenceMapper`, e não misture essa
+responsabilidade com o `ProdutoResponseMapper`.
+
+Uma função auxiliar usada somente por esse mapper, como a conversão de uma data
+de calendário `YYYY-MM-DD` para o `Date` esperado pela persistência, permanece
+privada no mesmo arquivo. Ela não se torna um utilitário compartilhado apenas
+por ser uma função pura.
 
 Padrão inicial:
 

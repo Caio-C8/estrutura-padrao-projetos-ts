@@ -52,6 +52,8 @@ infraestrutura, nem revele detalhes internos.
 
 - Trate somente `response.ok` como sucesso, salvo contrato explícito.
 - Respostas `204` ou sem corpo não devem tentar fazer parse JSON.
+- Após um `204`, a interface pode exibir uma confirmação definida pela própria
+  operação; não espere uma mensagem no corpo da resposta.
 - Valide JSON com schema de response quando disponível.
 - Falha de parse ou schema é erro de integração, não dado vazio.
 - Preserve status e correlation ID permitidos.

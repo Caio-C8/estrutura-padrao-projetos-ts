@@ -12,5 +12,6 @@ export function createDatabaseClient(
   return new PrismaClient({ adapter });
 }
 
-export { PrismaClient } from "@prisma/client";
+export { Prisma, PrismaClient } from "@prisma/client";
+export type { AvaliacaoProduto, Produto } from "@prisma/client";
 export type DatabaseClient = ReturnType<typeof createDatabaseClient>;

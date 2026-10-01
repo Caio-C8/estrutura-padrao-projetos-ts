@@ -15,6 +15,12 @@ Uma função não deve ir para `packages/utils` apenas porque pode ser reutiliza
 no futuro. Mova-a quando houver um consumidor real em outro app ou quando a
 responsabilidade compartilhada estiver claramente definida.
 
+Conversões ligadas a uma representação de persistência não devem ser promovidas
+automaticamente para `packages/utils`. Converter uma data de calendário em
+`Date`, por exemplo, exige uma política explícita de timezone e pode existir
+somente para adaptar um contrato HTTP a um campo Prisma. Enquanto houver apenas
+esse consumidor, mantenha a função privada no mapper ou helper do domínio.
+
 ## Critérios para `packages/utils`
 
 Uma função compartilhada deve:
