@@ -23,9 +23,9 @@ export const ListAvaliacoesProdutoQuerySchema = PaginacaoQuerySchema.extend({
   recomenda: RecomendaQuerySchema.optional(),
 });
 
-export type ListAvaliacoesProdutoInput = z.input<
+export type ListAvaliacoesProdutoQueryInput = z.input<
   typeof ListAvaliacoesProdutoQuerySchema
 >;
-export type ListAvaliacoesProdutoData = z.output<
+export type ListAvaliacoesProdutoQueryData = z.output<
   typeof ListAvaliacoesProdutoQuerySchema
 >;

@@ -3,6 +3,7 @@ import {
   AutorNomeAvaliacaoProdutoSchema,
   ComentarioAvaliacaoProdutoSchema,
   NotaAvaliacaoProdutoSchema,
+  RecomendaAvaliacaoProdutoSchema,
 } from "./avaliacao-produto-fields.schema";
 
 export const UpdateAvaliacaoProdutoSchema = z
@@ -13,7 +14,7 @@ export const UpdateAvaliacaoProdutoSchema = z
 
     comentario: ComentarioAvaliacaoProdutoSchema.nullable().optional(),
 
-    recomenda: z.boolean().optional(),
+    recomenda: RecomendaAvaliacaoProdutoSchema.optional(),
   })
   .refine(
     (avaliacao) =>

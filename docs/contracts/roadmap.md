@@ -148,6 +148,8 @@ paginação para `common`.
   107 testes definidos, cuja reexecução completa está registrada em
   `CONTRACTS-003`;
 - o filtro `pesquisa` consulta exclusivamente o campo `autorNome`.
+- a API passou a consumir esses contratos nos DTOs e nas responses das cinco
+  rotas aninhadas de avaliação, sem alterar a semântica definida neste objetivo.
 
 **Escopo**
 
@@ -169,7 +171,7 @@ Ficam fora deste objetivo:
 
 **Consumidores afetados**
 
-- `apps/api`, nas próximas rotas aninhadas de avaliações;
+- `apps/api`, nas rotas aninhadas de avaliações agora implementadas;
 - `apps/web`, em uma futura listagem e edição de avaliações, deliberadamente
   adiadas até a conclusão do CRUD da API.
 
@@ -272,9 +274,10 @@ Ficam fora deste objetivo:
 - lint e typecheck de `@repo/contracts` passam, mas a suíte completa precisa ser
   reexecutada porque o processo `tsx` encerrou com `ENOMEM` antes de carregar os
   testes nesta revisão;
-- lint, typecheck, as 7 suítes com 60 testes e o build da API passam;
-- a integração Web foi deliberadamente adiada; a próxima implementação será o
-  CRUD de `AvaliacaoProduto` na API.
+- lint, typecheck, as 11 suítes com 97 testes e o build da API passam, incluindo
+  os testes unitários do CRUD de `AvaliacaoProduto`;
+- a integração Web continua deliberadamente adiada; o CRUD de
+  `AvaliacaoProduto` já está implementado na API.
 
 **Decisões**
 

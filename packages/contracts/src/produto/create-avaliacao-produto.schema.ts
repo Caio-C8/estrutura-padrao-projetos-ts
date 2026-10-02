@@ -3,6 +3,7 @@ import {
   AutorNomeAvaliacaoProdutoSchema,
   ComentarioAvaliacaoProdutoSchema,
   NotaAvaliacaoProdutoSchema,
+  RecomendaAvaliacaoProdutoSchema,
 } from "./avaliacao-produto-fields.schema";
 
 export const CreateAvaliacaoProdutoSchema = z.strictObject({
@@ -12,7 +13,7 @@ export const CreateAvaliacaoProdutoSchema = z.strictObject({
 
   comentario: ComentarioAvaliacaoProdutoSchema.optional(),
 
-  recomenda: z.boolean().default(true),
+  recomenda: RecomendaAvaliacaoProdutoSchema.default(true),
 });
 
 export type CreateAvaliacaoProdutoInput = z.input<
