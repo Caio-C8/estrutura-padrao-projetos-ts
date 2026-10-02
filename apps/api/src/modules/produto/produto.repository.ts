@@ -56,6 +56,15 @@ export class ProdutoRepository {
     });
   }
 
+  async existsById(id: string): Promise<boolean> {
+    const produto = await this.database.produto.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    return produto !== null;
+  }
+
   updateById(
     id: string,
     data: Prisma.ProdutoUpdateInput,

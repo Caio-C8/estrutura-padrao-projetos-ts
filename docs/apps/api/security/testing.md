@@ -3,20 +3,20 @@
 ## Durante a feature
 
 Antes de implementar uma rota, registre uma matriz de acesso. A matriz abaixo
-distingue as rotas atuais de Produto das rotas planejadas de avaliação:
+descreve as rotas atuais de Produto e Avaliação:
 
-| Rota                                                  | Estado    | Pública | Identidade  | Permissão | Regra do recurso              | Campos sensíveis      | Limite especial |
-| ----------------------------------------------------- | --------- | ------- | ----------- | --------- | ----------------------------- | --------------------- | --------------- |
-| `POST /produtos`                                      | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | body contratual |
-| `GET /produtos`                                       | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | até 50 itens    |
-| `GET /produtos/:id`                                   | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | padrão          |
-| `PATCH /produtos/:id`                                 | ativa     | sim     | não exigida | —         | —                             | allowlist do contrato | body contratual |
-| `DELETE /produtos/:id`                                | ativa     | sim     | não exigida | —         | —                             | resposta sem corpo    | padrão          |
-| `POST /produtos/:produtoId/avaliacoes`                | planejada | sim     | não exigida | —         | produto deve existir          | allowlist do contrato | body contratual |
-| `GET /produtos/:produtoId/avaliacoes`                 | planejada | sim     | não exigida | —         | produto deve existir          | allowlist do contrato | até 50 itens    |
-| `GET /produtos/:produtoId/avaliacoes/:avaliacaoId`    | planejada | sim     | não exigida | —         | avaliação pertence ao produto | allowlist do contrato | padrão          |
-| `PATCH /produtos/:produtoId/avaliacoes/:avaliacaoId`  | planejada | sim     | não exigida | —         | avaliação pertence ao produto | allowlist do contrato | body contratual |
-| `DELETE /produtos/:produtoId/avaliacoes/:avaliacaoId` | planejada | sim     | não exigida | —         | avaliação pertence ao produto | resposta sem corpo    | padrão          |
+| Rota                                                  | Estado | Pública | Identidade  | Permissão | Regra do recurso              | Campos sensíveis      | Limite especial |
+| ----------------------------------------------------- | ------ | ------- | ----------- | --------- | ----------------------------- | --------------------- | --------------- |
+| `POST /produtos`                                      | ativa  | sim     | não exigida | —         | —                             | allowlist do contrato | body contratual |
+| `GET /produtos`                                       | ativa  | sim     | não exigida | —         | —                             | allowlist do contrato | até 50 itens    |
+| `GET /produtos/:id`                                   | ativa  | sim     | não exigida | —         | —                             | allowlist do contrato | padrão          |
+| `PATCH /produtos/:id`                                 | ativa  | sim     | não exigida | —         | —                             | allowlist do contrato | body contratual |
+| `DELETE /produtos/:id`                                | ativa  | sim     | não exigida | —         | —                             | resposta sem corpo    | padrão          |
+| `POST /produtos/:produtoId/avaliacoes`                | ativa  | sim     | não exigida | —         | produto deve existir          | allowlist do contrato | body contratual |
+| `GET /produtos/:produtoId/avaliacoes`                 | ativa  | sim     | não exigida | —         | produto deve existir          | allowlist do contrato | até 50 itens    |
+| `GET /produtos/:produtoId/avaliacoes/:avaliacaoId`    | ativa  | sim     | não exigida | —         | avaliação pertence ao produto | allowlist do contrato | padrão          |
+| `PATCH /produtos/:produtoId/avaliacoes/:avaliacaoId`  | ativa  | sim     | não exigida | —         | avaliação pertence ao produto | allowlist do contrato | body contratual |
+| `DELETE /produtos/:produtoId/avaliacoes/:avaliacaoId` | ativa  | sim     | não exigida | —         | avaliação pertence ao produto | resposta sem corpo    | padrão          |
 
 A exposição sem autenticação foi escolhida apenas para o exemplo didático de
 `Produto` e `AvaliacaoProduto`. Ela não define o baseline de um domínio real.

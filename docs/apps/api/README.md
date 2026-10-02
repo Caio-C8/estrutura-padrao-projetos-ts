@@ -32,13 +32,18 @@ a resposta e a observabilidade; não são revisões executadas somente ao final.
 
 No estado atual:
 
-- a API expõe o health check e o CRUD de Produto sob o prefixo global `/api`;
+- a API expõe o health check, o CRUD de Produto e o CRUD aninhado de
+  `AvaliacaoProduto` sob o prefixo global `/api`;
 - `apps/api/src/modules/produto` possui module, controller, service, repository,
   tipos Prisma, mappers, DTOs de entrada e response e testes unitários das
   camadas com comportamento próprio;
 - o `ProdutoModule` está registrado no `AppModule`, importa o `DatabaseModule`
   e disponibiliza as rotas `POST /produtos`, `GET /produtos`,
   `GET /produtos/:id`, `PATCH /produtos/:id` e `DELETE /produtos/:id`;
+- o mesmo módulo registra controller, service e repository de
+  `AvaliacaoProduto` e disponibiliza `POST` e `GET` na coleção
+  `/produtos/:produtoId/avaliacoes`, além de `GET`, `PATCH` e `DELETE` no item
+  `/produtos/:produtoId/avaliacoes/:avaliacaoId`;
 - `apps/api` usa Zod 4 e depende de `nestjs-zod` 5;
 - `@repo/contracts` usa Zod 4 e já possui contratos runtime de `Produto` e do
   sub-recurso `AvaliacaoProduto`;
@@ -63,21 +68,26 @@ No estado atual:
 - os mappers de persistência e response de `Produto` possuem testes unitários
   que cobrem campos opcionais e anuláveis, filtros, conversões de tipos do
   Prisma e validação das respostas pelos contratos compartilhados;
+- os mappers de `AvaliacaoProduto` também possuem testes unitários para criação,
+  atualização, filtros, preservação de `false` e `null`, datas UTC e validação
+  das responses pelos contratos compartilhados;
 - o `ProdutoService` possui testes isolados de orquestração, paginação e
   tradução dos erros Prisma `P2002` e `P2025`;
+- o `AvaliacaoProdutoService` verifica a existência do produto, mantém as
+  operações de item restritas por `produtoId` e `avaliacaoId`, pagina a
+  coleção e traduz `P2003` e `P2025` para erros de domínio conhecidos;
 - o controller usa `@ZodSerializerDto`, envelopes explícitos nas respostas com
   corpo e `204 No Content` na exclusão;
 - as mensagens amigáveis dos contratos de Produto já chegam ao filtro sem
   alterar os tipos aceitos pelo body JSON;
-- lint, typecheck, as 7 suítes com 60 testes e o build da API passam;
-- `AvaliacaoProduto` já possui model Prisma e contratos compartilhados, mas
-  ainda não possui tipos, mappers, repository, service, DTOs ou controller na
-  API;
-- a próxima etapa é implementar o CRUD aninhado de `AvaliacaoProduto` dentro do
-  `ProdutoModule`; a integração Web foi adiada para depois desse CRUD;
-- testes E2E específicos das rotas de Produto permanecem como pendência e não
-  devem ser confundidos com os testes unitários já aprovados;
-- o `DatabaseModule` é importado pelo `ProdutoModule`; o `AppModule` registra apenas o módulo de domínio, evitando uma dependência redundante de infraestrutura.
+- lint, typecheck, as 11 suítes com 97 testes e o build da API passam;
+- o CRUD aninhado de `AvaliacaoProduto` possui testes unitários de controller,
+  service e mappers; testes de repository com banco controlado e testes E2E
+  específicos das rotas de Produto e Avaliação permanecem pendentes;
+- a integração Web continua deliberadamente adiada;
+- o `DatabaseModule` é importado pelo `ProdutoModule`; o `AppModule` registra
+  apenas o módulo de domínio, evitando uma dependência redundante de
+  infraestrutura.
 
 Os exemplos desta documentação representam o padrão desejado, não código já
 implementado.

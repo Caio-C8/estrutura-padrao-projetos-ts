@@ -69,11 +69,13 @@ marcada como concluída depois das verificações correspondentes.
 - [x] `ProdutoModule` criado e registrado na aplicação;
 - [x] mensagens amigáveis de validação implementadas, reutilizadas no create e
       update e cobertas por testes específicos;
-- [x] CRUD da API implementado;
+- [x] CRUD de Produto implementado na API;
 - [ ] testes E2E específicos das rotas de Produto implementados;
-- [ ] CRUD aninhado de `AvaliacaoProduto` implementado na API;
-- [ ] página Web implementada, deliberadamente adiada até a conclusão do CRUD
-      de `AvaliacaoProduto`.
+- [x] CRUD aninhado de `AvaliacaoProduto` implementado na API;
+- [x] testes unitários de controller, service e mappers de `AvaliacaoProduto`
+      implementados;
+- [ ] testes E2E específicos das rotas de `AvaliacaoProduto` implementados;
+- [ ] página Web implementada, deliberadamente adiada.
 
 ## Decisões do primeiro CRUD da API
 
@@ -114,11 +116,10 @@ máximo continua sendo 50 itens por página.
 Os mappers possuem testes unitários para criação, atualização, filtros de
 listagem, propriedades opcionais e anuláveis, além das conversões de `Decimal`,
 `BigInt`, `DATE` e `DateTime`. As respostas produzidas também são validadas
-pelos schemas compartilhados. Após essa etapa, lint, typecheck e as 5 suítes com
-44 testes da API passam. O service também possui testes unitários para criação,
-listagem paginada, busca, atualização, exclusão e tradução dos erros Prisma
-`P2002` e `P2025`; com essa cobertura, lint, typecheck e as 6 suítes com 55
-testes da API passam.
+pelos schemas compartilhados. Os services possuem testes unitários para
+criação, listagem paginada, busca, atualização, exclusão e tradução dos erros
+Prisma conhecidos. No estado atual, lint, typecheck, as 11 suítes com 97 testes
+e o build da API passam.
 
 ## Representações entre camadas
 
@@ -221,7 +222,7 @@ Como a coleção pertence ao produto identificado no path, a query e o schema de
 response da listagem usam `Produto` no singular. O filtro `pesquisa` consulta
 exclusivamente o campo `autorNome`.
 
-Rotas conceituais:
+Rotas implementadas:
 
 ```text
 GET    /produtos/:produtoId/avaliacoes
@@ -289,9 +290,9 @@ recomendada para formulários que exibem uma mensagem por input.
 
 Nesta revisão, lint e typecheck de `@repo/contracts` passam. A execução da suíte
 completa não chegou a carregar os testes porque o processo `tsx` encerrou com
-`ENOMEM` no ambiente local; portanto, essa execução ainda precisa ser repetida
-com memória disponível. Na API, lint, typecheck, as 7 suítes com 60 testes e o
-build passam.
+`uv_os_get_passwd returned ENOMEM` no ambiente local; portanto, essa execução
+ainda precisa ser repetida com memória disponível. Na API, lint, typecheck, as
+11 suítes com 97 testes e o build passam.
 
 Os contratos previstos são:
 
@@ -330,26 +331,29 @@ tipos JSON reais, sem coerção de strings como `"10"` ou `"false"`.
 
 ### Revisões pendentes de AvaliacaoProduto
 
-- confirmar se os campos da response resumida atendem à futura listagem.
+- adicionar testes do repository contra um banco de teste controlado;
+- adicionar testes E2E das rotas aninhadas e de seus boundaries HTTP.
 
-## Próxima etapa: CRUD de AvaliacaoProduto na API
+## CRUD de AvaliacaoProduto na API
 
-Os contratos compartilhados e o model Prisma já existem. A próxima etapa não
-deve alterar a semântica desses contratos sem uma necessidade encontrada na
-implementação. O trabalho seguirá a mesma separação usada no CRUD de Produto:
+Os contratos compartilhados, o model Prisma e o CRUD aninhado estão
+implementados. A feature permanece dentro do `ProdutoModule` e segue a mesma
+separação usada no CRUD de Produto:
 
-1. definir os payloads Prisma e seleções resumida e detalhada da avaliação;
-2. implementar os mappers de persistência e response, com testes unitários;
-3. implementar o repository com paginação, filtros e consultas sempre
-   restringidas por `produtoId`;
-4. implementar o service, incluindo existência do produto, pertencimento da
-   avaliação e tradução dos erros conhecidos de persistência;
-5. criar os DTOs a partir dos schemas já exportados por `@repo/contracts`;
-6. implementar o controller com as rotas aninhadas e responses declaradas;
-7. registrar controller e providers no `ProdutoModule`;
-8. adicionar testes unitários e E2E proporcionais ao comportamento das rotas.
+1. payloads Prisma usam seleções resumida e detalhada como allowlist;
+2. mappers de persistência e response convertem contratos, filtros e datas e
+   possuem testes unitários;
+3. o repository pagina a coleção e restringe operações de item por
+   `produtoId` e `avaliacaoId`;
+4. o service verifica a existência do produto, confirma o pertencimento pelo
+   filtro composto e traduz `P2003` e `P2025` para erros conhecidos;
+5. os DTOs derivam dos schemas exportados por `@repo/contracts`;
+6. o controller monta envelopes explícitos e usa `@ZodSerializerDto` nas
+   respostas com corpo;
+7. controller, service e repository estão registrados no `ProdutoModule`;
+8. controller, service e mappers possuem testes unitários.
 
-As rotas planejadas continuam públicas somente para este exemplo didático:
+As rotas implementadas continuam públicas somente para este exemplo didático:
 
 ```text
 POST   /api/produtos/:produtoId/avaliacoes
@@ -361,8 +365,11 @@ DELETE /api/produtos/:produtoId/avaliacoes/:avaliacaoId
 
 Operações de item não podem consultar apenas `avaliacaoId`: devem também
 restringir por `produtoId` ou verificar explicitamente o pertencimento. A
-exclusão seguirá a decisão do CRUD de Produto e responderá `204 No Content`, sem
-corpo. A página Web fica fora desta etapa.
+implementação usa os dois IDs nas queries. A listagem verifica primeiro a
+existência do produto, executa busca e contagem independentes em paralelo e
+ordena por `createdAt` e `id` decrescentes. A exclusão responde
+`204 No Content`, sem corpo. A página Web e os testes E2E permanecem fora desta
+etapa concluída.
 
 ## Alcance das validações
 
@@ -388,7 +395,7 @@ dados.
 o scalar permanece `DateTime`, mas usa o tipo nativo `@db.Date`; no contrato
 HTTP, sua representação é `YYYY-MM-DD` validada com `z.iso.date()`.
 
-`AvaliacaoProduto` começará dentro do módulo e da feature `produto`, pois seu
+`AvaliacaoProduto` permanece dentro do módulo e da feature `produto`, pois seu
 ciclo de vida e suas rotas dependem do pai. Um módulo próprio só será criado se
 avaliações passarem a possuir casos de uso independentes, integrações próprias
 ou consumidores fora desse domínio. A existência de outra tabela, isoladamente,
