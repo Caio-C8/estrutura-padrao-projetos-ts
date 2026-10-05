@@ -39,7 +39,7 @@ somente objetivos do seu próprio domínio.
 
 ### CONTRACTS-001 — Validar contratos do domínio Produto com Zod 4
 
-**Status:** em andamento
+**Status:** concluído
 
 **Contexto**
 
@@ -75,12 +75,12 @@ Ficam fora deste objetivo:
 **Consumidores afetados**
 
 - `apps/api`, que usará os schemas nos DTOs e validará os boundaries HTTP;
-- `apps/web`, que usará schemas compatíveis nos formulários e validará
-  responses externas.
+- `apps/web`, que já valida query e response da listagem e usará schemas
+  compatíveis nos formulários.
 
 **Critérios de aceite**
 
-- [ ] Zod 4 configurado sem múltiplas majors no fluxo do domínio;
+- [x] Zod 4 configurado no fluxo runtime do domínio;
 - [x] runner e script de testes disponíveis em `@repo/contracts`;
 - [x] contratos e exports públicos revisados;
 - [x] tipos de input e output derivados dos schemas;
@@ -89,8 +89,14 @@ Ficam fora deste objetivo:
 - [x] limites de strings e paginação testados;
 - [x] `Decimal`, `BigInt` e `DateTime` serializados explicitamente;
 - [x] lint, typecheck e testes de contratos aprovados;
-- [ ] consumidores afetados validados;
+- [x] consumidores afetados validados;
 - [x] documentação atualizada.
+
+`pnpm why zod -r` também encontra Zod 3 em dependências transitivas das
+ferramentas do shadcn. Essa major não participa dos schemas de Produto:
+`@repo/contracts`, `apps/api` e `nestjs-zod` usam Zod 4 no fluxo runtime do
+domínio. A presença transitiva deve ser reavaliada quando o package `shadcn`
+deixar de ser necessário para o CSS ou para a CLI.
 
 **Decisões**
 
@@ -217,7 +223,7 @@ Ficam fora deste objetivo:
 
 ### CONTRACTS-003 — Tornar mensagens de validação de Produto amigáveis
 
-**Status:** em andamento
+**Status:** concluído
 
 **Contexto**
 
@@ -247,8 +253,9 @@ Ficam fora deste objetivo:
 **Consumidores afetados**
 
 - `apps/api`, que devolve as mensagens geradas pelos schemas no erro público;
-- `apps/web`, que poderá consumir essas mensagens no futuro, mas não faz parte
-  desta etapa.
+- `apps/web`, que já consome o contrato público de erro e usará as mensagens de
+  campos nos formulários de `WEB-002`, embora esses formulários não façam parte
+  deste objetivo.
 
 **Critérios de aceite**
 
@@ -259,7 +266,7 @@ Ficam fora deste objetivo:
 - [x] mensagens específicas possuem testes;
 - [x] lint e typecheck de contratos passam;
 - [x] lint, typecheck, testes e build da API passam;
-- [ ] suíte completa de contratos reexecutada após a inclusão dos testes;
+- [x] suíte completa de contratos reexecutada após a inclusão dos testes;
 - [x] documentação atualizada.
 
 **Estado atual**
@@ -271,13 +278,12 @@ Ficam fora deste objetivo:
   todos os campos de entrada e a reutilização das mensagens no update;
 - o teste que reduz issues por campo preserva a primeira mensagem em vez de
   sobrescrevê-la com uma issue posterior;
-- lint e typecheck de `@repo/contracts` passam, mas a suíte completa precisa ser
-  reexecutada porque o processo `tsx` encerrou com `ENOMEM` antes de carregar os
-  testes nesta revisão;
+- lint, typecheck e os 107 testes de `@repo/contracts` passam;
 - lint, typecheck, as 11 suítes com 97 testes e o build da API passam, incluindo
   os testes unitários do CRUD de `AvaliacaoProduto`;
-- a integração Web continua deliberadamente adiada; o CRUD de
-  `AvaliacaoProduto` já está implementado na API.
+- a listagem Web de Produto já valida filtros e response com os contratos
+  compartilhados; os formulários de Produto pertencem a `WEB-002` e o CRUD Web
+  de `AvaliacaoProduto` pertence a `WEB-003`.
 
 **Decisões**
 

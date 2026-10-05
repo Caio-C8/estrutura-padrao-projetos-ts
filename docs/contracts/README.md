@@ -25,8 +25,9 @@ A regra central é:
 O package já se chama `@repo/contracts`, é consumido por `apps/web` e
 `apps/api` e usa Zod 4 para os contratos runtime. Ele possui testes próprios
 com o runner nativo do Node executado por `tsx`. O domínio temporário de
-Produto está sendo usado para validar a arquitetura antes da integração com a
-API e a Web.
+Produto validou a arquitetura na API e na primeira integração Web: a listagem
+valida query e response com os schemas compartilhados. Os formulários de create
+e update permanecem planejados para `WEB-002`.
 
 Os documentos deste diretório descrevem tanto as decisões aprovadas quanto o
 plano para construir a camada de validação. Exemplos marcados como conceituais
