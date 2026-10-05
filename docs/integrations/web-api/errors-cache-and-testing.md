@@ -18,6 +18,11 @@ ApiError
 O formato definitivo depende do contrato público de erros. Não exponha stack,
 query, path interno, credencial ou mensagem bruta de infraestrutura.
 
+Na implementação atual, `ApiError` possui `status`, `codigo`, `message`,
+`categoria`, `erros`, `requisicaoId` e `cause`. As categorias são `http`,
+`rede`, `timeout`, `cancelada`, `validacao`, `resposta_invalida` e
+`configuracao`. `cause` é interno e não deve ser apresentado ao usuário.
+
 ## Identificador da requisição
 
 A API gera um UUID novo para cada requisição e o retorna no header
@@ -69,6 +74,9 @@ Use `AbortSignal` ou capacidade equivalente:
 - hooks devem limpar subscriptions e requisições quando a biblioteca exigir;
 - operações longas precisam de UX adequada, não apenas timeout maior.
 
+O cliente atual usa 30 segundos como default configurável. Timeout e sinal do
+consumidor são combinados sem perder a distinção entre as duas causas.
+
 ## Retry
 
 Não aplique a mesma política a tudo:
@@ -78,6 +86,11 @@ Não aplique a mesma política a tudo:
 - `429` deve respeitar política e, quando aplicável, `Retry-After`;
 - erro de validação, autenticação ou autorização não deve entrar em loop;
 - backoff e limite precisam ser definidos.
+
+O baseline atual permite somente uma repetição adicional para leitura quando a
+categoria é rede, timeout ou HTTP 5xx. Erros desconhecidos, validação, response
+inválida, cancelamento e HTTP abaixo de 500 não são repetidos. Mutations usam
+`retry: false`.
 
 ## Cache
 
@@ -195,3 +208,8 @@ Cubra fluxos críticos:
 
 Mocks não substituem pelo menos uma verificação real do acordo entre contratos,
 web e API.
+
+Em `WEB-001`, o cliente HTTP é testado com `fetch` injetado, a operação recebe
+um `ApiClient` por dependência e o hook simula o cliente central. A integração
+real Web → rewrite do Next.js → API também foi exercitada manualmente. Uma
+ferramenta E2E automatizada continua planejada para `WEB-004`.

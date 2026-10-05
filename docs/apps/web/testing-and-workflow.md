@@ -48,19 +48,23 @@ endpoint, autenticação, formato de erro ou cache para desbloquear uma tela.
 | acessibilidade        | semântica, teclado, foco, contraste e anúncios       |
 | desempenho            | build, bundle e métricas                             |
 
-## Ferramentas pendentes
+## Ferramentas atuais
 
-A base ainda não escolheu a stack de testes da interface. Antes de adicionar,
-avalie:
+A base usa:
 
-- React Testing Library para comportamento de componentes;
-- Vitest ou Jest como runner;
-- Playwright para E2E, viewports e navegação;
-- axe para apoio automatizado de acessibilidade;
-- MSW para simular HTTP na fronteira quando houver integração.
+- Vitest 5 como runner;
+- React Testing Library para hooks e componentes;
+- `jsdom` somente nos testes que precisam de DOM;
+- ambiente `node` como padrão para infraestrutura, parsers e operações;
+- `resolve.tsconfigPaths` nativo do Vite 8 para os aliases do TypeScript.
 
-Não instale todas automaticamente. A escolha deve atender os testes reais do
-projeto e ser registrada quando se tornar baseline.
+O script de typecheck executa `next typegen` antes de `tsc --noEmit`, evitando
+que tipos de rota antigos em `.next` sejam usados pela verificação.
+
+Playwright ou outra ferramenta E2E, axe e MSW continuam pendentes. Não os
+instale antecipadamente: `WEB-004` deve escolher a cobertura E2E e de
+acessibilidade, enquanto MSW só se justifica se mocks no nível de rede
+trouxerem benefício sobre a injeção atual de `ApiClient` e os mocks dos hooks.
 
 ## Teste visual e manual
 
@@ -99,8 +103,10 @@ pnpm --filter @repo/web build
 pnpm format:check
 ```
 
-O script `test` atual não possui testes de interface; ele executa o runner
-nativo do Node. Não considere a saída “zero testes” como cobertura da feature.
+O script `test` executa `vitest run`. Em 5 de outubro de 2026, a suíte de
+`WEB-001` cobre cliente HTTP, query client, operação, query keys, hook, parser
+de filtros e componentes da listagem. Testes E2E continuam pendentes e a
+revisão manual permanece obrigatória.
 
 Para mudança transversal:
 

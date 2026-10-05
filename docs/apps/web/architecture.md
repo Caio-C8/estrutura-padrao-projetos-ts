@@ -93,8 +93,10 @@ Mantenha o estado no local mais próximo que atende os consumidores:
 5. Context atende estado transversal com consumidores conhecidos;
 6. uma biblioteca global exige necessidade concreta e decisão registrada.
 
-Não copie respostas remotas para vários estados locais. A futura biblioteca de
-cache remoto deve ser a fonte do estado do servidor em Client Components.
+Não copie respostas remotas para vários estados locais. TanStack Query é a
+fonte do estado remoto nos Client Components atuais. O provider deve continuar
+na menor fronteira que cubra os consumidores; hoje ele pertence ao layout de
+`/produtos`, não ao layout raiz.
 
 ## Tipos e schemas locais
 
@@ -138,3 +140,36 @@ cliente HTTP padronizado
       ↓
 API
 ```
+
+## Implementação atual do domínio Produto
+
+`WEB-001` materializou a separação desta forma:
+
+```text
+apps/web/
+├── app/produtos/
+│   ├── _components/
+│   │   ├── produtos-filtros.tsx
+│   │   └── produtos-listagem.tsx
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── query-provider.tsx
+├── features/produto/
+│   ├── api/
+│   │   ├── get-produtos.ts
+│   │   ├── produto-query-keys.ts
+│   │   └── use-produtos.ts
+│   └── lib/
+│       └── list-produtos-search-params.ts
+└── lib/
+    ├── api/
+    │   ├── core/
+    │   ├── browser-api-client.ts
+    │   └── server-api-client.ts
+    └── query/
+        └── query-client.ts
+```
+
+O `page.tsx` permanece Server Component e valida `searchParams`. Somente a
+listagem e o provider são Client Components. Os filtros usam navegação GET e
+continuam renderizáveis no servidor.

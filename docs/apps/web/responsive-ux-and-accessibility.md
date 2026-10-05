@@ -19,6 +19,17 @@ Não escolha breakpoints por modelos específicos de aparelho. Use o ponto em qu
 o conteúdo deixa de funcionar como critério e mantenha os tokens definidos pelo
 sistema visual.
 
+## Estado atual de `/produtos`
+
+- filtros empilham em telas estreitas e expandem progressivamente;
+- produtos usam cards abaixo do breakpoint da tabela;
+- a página não depende de rolagem horizontal para a experiência principal;
+- paginação e ações permanecem acessíveis por teclado;
+- foco é visível;
+- campos de filtro inválidos usam borda, label e mensagem em cor destrutiva,
+  além de `aria-invalid` e `aria-describedby`;
+- valores informados são preservados após erro de URL.
+
 ## Padrões adaptáveis
 
 - Grids reduzem colunas progressivamente.

@@ -5,6 +5,17 @@ cobre riscos internos do app web. Transporte de identidade, cookies, tokens,
 CSRF e respostas da API pertencem também à
 [Integração web–API](../../integrations/web-api/README.md).
 
+## Estado atual
+
+As rotas de Produto e Avaliação são públicas somente no exemplo didático. Não
+há autenticação, autorização, cookie de sessão ou proteção CSRF implementados.
+Isso é uma limitação consciente e não um baseline seguro para produção.
+
+`browserApiClient` usa apenas a origem relativa `/api/backend` e não acessa
+`API_INTERNAL_URL`. `serverApiClient` importa `server-only`. A interface valida
+responses e apresenta mensagens públicas, sem expor o corpo bruto ou o `cause`
+interno dos erros. A revisão para um domínio autenticado pertence a `WEB-005`.
+
 ## Fronteira server e client
 
 - Segredos nunca entram em Client Components.

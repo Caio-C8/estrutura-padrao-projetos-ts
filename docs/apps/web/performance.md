@@ -7,6 +7,17 @@ ou regressão apenas por impressão.
 Siga também o [baseline transversal](../../performance/README.md), que define
 métricas, percentis, comparação e responsabilidades das demais camadas.
 
+## Estado atual
+
+Em `WEB-001`, o provider do TanStack Query foi limitado ao segmento
+`/produtos`, a lista é paginada e o trabalho controlado pela URL possui limite
+máximo de 50 itens. A interface oferece 10, 20 ou 50. O hook encaminha
+cancelamento e permite no máximo uma repetição transitória.
+
+Não foi introduzido prefetch no servidor, hydration, `staleTime`, cache
+persistente ou virtualização sem um gargalo medido. No build atual, `/` é
+estática e `/produtos` é dinâmica por usar `searchParams`.
+
 ## Métricas mínimas
 
 Use dados de campo no percentil 75, separados ao menos entre mobile e desktop,

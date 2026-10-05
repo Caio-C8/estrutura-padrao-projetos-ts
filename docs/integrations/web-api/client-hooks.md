@@ -113,21 +113,28 @@ permissões ou efeitos distintos.
 
 ## Biblioteca de estado remoto
 
-Não implemente manualmente cache, deduplicação, retry e invalidação com vários
-`useEffect` e `useState`. Quando o primeiro fluxo cliente exigir essas
-capacidades, escolha conscientemente uma biblioteca como TanStack Query ou SWR
-e documente:
+TanStack Query 5 é a biblioteca adotada. Não implemente manualmente cache,
+deduplicação, retry e invalidação com vários `useEffect` e `useState`.
 
-- provider;
+O estado atual define:
+
+- `QueryClientProvider` no layout de `/produtos`;
+- cliente novo no servidor e singleton no navegador;
+- query keys por domínio;
+- uma tentativa adicional somente para leitura com falha transitória;
+- mutations sem retry.
+
+Cada nova feature ainda deve documentar conscientemente:
+
 - query keys;
 - stale time;
-- retry;
 - invalidação;
 - hydration;
 - tratamento de erro;
 - ferramentas de desenvolvimento.
 
-Até essa decisão, não escreva um mini framework de cache próprio.
+Não configure `staleTime`, prefetch, hydration ou ferramentas de
+desenvolvimento apenas para uniformidade; adote-os quando o fluxo justificar.
 
 ## Nomes e arquivos
 

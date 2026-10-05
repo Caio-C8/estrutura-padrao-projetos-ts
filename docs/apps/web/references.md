@@ -12,6 +12,10 @@ conhecida ou alterar um padrão.
 - [Navegação](https://nextjs.org/docs/app/getting-started/linking-and-navigating)
 - [Metadata e `generateMetadata`](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
 - [Convenções de arquivos](https://nextjs.org/docs/app/api-reference/file-conventions)
+- [`page.tsx` e `searchParams`](https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams)
+- [`next/form`](https://nextjs.org/docs/app/api-reference/components/form)
+- [`next typegen`](https://nextjs.org/docs/app/api-reference/cli/next#next-typegen-options)
+- [TypeScript no Next.js](https://nextjs.org/docs/app/api-reference/config/typescript)
 - [Acessibilidade](https://nextjs.org/docs/architecture/accessibility)
 - [Checklist de produção](https://nextjs.org/docs/app/guides/production-checklist)
 - [Content Security Policy](https://nextjs.org/docs/app/guides/content-security-policy)
@@ -32,12 +36,29 @@ conhecida ou alterar um padrão.
 
 ## Componentes e acessibilidade
 
+- [Tailwind CSS com Next.js](https://tailwindcss.com/docs/installation/framework-guides/nextjs)
 - [shadcn/ui](https://ui.shadcn.com/docs)
+- [Instalação do shadcn/ui com Next.js](https://ui.shadcn.com/docs/installation/next)
+- [shadcn/ui com Tailwind CSS 4 e React 19](https://ui.shadcn.com/docs/tailwind-v4)
 - [Componentes shadcn/ui](https://ui.shadcn.com/docs/components)
 - [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [Web Content Accessibility Guidelines](https://www.w3.org/WAI/standards-guidelines/wcag/)
 
-Use referências comunitárias apenas como complemento. Decisões de
-autenticação, cache remoto e bibliotecas de teste devem apontar também para a
-fonte oficial da ferramenta escolhida.
+## Estado remoto
+
+- [TanStack Query para React](https://tanstack.com/query/latest/docs/framework/react/overview)
+- [Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
+- [Retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries)
+- [Mutations](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)
+
+## Testes
+
+- [Vitest com Next.js](https://nextjs.org/docs/app/guides/testing/vitest)
+- [Vitest](https://vitest.dev/guide/)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [Vite: resolução nativa de caminhos do `tsconfig`](https://vite.dev/config/shared-options#resolve-tsconfigpaths)
+
+Use referências comunitárias apenas como complemento. Decisões de autenticação
+e bibliotecas de teste devem apontar também para a fonte oficial da ferramenta
+escolhida.

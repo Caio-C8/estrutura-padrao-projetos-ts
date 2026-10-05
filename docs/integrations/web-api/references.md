@@ -14,10 +14,19 @@
 - [Regras dos Hooks](https://react.dev/reference/rules/rules-of-hooks)
 - [Hooks customizados](https://react.dev/learn/reusing-logic-with-custom-hooks)
 
+## TanStack Query
+
+- [Visão geral para React](https://tanstack.com/query/latest/docs/framework/react/overview)
+- [Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
+- [Query retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries)
+- [Mutations](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)
+
 ## Plataforma web
 
 - [Fetch API](https://developer.mozilla.org/docs/Web/API/Fetch_API)
 - [AbortController](https://developer.mozilla.org/docs/Web/API/AbortController)
+- [`AbortSignal.timeout`](https://developer.mozilla.org/docs/Web/API/AbortSignal/timeout_static)
+- [`AbortSignal.any`](https://developer.mozilla.org/docs/Web/API/AbortSignal/any_static)
 - [URLSearchParams](https://developer.mozilla.org/docs/Web/API/URLSearchParams)
 - [HTTP semantics](https://www.rfc-editor.org/rfc/rfc9110)
 - [OWASP: Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
@@ -29,5 +38,5 @@
 - [Aplicação web](../../apps/web/README.md)
 - [API](../../apps/api/README.md)
 
-Quando TanStack Query, SWR, Axios, Ky ou outra biblioteca for adotada, adicione
-a documentação oficial da versão usada e registre a decisão correspondente.
+Quando outra biblioteca for adotada, adicione a documentação oficial da versão
+usada e registre a decisão correspondente.

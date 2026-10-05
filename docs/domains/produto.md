@@ -17,7 +17,7 @@ O resultado planejado inclui:
 2. relação um-para-muitos entre produto e avaliação;
 3. contratos Zod compartilhados por API e Web;
 4. CRUD na API NestJS;
-5. página Next.js com listagem e formulário.
+5. aplicação Next.js com lista, detalhes e CRUD de Produto e Avaliação.
 
 Este documento será atualizado de forma incremental. Uma etapa só deve ser
 marcada como concluída depois das verificações correspondentes.
@@ -75,7 +75,63 @@ marcada como concluída depois das verificações correspondentes.
 - [x] testes unitários de controller, service e mappers de `AvaliacaoProduto`
       implementados;
 - [ ] testes E2E específicos das rotas de `AvaliacaoProduto` implementados;
-- [ ] página Web implementada, deliberadamente adiada.
+- [x] objetivos e decisões da aplicação Web registrados;
+- [x] `WEB-001`: baseline da Web e listagem de produtos implementados;
+- [ ] `WEB-002`: detalhes e CRUD de Produto implementados;
+- [ ] `WEB-003`: listagem e CRUD de Avaliação implementados;
+- [ ] `WEB-004`: testes da interface e dos fluxos críticos implementados;
+- [ ] `WEB-005`: preparação de produção explicitamente avaliada.
+
+## Plano da aplicação Web
+
+O trabalho da Web está dividido em entregas no
+[roadmap da aplicação Web](../apps/web/roadmap.md). A primeira fatia vertical de
+leitura foi concluída e provou o design system, o cliente HTTP, a validação de
+responses, o cache remoto e os estados da listagem antes das mutações:
+
+1. preservar a home e entregar `/produtos` com filtros e paginação na URL —
+   concluído em `WEB-001`;
+2. entregar detalhes, criação, edição e exclusão de Produto — próxima entrega;
+3. entregar a coleção paginada e o CRUD aninhado de avaliações;
+4. consolidar testes de interface e fluxos críticos;
+5. tomar as decisões de segurança, observabilidade e performance necessárias
+   antes de reutilizar o exemplo em produção.
+
+As rotas planejadas de avaliação mantêm `produtoId` no path. A lista básica de
+Produto não incorporará uma coleção ilimitada de avaliações; a tela de detalhe
+fornecerá contexto e acesso à coleção paginada própria.
+
+As decisões implementadas são `fetch` nativo para os clientes HTTP, TanStack
+Query 5 para estado remoto cliente, validação de responses por
+`@repo/contracts` e Server Components como padrão. Tailwind CSS 4 e shadcn/ui
+formam o baseline visual, com tabela em telas largas e cards em telas estreitas.
+React Hook Form com resolver Zod permanece planejado para o primeiro formulário
+de `WEB-002` e ainda não está instalado.
+
+### Estado de `WEB-001`
+
+- a home possui acesso para `/produtos`;
+- filtros de pesquisa, status, destaque e limite são validados e preservados na
+  URL;
+- a interface oferece limites de 10, 20 e 50 itens por página;
+- valores inválidos permanecem nos controles com mensagem associada e não são
+  enviados à API;
+- a operação `getProdutos` valida request e response nos boundaries;
+- `useProdutos` usa query key com todos os filtros e cancelamento;
+- loading, erro recuperável, vazio, sucesso e página sem itens possuem estados
+  próprios;
+- Vitest e React Testing Library cobrem infraestrutura, operação, hook, parser
+  e componentes;
+- a integração Web → rewrite do Next.js → API foi exercitada no ambiente
+  local.
+
+`WEB-002` começará por `GET /produtos/:produtoId` e uma página de detalhe
+somente leitura. Criação, edição e exclusão virão depois que essa leitura estiver
+validada.
+
+Autenticação e autorização continuam fora do exemplo público atual. Esse fato
+deve ser apresentado como limitação consciente e não como modelo de segurança
+para um domínio real.
 
 ## Decisões do primeiro CRUD da API
 
@@ -282,17 +338,15 @@ da feature. A paginação compartilhada foi criada em
 `src/common/paginacao-query.schema.ts`, possui cobertura própria e é exportada
 pelo barrel de `common`. O teste da API pública inclui os novos exports.
 
-O package possui agora 107 testes definidos. Três deles exercitam as mensagens
+O package possui 107 testes. Três deles exercitam as mensagens
 de validação de Produto com o payload observado na API, valores de tipo inválido
 para todos os campos de entrada e a reutilização das mensagens no update. O
 helper do teste preserva a primeira issue de cada campo, reproduzindo a política
 recomendada para formulários que exibem uma mensagem por input.
 
-Nesta revisão, lint e typecheck de `@repo/contracts` passam. A execução da suíte
-completa não chegou a carregar os testes porque o processo `tsx` encerrou com
-`uv_os_get_passwd returned ENOMEM` no ambiente local; portanto, essa execução
-ainda precisa ser repetida com memória disponível. Na API, lint, typecheck, as
-11 suítes com 97 testes e o build passam.
+Em 5 de outubro de 2026, lint, typecheck e os 107 testes de
+`@repo/contracts` passam. Na API, lint, typecheck, as 11 suítes com 97 testes e
+o build também passam.
 
 Os contratos previstos são:
 
@@ -368,8 +422,9 @@ restringir por `produtoId` ou verificar explicitamente o pertencimento. A
 implementação usa os dois IDs nas queries. A listagem verifica primeiro a
 existência do produto, executa busca e contagem independentes em paralelo e
 ordena por `createdAt` e `id` decrescentes. A exclusão responde
-`204 No Content`, sem corpo. A página Web e os testes E2E permanecem fora desta
-etapa concluída.
+`204 No Content`, sem corpo. Os testes E2E da API permanecem fora desta etapa
+concluída. Na aplicação Web, `WEB-001` está concluída e `WEB-002` é a próxima
+entrega.
 
 ## Alcance das validações
 

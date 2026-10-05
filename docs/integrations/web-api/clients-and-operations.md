@@ -1,6 +1,6 @@
 # Clientes e operações HTTP
 
-## Estrutura planejada
+## Estrutura implementada e expansão prevista
 
 ```text
 apps/web/
@@ -15,18 +15,18 @@ apps/web/
 └── features/
     └── <dominio>/
         └── api/
-            ├── get-recursos.ts
-            ├── get-recurso.ts
-            ├── create-recurso.ts
-            └── use-create-recurso.ts
+            ├── get-produtos.ts
+            ├── produto-query-keys.ts
+            └── use-produtos.ts
 ```
 
-Não crie diretórios vazios. Implemente a infraestrutura quando existir a
-primeira integração real e contratos suficientes.
+A infraestrutura comum e a operação de listagem já existem. As operações de
+detalhe e mutação serão acrescentadas em `WEB-002`. Não crie diretórios vazios
+nem antecipe arquivos sem consumidor.
 
 ## Abstração comum
 
-`createApiClient` deve concentrar comportamento compartilhado:
+`createApiClient` concentra comportamento compartilhado:
 
 - composição segura de base URL e path;
 - query params;
@@ -38,6 +38,15 @@ primeira integração real e contratos suficientes.
 - conversão de status não bem-sucedido em `ApiError`;
 - validação opcional de response por schema;
 - observabilidade permitida.
+
+O timeout padrão implementado é 30 segundos e pode ser substituído em cada
+request. A implementação usa `AbortSignal.timeout` e combina o sinal do
+consumidor com `AbortSignal.any`, mantendo categorias distintas para timeout e
+cancelamento.
+
+Toda resposta de sucesso com corpo exige `responseSchema`. `204 No Content` é
+retornado como `undefined` e não aceita schema de response. Respostas de erro
+são validadas com `RespostaErroSchema`.
 
 Não inclua nesse núcleo:
 
@@ -55,7 +64,7 @@ Não inclua nesse núcleo:
 `browserApiClient` é a única instância importada por operações executadas no
 cliente.
 
-Configuração baseline:
+Configuração atual:
 
 ```text
 base URL: /api/backend
@@ -89,6 +98,11 @@ Ele deve:
 - respeitar as APIs de cache e revalidação do Next.js conscientemente.
 
 Não encaminhe todos os headers da requisição automaticamente.
+
+Atualmente ele usa `API_INTERNAL_URL` ou o fallback local
+`http://localhost:3001`. Ainda não existe operação server-side consumindo essa
+instância; ela foi testada quanto à separação de runtime, mas não deve ser
+importada no grafo cliente.
 
 ## Operação por endpoint e método
 
@@ -141,6 +155,10 @@ seguras:
 
 Escolha a alternativa mais simples para a feature. Não use condição baseada em
 `typeof window` em módulo que pode carregar segredos.
+
+Produto usa a segunda alternativa: `getProdutos` recebe `ApiClient` como
+dependência. O hook fornece `browserApiClient`; um Server Component poderá
+fornecer `serverApiClient` sem duplicar contratos ou montagem da request.
 
 ## Contratos
 

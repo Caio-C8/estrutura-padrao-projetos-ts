@@ -22,11 +22,27 @@ No estado atual da base:
 - o app usa Next.js 16, React 19 e App Router;
 - páginas e layouts são Server Components por padrão;
 - `@repo/contracts` já é dependência e está em `transpilePackages`;
-- existe somente a página inicial da estrutura padrão;
+- a página inicial foi preservada e possui acesso ao catálogo em `/produtos`;
 - React Hook Form e `@hookform/resolvers` ainda não estão instalados;
-- shadcn/ui ainda não foi inicializado e não existe `components.json`;
-- a estratégia de testes de componentes e E2E ainda não foi implementada;
-- o cliente padronizado da API e os hooks de integração ainda não existem.
+- Tailwind CSS 4 e shadcn/ui formam o baseline visual;
+- `components.json` usa o estilo `radix-nova`, tokens `neutral` e aliases locais;
+- as primitives atualmente usadas são `Badge`, `Button`, `Input`, `Skeleton` e
+  `Table`; não há componentes antecipados sem consumidor;
+- TanStack Query 5 está configurado no segmento `/produtos`, com provider na
+  menor fronteira cliente atual;
+- existem clientes HTTP separados para navegador e servidor, uma operação de
+  listagem, query keys e o hook `useProdutos`;
+- `/produtos` possui filtros e paginação na URL, validação dos parâmetros,
+  estados de loading, vazio, erro e sucesso, cards em telas estreitas e tabela
+  em telas largas;
+- Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
+  operação, hook, parser da URL e componentes da listagem;
+- testes E2E no navegador ainda não foram adotados.
+
+O trabalho do domínio Produto foi dividido em entregas verificáveis.
+`WEB-001` está concluída e `WEB-002` é a próxima entrega no
+[roadmap da aplicação Web](./roadmap.md). O estado operacional e a ordem exata
+de continuação estão no [handoff](./handoff.md).
 
 As regras descritas nestes documentos representam o baseline desejado. Não
 presuma que uma dependência, diretório ou componente já exista sem conferir o
@@ -66,6 +82,8 @@ Detalhes e exemplos estão em [Páginas e rotas](./pages-and-routing.md).
 
 | Assunto                                       | Documento                                                                   |
 | --------------------------------------------- | --------------------------------------------------------------------------- |
+| Entregas, estado e critérios de aceite        | [Roadmap](./roadmap.md)                                                     |
+| Estado atual e início de `WEB-002`            | [Handoff](./handoff.md)                                                     |
 | Organização, renderização e estado            | [Arquitetura](./architecture.md)                                            |
 | Rotas, layouts, metadata e estados de página  | [Páginas e rotas](./pages-and-routing.md)                                   |
 | Componentização, shadcn/ui e design system    | [Componentes e design system](./components-and-design-system.md)            |
@@ -82,8 +100,8 @@ Não escolha antecipadamente sem contexto:
 
 - identidade visual, temas e tokens definitivos;
 - breakpoints específicos além do baseline da ferramenta de estilos;
-- biblioteca de cache remoto para Client Components;
-- runner de testes, ferramenta E2E e serviço de observabilidade;
+- ferramenta E2E e serviço de observabilidade; Vitest e React Testing Library
+  já são o baseline unitário e de componentes;
 - mecanismo de autenticação, autorização e proteção CSRF; credenciais no
   navegador já seguem o baseline de cookie `HttpOnly`;
 - política de analytics, consentimento e rastreamento;

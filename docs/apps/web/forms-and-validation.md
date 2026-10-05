@@ -14,6 +14,11 @@ Essas dependências ainda não estão instaladas na base. Antes do primeiro
 formulário, adicione-as explicitamente ao `@repo/web` e valide as versões
 compatíveis com React 19 e Zod 4.
 
+O primeiro uso está planejado para criação de Produto em `WEB-002`, depois da
+página de detalhe somente leitura. Os filtros GET de `/produtos` não usam React
+Hook Form: eles são controles nativos submetidos por `next/form` e validados a
+partir da URL no Server Component.
+
 ## Contrato não é automaticamente formulário
 
 Não presuma:

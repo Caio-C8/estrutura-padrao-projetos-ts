@@ -70,6 +70,23 @@ Ao adotá-lo:
 Não instale um componente porque ele pode ser útil futuramente. Evite carregar
 dependências e estilos sem consumidor.
 
+### Estado implementado
+
+`components.json` usa o estilo `radix-nova`, Tailwind CSS 4, CSS variables,
+ícones Lucide e aliases locais. As primitives presentes são somente as usadas
+por `WEB-001`:
+
+- `Badge` para o status do produto;
+- `Button` para navegação, filtros, paginação e retry;
+- `Input` para pesquisa;
+- `Skeleton` para carregamento;
+- `Table` para a composição em telas largas.
+
+Os `select` de filtro permanecem nativos nesta etapa. Não foi adicionada uma
+primitive `Select` apenas para uniformidade visual. `WEB-002` deve adicionar
+`AlertDialog` e primitives de formulário somente quando seus fluxos realmente
+forem implementados.
+
 ## Composição
 
 Prefira composição, slots e `children` a um componente que recebe várias props
