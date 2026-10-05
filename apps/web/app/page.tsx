@@ -1,5 +1,18 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import styles from "./page.module.css";
+
 const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Project Starter";
+
 const environment = process.env.NEXT_PUBLIC_APP_ENV ?? "development";
+
+export const metadata: Metadata = {
+  title: `Início | ${appName}`,
+  description:
+    "Página inicial da estrutura padrão e acesso ao catálogo de produtos.",
+};
 
 const checks = [
   {
@@ -16,25 +29,54 @@ const checks = [
 
 export default function Home() {
   return (
-    <main>
-      <section className="hero">
-        <p className="eyebrow">{environment}</p>
-        <h1>{appName}</h1>
-        <p className="lead">
-          A infraestrutura está pronta. Substitua esta página pelo domínio do
-          novo produto e mantenha os contratos compartilhados em packages.
-        </p>
-      </section>
+    <main className={styles.page}>
+      <div className={styles.container}>
+        <section className={styles.hero}>
+          <p className={styles.eyebrow}>{environment}</p>
 
-      <section className="grid" aria-label="Verificações da base">
-        {checks.map((check) => (
-          <a className="card" href={check.href} key={check.href}>
-            <span>{check.label}</span>
-            <p>{check.description}</p>
-            <code>{check.href}</code>
-          </a>
-        ))}
-      </section>
+          <h1 className={styles.title}>{appName}</h1>
+
+          <p className={styles.lead}>
+            A infraestrutura está pronta. Explore o domínio de produtos e
+            acompanhe a integração entre a aplicação Web, os contratos
+            compartilhados e a API.
+          </p>
+
+          <div className={styles.actions}>
+            <Button asChild size="lg" className={styles.primaryAction}>
+              <Link href="/produtos">
+                Ver produtos
+                <ArrowRight aria-hidden="true" data-icon="inline-end" />
+              </Link>
+            </Button>
+          </div>
+        </section>
+
+        <section
+          className={styles.checksSection}
+          aria-labelledby="checks-title"
+        >
+          <h2 id="checks-title" className={styles.sectionTitle}>
+            Verificações da base
+          </h2>
+
+          <div className={styles.checksGrid}>
+            {checks.map((check) => (
+              <a
+                className={styles.checkCard}
+                href={check.href}
+                key={check.href}
+              >
+                <span className={styles.checkLabel}>{check.label}</span>
+
+                <p className={styles.checkDescription}>{check.description}</p>
+
+                <code className={styles.checkPath}>{check.href}</code>
+              </a>
+            ))}
+          </div>
+        </section>
+      </div>
     </main>
   );
 }
