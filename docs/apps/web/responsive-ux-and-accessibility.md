@@ -40,8 +40,11 @@ sistema visual.
 - a exclusão usa `AlertDialog`, informa que as avaliações também serão
   removidas, bloqueia repetição durante o pending e mantém o erro recuperável no
   próprio contexto;
-- depois do `204`, a listagem anuncia a conclusão com `role="status"` e remove
-  da URL o marcador transitório para não repetir feedback antigo em reload.
+- confirmações de criação e atualização usam a mensagem de sucesso validada da
+  API em toast; após o `204`, a exclusão usa título e descrição definidos pela
+  Web;
+- o `Toaster` global preserva a confirmação durante a navegação interna sem
+  inserir estado transitório na URL.
 
 ## Padrões adaptáveis
 
@@ -69,6 +72,10 @@ Toda interação deve comunicar o que aconteceu:
 
 Não desabilite controles sem explicação. Não use toast como único lugar para
 uma informação necessária à correção do formulário.
+
+Toast é adequado para confirmar uma ação concluída que não exige decisão nem
+correção. Erros por campo, falhas que exigem nova tentativa e consequências de
+ações destrutivas continuam visíveis no contexto em que o usuário pode agir.
 
 ## UX de formulários
 

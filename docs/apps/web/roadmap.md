@@ -43,6 +43,8 @@ visual, a infraestrutura HTTP e o TanStack Query foram implementados, e o CRUD
 Web de Produto cobre listagem, detalhe, criação, edição e exclusão. Filtros e
 paginação permanecem na URL; formulários possuem schemas e mappers locais; a
 exclusão confirma a remoção em cascata das avaliações e trata `204 No Content`.
+Toasts globais confirmam create, update e delete sem acoplar Sonner às operações
+ou aos hooks de dados.
 
 A próxima entrega é `WEB-003`. Ela acrescentará o CRUD aninhado de avaliações
 sem incluir uma coleção ilimitada na response básica de Produto. O estado exato
@@ -257,8 +259,11 @@ permitir administrar o ciclo de vida completo de um produto.
 - o update envia somente campos alterados e usa `null` para limpar anuláveis;
 - operações e hooks separados cobrem `GET`, `POST`, `PATCH` e `DELETE`;
 - a exclusão usa `AlertDialog`, informa a cascata de avaliações, remove o
-  detalhe do cache, invalida listas e exibe confirmação definida pela Web;
-- em 6 de outubro de 2026, lint, typecheck, 26 arquivos com 121 testes e build
+  detalhe do cache, invalida listas e exibe em toast a confirmação definida pela
+  Web;
+- criação e atualização exibem em toast a mensagem do envelope de sucesso
+  validado; a exclusão mantém texto local porque `204` não possui corpo;
+- em 6 de outubro de 2026, lint, typecheck, 25 arquivos com 120 testes e build
   de produção foram aprovados.
 
 ### WEB-003 — Entregar o CRUD aninhado de avaliações

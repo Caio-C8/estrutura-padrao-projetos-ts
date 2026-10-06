@@ -136,8 +136,10 @@ campos ausentes sem alterar os contratos externos.
   fuso local e convertidas para ISO 8601 UTC no payload;
 - o update envia apenas campos alterados e usa `null` para limpar anuláveis;
 - a exclusão usa `AlertDialog`, trata `204 No Content`, invalida o cache
-  relacionado e apresenta mensagem definida pela Web;
-- 26 arquivos com 121 testes, lint, typecheck e build do app Web passam.
+  relacionado e apresenta toast com mensagem definida pela Web;
+- criação e atualização apresentam em toast a mensagem do envelope de sucesso
+  validado pela Web;
+- 25 arquivos com 120 testes, lint, typecheck e build do app Web passam.
 
 `WEB-003` começará pela listagem paginada de avaliações, sempre incluindo
 `produtoId` nas query keys, operações e rotas. Criação, edição e exclusão virão
@@ -154,7 +156,7 @@ para um domínio real.
 - enquanto não existir um Guard global de autenticação, não será criado um
   decorator `@Public()` sem comportamento real;
 - uma exclusão concluída responderá `204 No Content`, sem envelope e sem corpo;
-- após o `204`, a interface pode apresentar uma mensagem própria da operação,
+- após o `204`, a interface apresenta em toast uma mensagem própria do fluxo,
   como "Produto excluído com sucesso";
 - erros de exclusão continuam usando o contrato público de erro da API;
 - se futuramente a mensagem precisar vir da API, a operação deverá mudar

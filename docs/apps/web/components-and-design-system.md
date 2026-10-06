@@ -83,12 +83,32 @@ dependências e estilos sem consumidor.
 - `Skeleton` para carregamento;
 - `Table` para a listagem em telas largas;
 - `AlertDialog` para confirmar a exclusão e manter foco e contexto da ação
-  destrutiva.
+  destrutiva;
+- `Toaster`, baseado em Sonner, para confirmações transitórias de sucesso.
 
 Os `select` dos filtros da listagem continuam nativos porque são controles GET
 renderizáveis no servidor. A primitive `Select` atende os formulários
 interativos; não é necessário forçar a mesma implementação em contextos com
 comportamento diferente.
+
+### Toasts
+
+Existe uma única instância de `Toaster` no layout raiz, posicionada no canto
+inferior direito, com cores de estado, botão de fechamento e tema claro
+explícito enquanto a política de temas do projeto permanece pendente. As
+páginas e layouts continuam Server Components; somente a primitive do Sonner é
+Client Component.
+
+O componente que orquestra a ação decide quando apresentar o toast. Operações
+HTTP e hooks TanStack Query continuam sem conhecimento de mensagem visual,
+navegação ou Sonner. No CRUD atual:
+
+- criação e atualização usam `response.mensagem`, depois que o envelope de
+  sucesso foi validado pelo schema compartilhado;
+- exclusão usa título e descrição definidos pela Web, pois a response
+  `204 No Content` não possui corpo;
+- erros de campo e falhas recuperáveis permanecem próximos do formulário ou do
+  diálogo; toast não é o único lugar para informação necessária à correção.
 
 ## Composição
 

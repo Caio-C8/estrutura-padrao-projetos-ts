@@ -104,10 +104,13 @@ pnpm format:check
 ```
 
 O script `test` executa `vitest run`. Em 6 de outubro de 2026, a suíte de
-`WEB-001` e `WEB-002` possui 26 arquivos e 121 testes. Ela cobre cliente HTTP,
+`WEB-001` e `WEB-002` possui 25 arquivos e 120 testes. Ela cobre cliente HTTP,
 query client, operações e hooks do CRUD, query keys, parser de filtros,
 formatadores, máscaras, schemas e mappers de formulário, listagem, detalhe,
-criação, edição, diálogo de exclusão e feedback após `204`.
+criação, edição, diálogo de exclusão e os toasts de sucesso. Os testes dos
+componentes simulam somente `toast.success` e verificam a mensagem emitida:
+create e update recebem a mensagem da response, enquanto delete usa o conteúdo
+local correspondente ao `204`.
 
 Testes E2E continuam pendentes e a revisão manual permanece obrigatória. O
 `ResizeObserver` ausente no jsdom possui um mock mínimo no setup porque as

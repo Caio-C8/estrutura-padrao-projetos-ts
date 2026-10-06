@@ -150,8 +150,7 @@ apps/web/
 ├── app/produtos/
 │   ├── _components/
 │   │   ├── produtos-filtros.tsx
-│   │   ├── produtos-listagem.tsx
-│   │   └── produto-excluido-feedback.tsx
+│   │   └── produtos-listagem.tsx
 │   ├── [produtoId]/
 │   │   ├── _components/
 │   │   │   ├── delete-produto-dialog.tsx
@@ -167,6 +166,8 @@ apps/web/
 │   │   └── page.tsx
 │   ├── page.tsx
 │   └── query-provider.tsx
+├── components/ui/
+│   └── sonner.tsx
 ├── features/produto/
 │   ├── api/
 │   │   ├── create-produto.ts
@@ -197,10 +198,11 @@ apps/web/
 ```
 
 Os arquivos `page.tsx` permanecem Server Components e validam params ou
-`searchParams`. Listagem, detalhe, formulários, feedback transitório e diálogo
-destrutivo são as fronteiras Client que realmente precisam de hooks, estado ou
-APIs do navegador. Os filtros usam navegação GET e continuam renderizáveis no
-servidor.
+`searchParams`. Listagem, detalhe, formulários e diálogo destrutivo são as
+fronteiras Client que realmente precisam de hooks, estado ou APIs do navegador.
+O `Toaster` é uma única fronteira Client renderizada pelo layout raiz; isso não
+converte o layout nem seus `children` em Client Components. Os filtros usam
+navegação GET e continuam renderizáveis no servidor.
 
 Os campos compartilhados por criação e edição vivem na feature, enquanto os
 componentes que orquestram cada tela permanecem próximos das rotas. O schema do

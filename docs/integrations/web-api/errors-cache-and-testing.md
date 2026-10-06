@@ -57,8 +57,9 @@ infraestrutura, nem revele detalhes internos.
 
 - Trate somente `response.ok` como sucesso, salvo contrato explícito.
 - Respostas `204` ou sem corpo não devem tentar fazer parse JSON.
-- Após um `204`, a interface pode exibir uma confirmação definida pela própria
-  operação; não espere uma mensagem no corpo da resposta.
+- Após um `204`, a interface pode exibir uma confirmação definida pela Web; a
+  função de operação continua retornando `undefined` e não deve esperar uma
+  mensagem no corpo da resposta.
 - Valide JSON com schema de response quando disponível.
 - Falha de parse ou schema é erro de integração, não dado vazio.
 - Preserve status e correlation ID permitidos.
@@ -212,8 +213,9 @@ web e API.
 Em `WEB-001` e `WEB-002`, o cliente HTTP é testado com `fetch` injetado, todas
 as operações recebem um `ApiClient` por dependência e os hooks simulam o cliente
 central. Os testes cobrem leitura, criação, atualização, exclusão, invalidação e
-remoção do detalhe, erros públicos, formulários e o feedback definido pela Web
-depois de `204 No Content`.
+remoção do detalhe, erros públicos, formulários e os toasts de sucesso. Create e
+update verificam a mensagem da response validada; delete verifica o título e a
+descrição locais usados depois de `204 No Content`.
 
 A integração real Web → rewrite do Next.js → API também foi exercitada
 manualmente durante o CRUD de Produto. Uma ferramenta E2E automatizada continua

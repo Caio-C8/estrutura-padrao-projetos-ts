@@ -41,6 +41,9 @@ No estado atual:
 - create e update atualizam o detalhe conhecido e invalidam listas; delete
   invalida listas, retorna `undefined` no `204` e tem o detalhe removido pela
   interface ao navegar;
+- a interface usa a mensagem validada das responses de create e update em
+  toasts de sucesso; após delete, usa mensagem local porque `204` não possui
+  corpo;
 - TanStack Query 5 gerencia o estado remoto no cliente e está limitado ao
   segmento `/produtos`;
 - o formato público de erros está definido por `RespostaErroSchema` e aplicado

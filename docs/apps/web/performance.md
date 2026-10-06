@@ -15,10 +15,12 @@ itens; a interface oferece 10, 20 ou 50. Hooks de leitura encaminham
 cancelamento e permitem no máximo uma repetição transitória, enquanto mutations
 não possuem retry.
 
-As páginas continuam Server Components. Somente listagem, detalhe,
-formulários, diálogo e feedback que usam hooks, eventos ou APIs do navegador
-entram no grafo cliente. Operações e campos compartilhados evitam duplicar
-infraestrutura ou formulários inteiros, sem adicionar estado global.
+As páginas continuam Server Components. Somente listagem, detalhe, formulários,
+diálogo e o `Toaster` que usam hooks, eventos ou APIs do navegador entram no
+grafo cliente. Existe uma única instância global do Sonner; cada feature apenas
+dispara a confirmação necessária. Operações e campos compartilhados evitam
+duplicar infraestrutura ou formulários inteiros, sem adicionar estado global de
+domínio.
 
 Não foi introduzido prefetch no servidor, hydration, `staleTime`, cache
 persistente ou virtualização sem um gargalo medido. No build atual, `/` e

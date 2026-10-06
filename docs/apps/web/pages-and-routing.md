@@ -25,9 +25,9 @@ diálogos nas menores fronteiras cliente necessárias.
 As rotas dinâmicas validam `produtoId` com `ProdutoParamsSchema` antes de
 renderizar seus consumidores. O detalhe diferencia loading, `404`, erro
 recuperável e sucesso. A criação e a edição possuem metadata própria e a
-exclusão retorna à listagem com um marcador transitório de sucesso; a Web remove
-esse marcador da URL com `history.replaceState` para que um reload não repita a
-mensagem antiga.
+exclusão retorna diretamente à listagem. As três mutations exibem confirmação
+no `Toaster` global durante a navegação interna, sem acrescentar marcador
+transitório à URL.
 
 ## Metadata e título obrigatório
 

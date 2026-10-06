@@ -1,6 +1,7 @@
 # Handoff da aplicação Web
 
-Atualizado em 6 de outubro de 2026 após a conclusão de `WEB-002`.
+Atualizado em 6 de outubro de 2026 após a conclusão de `WEB-002` e a adoção de
+toasts de sucesso no CRUD de Produto.
 
 Este documento é o retrato operacional para iniciar `WEB-003`. O planejamento
 e os critérios permanentes estão no [roadmap](./roadmap.md).
@@ -34,10 +35,12 @@ browserApiClient → /api/backend → API NestJS
 - Next.js 16, React 19, App Router e Tailwind CSS 4;
 - shadcn/ui no estilo `radix-nova`, tokens `neutral`, CSS variables, pacote
   unificado `radix-ui` e ícones Lucide;
+- Sonner registrado uma vez no layout raiz por meio da primitive `Toaster`, com
+  posição inferior direita, cores de estado, fechamento e tema claro atual;
 - páginas e layouts permanecem Server Components;
 - TanStack Query fica restrito ao layout de `/produtos`;
-- Client Components existem somente para hooks, formulários, diálogo, eventos e
-  APIs do navegador;
+- Client Components existem somente para hooks, formulários, diálogo, toast,
+  eventos e APIs do navegador;
 - a home original foi preservada e possui a ação “Ver produtos”.
 
 ### Infraestrutura HTTP e estado remoto
@@ -101,7 +104,8 @@ browserApiClient → /api/backend → API NestJS
   recebe foco e erros sem campo conhecido permanecem no feedback geral;
 - o formulário usa `fieldset disabled` durante a mutation e impede submissão
   duplicada;
-- criação navega para o produto criado e edição retorna ao detalhe atualizado.
+- criação navega para o produto criado e edição retorna ao detalhe atualizado;
+- ambas exibem em toast a `mensagem` do envelope de sucesso validado.
 
 ### Exclusão
 
@@ -112,10 +116,11 @@ browserApiClient → /api/backend → API NestJS
   disponível;
 - sucesso inicia `router.replace` para `/produtos`, remove o detalhe do cache e
   deixa a lista invalidada;
-- o `204` não possui body; a mensagem “Produto excluído com sucesso” é definida
-  pela Web;
-- o marcador `resultado=produto-excluido` é removido com
-  `history.replaceState`, evitando repetir a confirmação após reload.
+- o `204` não possui body; o toast “Produto excluído com sucesso” e sua
+  descrição são definidos pela Web;
+- não existe mais marcador transitório na URL nem componente exclusivo de
+  feedback da listagem; o `Toaster` global preserva a confirmação durante a
+  navegação interna.
 
 ## Verificações atuais
 
@@ -123,7 +128,7 @@ Em 6 de outubro de 2026:
 
 - lint do app Web: aprovado;
 - `next typegen` e `tsc --noEmit`: aprovados;
-- Vitest: 26 arquivos e 121 testes aprovados;
+- Vitest: 25 arquivos e 120 testes aprovados;
 - build de produção do Next.js: aprovado;
 - rotas geradas: `/`, `/produtos`, `/produtos/novo`,
   `/produtos/[produtoId]` e `/produtos/[produtoId]/editar`;

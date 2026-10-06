@@ -29,7 +29,7 @@ No estado atual da base:
 - `components.json` usa o estilo `radix-nova`, tokens `neutral` e aliases locais;
 - as primitives instaladas possuem consumidores atuais e incluem `AlertDialog`,
   `Badge`, `Button`, `Checkbox`, `Field`, `Input`, `Label`, `Select`,
-  `Separator`, `Skeleton`, `Table` e `Textarea`;
+  `Separator`, `Skeleton`, `Table`, `Textarea` e o `Toaster` do Sonner;
 - TanStack Query 5 está configurado no segmento `/produtos`, com provider na
   menor fronteira cliente atual;
 - existem clientes HTTP separados para navegador e servidor, operações e hooks
@@ -40,10 +40,11 @@ No estado atual da base:
 - `/produtos/novo`, `/produtos/[produtoId]` e
   `/produtos/[produtoId]/editar` completam o CRUD de Produto, incluindo
   formulários responsivos, máscaras decimais, datas locais, erros por campo,
-  confirmação destrutiva e feedback após `204 No Content`;
+  confirmação destrutiva e toasts de sucesso; create e update exibem a mensagem
+  validada da API, enquanto delete usa mensagem local após `204 No Content`;
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
   operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários
-  e diálogo de exclusão;
+  diálogo de exclusão e disparo dos toasts;
 - testes E2E no navegador ainda não foram adotados.
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
