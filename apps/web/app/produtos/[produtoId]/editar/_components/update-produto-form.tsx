@@ -25,6 +25,7 @@ import {
   type UpdateProdutoFormData,
   type UpdateProdutoFormInput,
 } from "@/features/produto/forms/update-produto-form.schema";
+import { toast } from "sonner";
 
 type UpdateProdutoFormProps = Readonly<{
   produto: ProdutoDetalhadoResponse;
@@ -73,6 +74,8 @@ export function UpdateProdutoForm({ produto }: UpdateProdutoFormProps) {
 
     try {
       const response = await mutation.mutateAsync(body);
+
+      toast.success(response.mensagem);
 
       router.replace(`/produtos/${response.dados.id}`);
     } catch (error: unknown) {

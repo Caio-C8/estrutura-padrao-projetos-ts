@@ -17,6 +17,13 @@ import { DeleteProdutoDialog } from "../delete-produto-dialog";
 
 const replaceMock = vi.hoisted(() => vi.fn());
 const useDeleteProdutoMock = vi.hoisted(() => vi.fn());
+const toastSuccessMock = vi.hoisted(() => vi.fn());
+
+vi.mock("sonner", () => ({
+  toast: {
+    success: toastSuccessMock,
+  },
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -74,6 +81,7 @@ afterEach(() => {
   cleanup();
   replaceMock.mockReset();
   useDeleteProdutoMock.mockReset();
+  toastSuccessMock.mockReset();
 });
 
 describe("DeleteProdutoDialog", () => {
@@ -155,9 +163,14 @@ describe("DeleteProdutoDialog", () => {
       expect(mutateAsync).toHaveBeenCalledOnce();
     });
 
-    expect(replaceMock).toHaveBeenCalledWith(
-      "/produtos?resultado=produto-excluido",
+    expect(toastSuccessMock).toHaveBeenCalledWith(
+      "Produto excluído com sucesso.",
+      {
+        description: "O produto e suas avaliações foram removidos.",
+      },
     );
+
+    expect(replaceMock).toHaveBeenCalledWith("/produtos");
 
     expect(queryClient.getQueryData(chaveDetalhe)).toBeUndefined();
 

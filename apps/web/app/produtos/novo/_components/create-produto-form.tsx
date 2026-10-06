@@ -21,6 +21,7 @@ import {
   type CreateProdutoFormInput,
 } from "@/features/produto/forms/create-produto-form.schema";
 import { ProdutoFormFields } from "@/features/produto/forms/produto-form-fields";
+import { toast } from "sonner";
 
 const CAMPOS_FORMULARIO = new Set<FieldPath<CreateProdutoFormInput>>([
   "sku",
@@ -62,6 +63,8 @@ export function CreateProdutoForm() {
 
     try {
       const response = await mutation.mutateAsync(dados);
+
+      toast.success(response.mensagem);
 
       router.replace(`/produtos/${response.dados.id}`);
     } catch (error: unknown) {

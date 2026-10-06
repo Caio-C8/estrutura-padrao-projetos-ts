@@ -20,6 +20,13 @@ const replaceMock = vi.hoisted(() => vi.fn());
 const mutateAsyncMock = vi.hoisted(() => vi.fn());
 const resetMutationMock = vi.hoisted(() => vi.fn());
 const useUpdateProdutoMock = vi.hoisted(() => vi.fn());
+const toastSuccessMock = vi.hoisted(() => vi.fn());
+
+vi.mock("sonner", () => ({
+  toast: {
+    success: toastSuccessMock,
+  },
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -133,6 +140,8 @@ describe("UpdateProdutoForm", () => {
     });
 
     expect(resetMutationMock).toHaveBeenCalledOnce();
+
+    expect(toastSuccessMock).toHaveBeenCalledWith(RESPOSTA_ATUALIZADA.mensagem);
 
     expect(replaceMock).toHaveBeenCalledWith(`/produtos/${PRODUTO_ID}`);
   });

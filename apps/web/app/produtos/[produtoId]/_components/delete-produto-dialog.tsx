@@ -18,6 +18,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { produtoQueryKeys } from "@/features/produto/api/produto-query-keys";
 import { useDeleteProduto } from "@/features/produto/api/use-delete-produto";
+import { toast } from "sonner";
 
 type DeleteProdutoDialogProps = Readonly<{
   produtoId: string;
@@ -48,12 +49,16 @@ export function DeleteProdutoDialog({
     try {
       await mutation.mutateAsync();
 
-      router.replace("/produtos?resultado=produto-excluido");
-
       queryClient.removeQueries({
         queryKey: produtoQueryKeys.detalhe(produtoId),
         exact: true,
       });
+
+      toast.success("Produto excluído com sucesso.", {
+        description: "O produto e suas avaliações foram removidos.",
+      });
+
+      router.replace("/produtos");
     } catch {
       return;
     }
