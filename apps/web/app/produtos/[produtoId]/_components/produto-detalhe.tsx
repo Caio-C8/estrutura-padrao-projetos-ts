@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ExternalLink, PackageX, RefreshCw } from "lucide-react";
+import { ExternalLink, PackageX, Pencil, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -154,9 +154,18 @@ export function ProdutoDetalhe({ produtoId }: ProdutoDetalheProps) {
             </p>
           </div>
 
-          <Badge variant="outline">
-            {formatarStatusProduto(produto.status)}
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline">
+              {formatarStatusProduto(produto.status)}
+            </Badge>
+
+            <Button asChild size="sm" variant="outline">
+              <Link href={`/produtos/${produto.id}/editar`}>
+                <Pencil aria-hidden="true" />
+                Editar produto
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {isFetching ? (

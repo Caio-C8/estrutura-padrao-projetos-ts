@@ -162,5 +162,13 @@ describe("ProdutoDetalhe", () => {
 
     expect(manual.getAttribute("target")).toBe("_blank");
     expect(manual.getAttribute("rel")).toContain("noopener");
+
+    const editarProduto = screen.getByRole("link", {
+      name: "Editar produto",
+    });
+
+    expect(editarProduto.getAttribute("href")).toBe(
+      `/produtos/${PRODUTO_ID}/editar`,
+    );
   });
 });
