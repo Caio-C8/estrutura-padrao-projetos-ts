@@ -100,7 +100,9 @@ describe("CreateProdutoForm", () => {
     expect(screen.getByText("O nome é obrigatório.")).toBeDefined();
 
     expect(
-      screen.getByText("O preço deve ser maior ou igual a 0.01."),
+      screen.getByText(
+        "O preço deve ser um decimal positivo com até 10 dígitos inteiros e 2 casas decimais.",
+      ),
     ).toBeDefined();
 
     expect(screen.getByLabelText(/^SKU/).getAttribute("aria-invalid")).toBe(
