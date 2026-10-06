@@ -34,7 +34,13 @@ No estado atual:
 - existem clientes HTTP centrais separados para navegador e servidor;
 - `createApiClient` usa `fetch` nativo, timeout, cancelamento, validação de
   responses, normalização de erros e tratamento de `204 No Content`;
-- a listagem de Produto possui operação, query keys e hook próprios;
+- listar, consultar, criar, atualizar e excluir Produto possuem operações e
+  hooks próprios;
+- params e bodies são validados antes da request; responses com corpo são
+  validadas com os schemas compartilhados;
+- create e update atualizam o detalhe conhecido e invalidam listas; delete
+  invalida listas, retorna `undefined` no `204` e tem o detalhe removido pela
+  interface ao navegar;
 - TanStack Query 5 gerencia o estado remoto no cliente e está limitado ao
   segmento `/produtos`;
 - o formato público de erros está definido por `RespostaErroSchema` e aplicado
@@ -48,9 +54,10 @@ No estado atual:
 - credenciais de autenticação no navegador já possuem o baseline de cookie
   `HttpOnly`, sem Web Storage.
 
-`WEB-001` é a primeira implementação concreta concluída. Os exemplos genéricos
-dos documentos complementares continuam sendo orientação para as próximas
-operações, não indicação de que todos os endpoints já possuem clientes e hooks.
+`WEB-001` e `WEB-002` são implementações concretas concluídas para Produto. Os
+exemplos genéricos dos documentos complementares continuam sendo orientação
+para novos domínios. Avaliações ainda não possuem operações ou hooks na Web e
+serão implementadas em `WEB-003`.
 
 ## Decisões da primeira integração
 

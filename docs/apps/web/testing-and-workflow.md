@@ -103,10 +103,16 @@ pnpm --filter @repo/web build
 pnpm format:check
 ```
 
-O script `test` executa `vitest run`. Em 5 de outubro de 2026, a suíte de
-`WEB-001` cobre cliente HTTP, query client, operação, query keys, hook, parser
-de filtros e componentes da listagem. Testes E2E continuam pendentes e a
-revisão manual permanece obrigatória.
+O script `test` executa `vitest run`. Em 6 de outubro de 2026, a suíte de
+`WEB-001` e `WEB-002` possui 26 arquivos e 121 testes. Ela cobre cliente HTTP,
+query client, operações e hooks do CRUD, query keys, parser de filtros,
+formatadores, máscaras, schemas e mappers de formulário, listagem, detalhe,
+criação, edição, diálogo de exclusão e feedback após `204`.
+
+Testes E2E continuam pendentes e a revisão manual permanece obrigatória. O
+`ResizeObserver` ausente no jsdom possui um mock mínimo no setup porque as
+primitives Radix o utilizam; o mock não substitui testes reais de layout, foco e
+teclado no navegador.
 
 Para mudança transversal:
 

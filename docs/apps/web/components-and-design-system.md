@@ -73,19 +73,22 @@ dependências e estilos sem consumidor.
 ### Estado implementado
 
 `components.json` usa o estilo `radix-nova`, Tailwind CSS 4, CSS variables,
-ícones Lucide e aliases locais. As primitives presentes são somente as usadas
-por `WEB-001`:
+ícones Lucide e aliases locais. As primitives presentes possuem consumidores em
+`WEB-001` ou `WEB-002`:
 
 - `Badge` para o status do produto;
-- `Button` para navegação, filtros, paginação e retry;
-- `Input` para pesquisa;
+- `Button` para navegação, filtros, paginação, retry e ações;
+- `Input`, `Textarea`, `Checkbox`, `Label`, `Field` e `Select` nos formulários;
+- `Separator` para organização visual dos campos;
 - `Skeleton` para carregamento;
-- `Table` para a composição em telas largas.
+- `Table` para a listagem em telas largas;
+- `AlertDialog` para confirmar a exclusão e manter foco e contexto da ação
+  destrutiva.
 
-Os `select` de filtro permanecem nativos nesta etapa. Não foi adicionada uma
-primitive `Select` apenas para uniformidade visual. `WEB-002` deve adicionar
-`AlertDialog` e primitives de formulário somente quando seus fluxos realmente
-forem implementados.
+Os `select` dos filtros da listagem continuam nativos porque são controles GET
+renderizáveis no servidor. A primitive `Select` atende os formulários
+interativos; não é necessário forçar a mesma implementação em contextos com
+comportamento diferente.
 
 ## Composição
 

@@ -16,10 +16,18 @@ Use as convenções do App Router:
 Não crie um sistema paralelo de roteamento, loading ou erro quando a convenção
 do Next.js atende o caso.
 
-No estado atual, `/` é estática e `/produtos` é dinâmica porque lê
-`searchParams`. A rota de produtos mantém o `page.tsx` como Server Component e
-isola TanStack Query e a listagem em fronteiras cliente. O próximo segmento será
-`/produtos/[produtoId]` em `WEB-002`.
+No estado atual, `/` e `/produtos/novo` são estáticas. `/produtos` é dinâmica
+porque lê `searchParams`; `/produtos/[produtoId]` e
+`/produtos/[produtoId]/editar` são dinâmicas porque recebem params. Todas mantêm
+o `page.tsx` como Server Component e isolam TanStack Query, formulários e
+diálogos nas menores fronteiras cliente necessárias.
+
+As rotas dinâmicas validam `produtoId` com `ProdutoParamsSchema` antes de
+renderizar seus consumidores. O detalhe diferencia loading, `404`, erro
+recuperável e sucesso. A criação e a edição possuem metadata própria e a
+exclusão retorna à listagem com um marcador transitório de sucesso; a Web remove
+esse marcador da URL com `history.replaceState` para que um reload não repita a
+mensagem antiga.
 
 ## Metadata e título obrigatório
 

@@ -23,24 +23,32 @@ No estado atual da base:
 - páginas e layouts são Server Components por padrão;
 - `@repo/contracts` já é dependência e está em `transpilePackages`;
 - a página inicial foi preservada e possui acesso ao catálogo em `/produtos`;
-- React Hook Form e `@hookform/resolvers` ainda não estão instalados;
+- React Hook Form, `@hookform/resolvers` e Zod 4 sustentam os formulários de
+  criação e edição de Produto;
 - Tailwind CSS 4 e shadcn/ui formam o baseline visual;
 - `components.json` usa o estilo `radix-nova`, tokens `neutral` e aliases locais;
-- as primitives atualmente usadas são `Badge`, `Button`, `Input`, `Skeleton` e
-  `Table`; não há componentes antecipados sem consumidor;
+- as primitives instaladas possuem consumidores atuais e incluem `AlertDialog`,
+  `Badge`, `Button`, `Checkbox`, `Field`, `Input`, `Label`, `Select`,
+  `Separator`, `Skeleton`, `Table` e `Textarea`;
 - TanStack Query 5 está configurado no segmento `/produtos`, com provider na
   menor fronteira cliente atual;
-- existem clientes HTTP separados para navegador e servidor, uma operação de
-  listagem, query keys e o hook `useProdutos`;
+- existem clientes HTTP separados para navegador e servidor, operações e hooks
+  próprios para listar, consultar, criar, atualizar e excluir Produto;
 - `/produtos` possui filtros e paginação na URL, validação dos parâmetros,
   estados de loading, vazio, erro e sucesso, cards em telas estreitas e tabela
   em telas largas;
+- `/produtos/novo`, `/produtos/[produtoId]` e
+  `/produtos/[produtoId]/editar` completam o CRUD de Produto, incluindo
+  formulários responsivos, máscaras decimais, datas locais, erros por campo,
+  confirmação destrutiva e feedback após `204 No Content`;
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
-  operação, hook, parser da URL e componentes da listagem;
+  operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários
+  e diálogo de exclusão;
 - testes E2E no navegador ainda não foram adotados.
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
-`WEB-001` está concluída e `WEB-002` é a próxima entrega no
+`WEB-001` e `WEB-002` estão concluídas; `WEB-003`, o CRUD aninhado de
+avaliações, é a próxima entrega no
 [roadmap da aplicação Web](./roadmap.md). O estado operacional e a ordem exata
 de continuação estão no [handoff](./handoff.md).
 
@@ -83,7 +91,7 @@ Detalhes e exemplos estão em [Páginas e rotas](./pages-and-routing.md).
 | Assunto                                       | Documento                                                                   |
 | --------------------------------------------- | --------------------------------------------------------------------------- |
 | Entregas, estado e critérios de aceite        | [Roadmap](./roadmap.md)                                                     |
-| Estado atual e início de `WEB-002`            | [Handoff](./handoff.md)                                                     |
+| Estado atual e início de `WEB-003`            | [Handoff](./handoff.md)                                                     |
 | Organização, renderização e estado            | [Arquitetura](./architecture.md)                                            |
 | Rotas, layouts, metadata e estados de página  | [Páginas e rotas](./pages-and-routing.md)                                   |
 | Componentização, shadcn/ui e design system    | [Componentes e design system](./components-and-design-system.md)            |

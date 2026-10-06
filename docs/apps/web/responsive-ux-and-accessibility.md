@@ -19,7 +19,7 @@ Não escolha breakpoints por modelos específicos de aparelho. Use o ponto em qu
 o conteúdo deixa de funcionar como critério e mantenha os tokens definidos pelo
 sistema visual.
 
-## Estado atual de `/produtos`
+## Estado atual do fluxo de Produto
 
 - filtros empilham em telas estreitas e expandem progressivamente;
 - produtos usam cards abaixo do breakpoint da tabela;
@@ -29,6 +29,19 @@ sistema visual.
 - campos de filtro inválidos usam borda, label e mensagem em cor destrutiva,
   além de `aria-invalid` e `aria-describedby`;
 - valores informados são preservados após erro de URL.
+- detalhe e formulários usam grids que voltam a uma coluna antes de comprometer
+  labels, mensagens e ações;
+- criação e edição associam erros a seus campos com `aria-invalid` e
+  `aria-describedby` e movem o foco para o primeiro erro retornado pela API;
+- campos monetários e de peso apresentam unidade visível sem alterar o valor
+  semântico enviado ao backend;
+- datas com horário são apresentadas no fuso local, sem exigir que o usuário
+  conheça a representação UTC da integração;
+- a exclusão usa `AlertDialog`, informa que as avaliações também serão
+  removidas, bloqueia repetição durante o pending e mantém o erro recuperável no
+  próprio contexto;
+- depois do `204`, a listagem anuncia a conclusão com `role="status"` e remove
+  da URL o marcador transitório para não repetir feedback antigo em reload.
 
 ## Padrões adaptáveis
 

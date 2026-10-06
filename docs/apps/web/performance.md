@@ -9,14 +9,21 @@ métricas, percentis, comparação e responsabilidades das demais camadas.
 
 ## Estado atual
 
-Em `WEB-001`, o provider do TanStack Query foi limitado ao segmento
-`/produtos`, a lista é paginada e o trabalho controlado pela URL possui limite
-máximo de 50 itens. A interface oferece 10, 20 ou 50. O hook encaminha
-cancelamento e permite no máximo uma repetição transitória.
+O provider do TanStack Query permanece limitado ao segmento `/produtos`. A
+lista é paginada e o trabalho controlado pela URL possui limite máximo de 50
+itens; a interface oferece 10, 20 ou 50. Hooks de leitura encaminham
+cancelamento e permitem no máximo uma repetição transitória, enquanto mutations
+não possuem retry.
+
+As páginas continuam Server Components. Somente listagem, detalhe,
+formulários, diálogo e feedback que usam hooks, eventos ou APIs do navegador
+entram no grafo cliente. Operações e campos compartilhados evitam duplicar
+infraestrutura ou formulários inteiros, sem adicionar estado global.
 
 Não foi introduzido prefetch no servidor, hydration, `staleTime`, cache
-persistente ou virtualização sem um gargalo medido. No build atual, `/` é
-estática e `/produtos` é dinâmica por usar `searchParams`.
+persistente ou virtualização sem um gargalo medido. No build atual, `/` e
+`/produtos/novo` são estáticas; `/produtos`, `/produtos/[produtoId]` e
+`/produtos/[produtoId]/editar` são dinâmicas.
 
 ## Métricas mínimas
 

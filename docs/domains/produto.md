@@ -77,7 +77,7 @@ marcada como concluída depois das verificações correspondentes.
 - [ ] testes E2E específicos das rotas de `AvaliacaoProduto` implementados;
 - [x] objetivos e decisões da aplicação Web registrados;
 - [x] `WEB-001`: baseline da Web e listagem de produtos implementados;
-- [ ] `WEB-002`: detalhes e CRUD de Produto implementados;
+- [x] `WEB-002`: detalhes e CRUD de Produto implementados;
 - [ ] `WEB-003`: listagem e CRUD de Avaliação implementados;
 - [ ] `WEB-004`: testes da interface e dos fluxos críticos implementados;
 - [ ] `WEB-005`: preparação de produção explicitamente avaliada.
@@ -85,14 +85,16 @@ marcada como concluída depois das verificações correspondentes.
 ## Plano da aplicação Web
 
 O trabalho da Web está dividido em entregas no
-[roadmap da aplicação Web](../apps/web/roadmap.md). A primeira fatia vertical de
-leitura foi concluída e provou o design system, o cliente HTTP, a validação de
-responses, o cache remoto e os estados da listagem antes das mutações:
+[roadmap da aplicação Web](../apps/web/roadmap.md). As duas primeiras fatias
+verticais foram concluídas e provaram o design system, o cliente HTTP, a
+validação de requests e responses, o cache remoto, formulários e mutações:
 
 1. preservar a home e entregar `/produtos` com filtros e paginação na URL —
    concluído em `WEB-001`;
-2. entregar detalhes, criação, edição e exclusão de Produto — próxima entrega;
-3. entregar a coleção paginada e o CRUD aninhado de avaliações;
+2. entregar detalhes, criação, edição e exclusão de Produto — concluído em
+   `WEB-002`;
+3. entregar a coleção paginada e o CRUD aninhado de avaliações — próxima
+   entrega;
 4. consolidar testes de interface e fluxos críticos;
 5. tomar as decisões de segurança, observabilidade e performance necessárias
    antes de reutilizar o exemplo em produção.
@@ -105,10 +107,11 @@ As decisões implementadas são `fetch` nativo para os clientes HTTP, TanStack
 Query 5 para estado remoto cliente, validação de responses por
 `@repo/contracts` e Server Components como padrão. Tailwind CSS 4 e shadcn/ui
 formam o baseline visual, com tabela em telas largas e cards em telas estreitas.
-React Hook Form com resolver Zod permanece planejado para o primeiro formulário
-de `WEB-002` e ainda não está instalado.
+React Hook Form com resolver Zod sustenta os formulários de Produto. Schemas e
+mappers locais convertem máscaras, datas locais, strings vazias, `null` e
+campos ausentes sem alterar os contratos externos.
 
-### Estado de `WEB-001`
+### Estado de `WEB-001` e `WEB-002`
 
 - a home possui acesso para `/produtos`;
 - filtros de pesquisa, status, destaque e limite são validados e preservados na
@@ -124,10 +127,21 @@ de `WEB-002` e ainda não está instalado.
   e componentes;
 - a integração Web → rewrite do Next.js → API foi exercitada no ambiente
   local.
+- detalhe, criação, edição e exclusão possuem operações e hooks próprios;
+- as rotas `/produtos/novo`, `/produtos/[produtoId]` e
+  `/produtos/[produtoId]/editar` estão implementadas;
+- create e update possuem schemas próprios e reutilizam somente os campos
+  visuais realmente comuns;
+- preço e peso usam máscaras decimais; datas com horário são apresentadas no
+  fuso local e convertidas para ISO 8601 UTC no payload;
+- o update envia apenas campos alterados e usa `null` para limpar anuláveis;
+- a exclusão usa `AlertDialog`, trata `204 No Content`, invalida o cache
+  relacionado e apresenta mensagem definida pela Web;
+- 26 arquivos com 121 testes, lint, typecheck e build do app Web passam.
 
-`WEB-002` começará por `GET /produtos/:produtoId` e uma página de detalhe
-somente leitura. Criação, edição e exclusão virão depois que essa leitura estiver
-validada.
+`WEB-003` começará pela listagem paginada de avaliações, sempre incluindo
+`produtoId` nas query keys, operações e rotas. Criação, edição e exclusão virão
+depois que a leitura aninhada estiver validada.
 
 Autenticação e autorização continuam fora do exemplo público atual. Esse fato
 deve ser apresentado como limitação consciente e não como modelo de segurança
@@ -423,8 +437,8 @@ implementação usa os dois IDs nas queries. A listagem verifica primeiro a
 existência do produto, executa busca e contagem independentes em paralelo e
 ordena por `createdAt` e `id` decrescentes. A exclusão responde
 `204 No Content`, sem corpo. Os testes E2E da API permanecem fora desta etapa
-concluída. Na aplicação Web, `WEB-001` está concluída e `WEB-002` é a próxima
-entrega.
+concluída. Na aplicação Web, `WEB-001` e `WEB-002` estão concluídas e `WEB-003`
+é a próxima entrega.
 
 ## Alcance das validações
 

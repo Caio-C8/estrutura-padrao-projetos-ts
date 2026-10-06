@@ -10,14 +10,30 @@ Formulários interativos devem usar:
   verdadeiramente a mesma representação e semântica;
 - primitives de formulário do design system.
 
-Essas dependências ainda não estão instaladas na base. Antes do primeiro
-formulário, adicione-as explicitamente ao `@repo/web` e valide as versões
-compatíveis com React 19 e Zod 4.
+Essas dependências estão instaladas no `@repo/web` e foram validadas com React
+19 e Zod 4 nos formulários de criação e edição de Produto. Os filtros GET de
+`/produtos` continuam sem React Hook Form: são controles nativos submetidos por
+`next/form` e validados a partir da URL no Server Component.
 
-O primeiro uso está planejado para criação de Produto em `WEB-002`, depois da
-página de detalhe somente leitura. Os filtros GET de `/produtos` não usam React
-Hook Form: eles são controles nativos submetidos por `next/form` e validados a
-partir da URL no Server Component.
+## Implementação atual de Produto
+
+- `ProdutoFormFields` concentra apenas os controles e grupos semânticos comuns;
+- criação e edição mantêm schemas próprios, pois seus payloads e a semântica de
+  ausência são diferentes;
+- o formulário de edição envia somente campos marcados como alterados pelo
+  React Hook Form;
+- apagar um campo anulável no update produz `null`; deixar um campo intacto o
+  mantém ausente do `PATCH`;
+- erros da API cujo `campo` corresponde a um controle são exibidos junto dele e
+  recebem foco; erros sem correspondência permanecem no feedback geral;
+- `preco` e `pesoKg` usam máscara decimal preenchida da direita para a esquerda,
+  com apresentação em reais e quilogramas;
+- `datetime-local` representa a data no fuso local do navegador e o mapper a
+  converte para ISO 8601 UTC no payload;
+- datas e horários recebidos são formatados no fuso local para apresentação;
+- o formulário inteiro fica protegido por `fieldset disabled` durante a
+  mutation, evitando submissão duplicada sem propagar `disabled` manualmente a
+  cada controle.
 
 ## Contrato não é automaticamente formulário
 

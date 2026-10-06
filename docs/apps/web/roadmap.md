@@ -38,14 +38,15 @@ que as revelar, desde que sejam registradas.
 
 ## Progresso atual
 
-`WEB-001` está concluída. A home foi preservada, o baseline visual foi
-consolidado, a infraestrutura HTTP e o TanStack Query foram implementados e a
-lista `/produtos` funciona contra a API real com filtros e paginação na URL.
+`WEB-001` e `WEB-002` estão concluídas. A home foi preservada, o baseline
+visual, a infraestrutura HTTP e o TanStack Query foram implementados, e o CRUD
+Web de Produto cobre listagem, detalhe, criação, edição e exclusão. Filtros e
+paginação permanecem na URL; formulários possuem schemas e mappers locais; a
+exclusão confirma a remoção em cascata das avaliações e trata `204 No Content`.
 
-A próxima entrega é `WEB-002`. Ela começará pela leitura e pela página de
-detalhes do produto, reutilizando a infraestrutura já validada, e somente
-depois avançará para criação, edição e exclusão. O estado exato e a ordem de
-continuação estão no [handoff](./handoff.md).
+A próxima entrega é `WEB-003`. Ela acrescentará o CRUD aninhado de avaliações
+sem incluir uma coleção ilimitada na response básica de Produto. O estado exato
+e a ordem de continuação estão no [handoff](./handoff.md).
 
 ## Rotas planejadas
 
@@ -54,7 +55,7 @@ continuação estão no [handoff](./handoff.md).
 | `/`                                                     | home atual e acesso ao catálogo            | `WEB-001` |
 | `/produtos`                                             | filtros, paginação e lista responsiva      | `WEB-001` |
 | `/produtos/novo`                                        | criação de produto                         | `WEB-002` |
-| `/produtos/[produtoId]`                                 | detalhes, ações e resumo das avaliações    | `WEB-002` |
+| `/produtos/[produtoId]`                                 | detalhes e ações do produto                | `WEB-002` |
 | `/produtos/[produtoId]/editar`                          | edição de produto                          | `WEB-002` |
 | `/produtos/[produtoId]/avaliacoes`                      | lista paginada e filtros de avaliações     | `WEB-003` |
 | `/produtos/[produtoId]/avaliacoes/nova`                 | criação de avaliação                       | `WEB-003` |
@@ -184,7 +185,7 @@ estados remotos antes de introduzir formulários e mutações.
 
 ### WEB-002 — Entregar detalhes e CRUD de Produto
 
-**Status:** próxima entrega
+**Status:** concluído em 6 de outubro de 2026
 
 **Contexto**
 
@@ -218,19 +219,19 @@ permitir administrar o ciclo de vida completo de um produto.
 
 **Critérios de aceite**
 
-- [ ] detalhes, criação, edição e exclusão funcionam contra a API real;
-- [ ] campos usam labels, descrição e mensagens associadas semanticamente;
-- [ ] valores numéricos, booleanos, datas e anuláveis são mapeados
+- [x] detalhes, criação, edição e exclusão funcionam contra a API real;
+- [x] campos usam labels, descrição e mensagens associadas semanticamente;
+- [x] valores numéricos, booleanos, datas e anuláveis são mapeados
       explicitamente;
-- [ ] create e update não compartilham um schema de formulário por suposição;
-- [ ] ações destrutivas exigem confirmação e mantêm contexto suficiente para o
+- [x] create e update não compartilham um schema de formulário por suposição;
+- [x] ações destrutivas exigem confirmação e mantêm contexto suficiente para o
       usuário decidir;
-- [ ] erros `400`, `404`, `409` e `5xx` possuem experiências distintas quando
+- [x] erros `400`, `404`, `409` e `5xx` possuem experiências distintas quando
       o contrato permitir;
-- [ ] mutações não são repetidas automaticamente;
-- [ ] cache é invalidado no menor escopo correto;
-- [ ] fluxos são responsivos, acessíveis e verificáveis por testes;
-- [ ] verificações do app Web e documentação passam.
+- [x] mutações não são repetidas automaticamente;
+- [x] cache é invalidado no menor escopo correto;
+- [x] fluxos são responsivos, acessíveis e verificáveis por testes;
+- [x] verificações do app Web e documentação passam.
 
 **Ordem interna recomendada**
 
@@ -247,9 +248,22 @@ permitir administrar o ciclo de vida completo de um produto.
    `204 No Content`, invalidação mínima e navegação segura;
 9. revisar responsividade, acessibilidade, integração real e verificações.
 
+**Estado entregue**
+
+- o detalhe formata moeda, peso, datas de calendário e data/hora localmente;
+- criação e edição reutilizam os controles, mas mantêm schemas e mappers
+  compatíveis com a semântica própria de cada operação;
+- preço e peso possuem máscara decimal preenchida da direita para a esquerda;
+- o update envia somente campos alterados e usa `null` para limpar anuláveis;
+- operações e hooks separados cobrem `GET`, `POST`, `PATCH` e `DELETE`;
+- a exclusão usa `AlertDialog`, informa a cascata de avaliações, remove o
+  detalhe do cache, invalida listas e exibe confirmação definida pela Web;
+- em 6 de outubro de 2026, lint, typecheck, 26 arquivos com 121 testes e build
+  de produção foram aprovados.
+
 ### WEB-003 — Entregar o CRUD aninhado de avaliações
 
-**Status:** planejado
+**Status:** próxima entrega
 
 **Contexto**
 

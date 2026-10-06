@@ -253,9 +253,9 @@ Ficam fora deste objetivo:
 **Consumidores afetados**
 
 - `apps/api`, que devolve as mensagens geradas pelos schemas no erro público;
-- `apps/web`, que já consome o contrato público de erro e usará as mensagens de
-  campos nos formulários de `WEB-002`, embora esses formulários não façam parte
-  deste objetivo.
+- `apps/web`, que consome o contrato público de erro e apresenta as mensagens de
+  campos nos formulários concluídos de `WEB-002`, embora esses formulários não
+  façam parte deste objetivo.
 
 **Critérios de aceite**
 
@@ -281,9 +281,10 @@ Ficam fora deste objetivo:
 - lint, typecheck e os 107 testes de `@repo/contracts` passam;
 - lint, typecheck, as 11 suítes com 97 testes e o build da API passam, incluindo
   os testes unitários do CRUD de `AvaliacaoProduto`;
-- a listagem Web de Produto já valida filtros e response com os contratos
-  compartilhados; os formulários de Produto pertencem a `WEB-002` e o CRUD Web
-  de `AvaliacaoProduto` pertence a `WEB-003`.
+- o CRUD Web de Produto valida filtros, params, bodies e responses com os
+  contratos compartilhados nos boundaries adequados; formulários locais
+  convertem a representação dos controles; o CRUD Web de
+  `AvaliacaoProduto` pertence a `WEB-003`.
 
 **Decisões**
 

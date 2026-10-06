@@ -15,14 +15,21 @@ apps/web/
 └── features/
     └── <dominio>/
         └── api/
+            ├── create-produto.ts
+            ├── delete-produto.ts
+            ├── get-produto.ts
             ├── get-produtos.ts
             ├── produto-query-keys.ts
-            └── use-produtos.ts
+            ├── update-produto.ts
+            ├── use-*.ts
+            └── validar-produto-id.ts
 ```
 
-A infraestrutura comum e a operação de listagem já existem. As operações de
-detalhe e mutação serão acrescentadas em `WEB-002`. Não crie diretórios vazios
-nem antecipe arquivos sem consumidor.
+A infraestrutura comum e todas as operações do CRUD Web de Produto já existem.
+Cada método e endpoint possui uma função própria; os hooks cliente permanecem
+separados das operações. `WEB-003` seguirá a mesma regra para o sub-recurso
+aninhado de avaliações, sempre carregando `produtoId`. Não crie diretórios
+vazios nem antecipe arquivos sem consumidor.
 
 ## Abstração comum
 
@@ -156,9 +163,14 @@ seguras:
 Escolha a alternativa mais simples para a feature. Não use condição baseada em
 `typeof window` em módulo que pode carregar segredos.
 
-Produto usa a segunda alternativa: `getProdutos` recebe `ApiClient` como
-dependência. O hook fornece `browserApiClient`; um Server Component poderá
+Produto usa a segunda alternativa: todas as operações recebem `ApiClient` como
+dependência. Os hooks fornecem `browserApiClient`; um Server Component poderá
 fornecer `serverApiClient` sem duplicar contratos ou montagem da request.
+
+As operações de create e update validam e normalizam o body antes do envio. As
+operações por ID compartilham a conversão de falhas de `ProdutoParamsSchema`
+para `ApiError`. `deleteProduto` não configura response schema porque o contrato
+HTTP bem-sucedido é `204 No Content`.
 
 ## Contratos
 
