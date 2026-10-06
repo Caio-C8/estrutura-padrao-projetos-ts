@@ -16,4 +16,9 @@ export const produtoQueryKeys = {
         emDestaque: query.emDestaque,
       },
     ] as const,
+
+  detalhes: () => [...produtoQueryKeys.raiz, "detalhe"] as const,
+
+  detalhe: (produtoId: string) =>
+    [...produtoQueryKeys.detalhes(), produtoId] as const,
 };

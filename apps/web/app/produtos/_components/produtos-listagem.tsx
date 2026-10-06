@@ -8,7 +8,6 @@ import {
   RefreshCw,
 } from "lucide-react";
 import {
-  StatusProduto,
   type ListProdutosQueryInput,
   type ProdutoResumoResponse,
 } from "@repo/contracts";
@@ -24,30 +23,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useProdutos } from "@/features/produto/api/use-produtos";
+import {
+  formatarPrecoProduto,
+  formatarStatusProduto,
+} from "@/features/produto/lib/produto-formatters";
 
 type ProdutosListagemProps = Readonly<{
   query: ListProdutosQueryInput;
 }>;
-
-const formatadorPreco = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
-
-function formatarPreco(preco: string): string {
-  return formatadorPreco.format(Number(preco));
-}
-
-function obterStatus(produto: ProdutoResumoResponse): string {
-  switch (produto.status) {
-    case StatusProduto.ATIVO:
-      return "Ativo";
-    case StatusProduto.RASCUNHO:
-      return "Rascunho";
-    case StatusProduto.DESCONTINUADO:
-      return "Descontinuado";
-  }
-}
 
 function criarHrefPagina(
   query: ListProdutosQueryInput,
@@ -99,20 +82,31 @@ function ProdutoMobile({
       <article className="rounded-xl border bg-card p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="wrap-break-word font-semibold">{produto.nome}</h3>
+            <h3 className="wrap-break-word font-semibold">
+              <Link
+                href={`/produtos/${produto.id}`}
+                className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {produto.nome}
+              </Link>
+            </h3>
 
             <p className="mt-1 break-all text-sm text-muted-foreground">
               {produto.sku}
             </p>
           </div>
 
-          <Badge variant="outline">{obterStatus(produto)}</Badge>
+          <Badge variant="outline">
+            {formatarStatusProduto(produto.status)}
+          </Badge>
         </div>
 
         <dl className="mt-5 grid grid-cols-2 gap-4 text-sm">
           <div>
             <dt className="text-muted-foreground">Preço</dt>
-            <dd className="mt-1 font-medium">{formatarPreco(produto.preco)}</dd>
+            <dd className="mt-1 font-medium">
+              {formatarPrecoProduto(produto.preco)}
+            </dd>
           </div>
 
           <div>
@@ -240,18 +234,25 @@ export function ProdutosListagem({ query }: ProdutosListagemProps) {
                 {data.dados.map((produto) => (
                   <TableRow key={produto.id}>
                     <TableCell>
-                      <p className="font-medium">{produto.nome}</p>
+                      <Link
+                        href={`/produtos/${produto.id}`}
+                        className="rounded-sm font-medium underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {produto.nome}
+                      </Link>
                       <p className="mt-1 text-xs text-muted-foreground">
                         {produto.sku}
                       </p>
                     </TableCell>
 
                     <TableCell>
-                      <Badge variant="outline">{obterStatus(produto)}</Badge>
+                      <Badge variant="outline">
+                        {formatarStatusProduto(produto.status)}
+                      </Badge>
                     </TableCell>
 
                     <TableCell className="text-right">
-                      {formatarPreco(produto.preco)}
+                      {formatarPrecoProduto(produto.preco)}
                     </TableCell>
 
                     <TableCell className="text-right">
