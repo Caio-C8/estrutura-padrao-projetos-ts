@@ -17,7 +17,6 @@ const formatadorData = new Intl.DateTimeFormat("pt-BR", {
 const formatadorDataHora = new Intl.DateTimeFormat("pt-BR", {
   dateStyle: "medium",
   timeStyle: "short",
-  timeZone: "UTC",
 });
 
 export function formatarPrecoProduto(preco: string): string {
@@ -56,5 +55,5 @@ export function formatarDataHoraProduto(data: string | null): string {
     return "Não informada";
   }
 
-  return `${formatadorDataHora.format(new Date(data))} UTC`;
+  return formatadorDataHora.format(new Date(data));
 }
