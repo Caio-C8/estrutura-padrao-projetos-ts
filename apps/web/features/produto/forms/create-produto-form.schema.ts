@@ -2,23 +2,9 @@ import * as z from "zod";
 import {
   CreateProdutoSchema,
   StatusProduto,
-  StatusProdutoSchema,
   type CreateProdutoInput,
 } from "@repo/contracts";
-
-const CreateProdutoFormFieldsSchema = z.strictObject({
-  sku: z.string(),
-  nome: z.string(),
-  descricao: z.string(),
-  urlManual: z.string(),
-  status: StatusProdutoSchema,
-  emDestaque: z.boolean(),
-  estoque: z.string(),
-  preco: z.string(),
-  pesoKg: z.string(),
-  dataValidade: z.string(),
-  disponivelEm: z.string(),
-});
+import { ProdutoFormFieldsSchema } from "./produto-form-fields.schema";
 
 function normalizarTextoOpcional(valor: string): string | undefined {
   const valorNormalizado = valor.trim();
@@ -81,7 +67,7 @@ function normalizarDataHoraLocal(valor: string): string | undefined {
   return dataLocal.toISOString();
 }
 
-export const CreateProdutoFormSchema = CreateProdutoFormFieldsSchema.transform(
+export const CreateProdutoFormSchema = ProdutoFormFieldsSchema.transform(
   (valores): CreateProdutoInput => {
     const descricao = normalizarTextoOpcional(valores.descricao);
 
