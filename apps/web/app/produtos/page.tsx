@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, PackageSearch, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { lerProdutosSearchParams } from "@/features/produto/lib/list-produtos-search-params";
+import { ProdutoExcluidoFeedback } from "./_components/produto-excluido-feedback";
 import { ProdutosFiltros } from "./_components/produtos-filtros";
 import { ProdutosListagem } from "./_components/produtos-listagem";
-import { lerProdutosSearchParams } from "@/features/produto/lib/list-produtos-search-params";
 
 export const metadata: Metadata = {
   title: "Produtos",
@@ -14,8 +15,11 @@ export const metadata: Metadata = {
 export default async function ProdutosPage({
   searchParams,
 }: PageProps<"/produtos">) {
-  const filtros = lerProdutosSearchParams(await searchParams);
+  const parametros = await searchParams;
+  const filtros = lerProdutosSearchParams(parametros);
   const errosFiltros = filtros.sucesso ? [] : filtros.erros;
+
+  const produtoExcluido = parametros.resultado === "produto-excluido";
 
   return (
     <main className="min-h-svh bg-background">
@@ -49,6 +53,8 @@ export default async function ProdutosPage({
             </Link>
           </Button>
         </header>
+
+        {produtoExcluido ? <ProdutoExcluidoFeedback /> : null}
 
         <ProdutosFiltros valores={filtros.valores} erros={errosFiltros} />
 

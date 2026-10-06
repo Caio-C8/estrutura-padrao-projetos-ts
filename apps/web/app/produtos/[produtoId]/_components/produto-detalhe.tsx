@@ -14,6 +14,7 @@ import {
   formatarPrecoProduto,
   formatarStatusProduto,
 } from "@/features/produto/lib/produto-formatters";
+import { DeleteProdutoDialog } from "./delete-produto-dialog";
 
 type ProdutoDetalheProps = Readonly<{
   produtoId: string;
@@ -165,6 +166,11 @@ export function ProdutoDetalhe({ produtoId }: ProdutoDetalheProps) {
                 Editar produto
               </Link>
             </Button>
+
+            <DeleteProdutoDialog
+              produtoId={produto.id}
+              produtoNome={produto.nome}
+            />
           </div>
         </div>
 

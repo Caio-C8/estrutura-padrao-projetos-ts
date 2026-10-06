@@ -12,6 +12,14 @@ vi.mock("@/features/produto/api/use-produto", () => ({
   useProduto: useProdutoMock,
 }));
 
+vi.mock("../delete-produto-dialog", () => ({
+  DeleteProdutoDialog: ({ produtoId }: { produtoId: string }) => (
+    <button type="button" data-produto-id={produtoId}>
+      Excluir produto
+    </button>
+  ),
+}));
+
 const PRODUTO_ID = "b5c5f7e3-4c5f-4f61-9c67-f9da7a2584e4";
 
 const RESPOSTA = {
@@ -170,5 +178,11 @@ describe("ProdutoDetalhe", () => {
     expect(editarProduto.getAttribute("href")).toBe(
       `/produtos/${PRODUTO_ID}/editar`,
     );
+
+    const excluirProduto = screen.getByRole("button", {
+      name: "Excluir produto",
+    });
+
+    expect(excluirProduto.getAttribute("data-produto-id")).toBe(PRODUTO_ID);
   });
 });
