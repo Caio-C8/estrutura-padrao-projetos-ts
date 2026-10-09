@@ -103,14 +103,15 @@ pnpm --filter @repo/web build
 pnpm format:check
 ```
 
-O script `test` executa `vitest run`. Em 9 de outubro de 2026, a suíte possui 38
-arquivos e 174 testes. Além de `WEB-001` e `WEB-002`, ela cobre a parte já
+O script `test` executa `vitest run`. Em 9 de outubro de 2026, a suíte possui 44
+arquivos e 206 testes. Além de `WEB-001` e `WEB-002`, ela cobre a parte já
 implementada de `WEB-003`: query keys aninhadas, validação de params, parser de
-filtros, operações e hooks de lista, detalhe e criação de avaliação, schemas do
-formulário, seleção da nota por estrelas, estados das telas e toast de sucesso.
-Os testes dos componentes simulam somente `toast.success` e verificam a mensagem
-emitida: creates e updates com corpo recebem a mensagem da response, enquanto
-delete de Produto usa o conteúdo local correspondente ao `204`.
+filtros, operações e hooks de lista, detalhe, criação e edição de avaliação,
+schemas e mappers dos formulários, seleção da nota por estrelas, payload parcial
+do update, estados das telas e toast de sucesso. Os testes dos componentes
+simulam somente `toast.success` e verificam a mensagem emitida: creates e
+updates com corpo recebem a mensagem da response, enquanto delete de Produto
+usa o conteúdo local correspondente ao `204`.
 
 Na última verificação registrada, `pnpm --filter @repo/web test`, `typecheck` e
 `lint` passaram. Build, `format:check`, teste manual completo do seletor por

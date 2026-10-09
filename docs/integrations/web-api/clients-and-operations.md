@@ -15,23 +15,29 @@ apps/web/
 └── features/
     └── <dominio>/
         └── api/
+            ├── avaliacao-produto-query-keys.ts
+            ├── create-avaliacao-produto.ts
             ├── create-produto.ts
             ├── delete-produto.ts
+            ├── get-avaliacao-produto.ts
+            ├── get-avaliacoes-produto.ts
             ├── get-produto.ts
             ├── get-produtos.ts
             ├── produto-query-keys.ts
+            ├── update-avaliacao-produto.ts
             ├── update-produto.ts
             ├── use-*.ts
+            ├── validar-avaliacao-produto-params.ts
             └── validar-produto-id.ts
 ```
 
 A infraestrutura comum e todas as operações do CRUD Web de Produto já existem.
 Cada método e endpoint possui uma função própria; os hooks cliente permanecem
 separados das operações. Em `WEB-003`, `getAvaliacoesProduto`,
-`getAvaliacaoProduto` e `createAvaliacaoProduto` já seguem a mesma regra para o
-sub-recurso aninhado e sempre carregam `produtoId`. Update e delete de avaliação
-ainda não foram criados. Não crie diretórios vazios nem antecipe arquivos sem
-consumidor.
+`getAvaliacaoProduto`, `createAvaliacaoProduto` e `updateAvaliacaoProduto` já
+seguem a mesma regra para o sub-recurso aninhado e sempre carregam `produtoId`.
+Somente delete de avaliação ainda não foi criado. Não crie diretórios vazios
+nem antecipe arquivos sem consumidor.
 
 ## Abstração comum
 
@@ -176,9 +182,10 @@ HTTP bem-sucedido é `204 No Content`.
 
 Nas avaliações, a validação compartilhada distingue params da coleção, que
 exigem `produtoId`, dos params do item, que exigem também `avaliacaoId`. Lista,
-detalhe e criação validam suas responses com os schemas exportados por
-`@repo/contracts`. A criação normaliza o body antes da request; toast e
-navegação continuam no formulário consumidor.
+detalhe, criação e atualização validam suas responses com os schemas exportados
+por `@repo/contracts`. Create e update normalizam o body antes da request; no
+update, o mapper do formulário seleciona apenas campos alterados antes da
+operação. Toast e navegação continuam no formulário consumidor.
 
 ## Contratos
 

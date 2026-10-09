@@ -29,8 +29,9 @@ Produto validou a arquitetura na API e no CRUD Web completo: listagem, detalhe,
 criação, atualização e exclusão validam params, query, body ou response nos
 boundaries apropriados. Os formulários mantêm schemas locais quando a
 representação dos controles diverge do contrato HTTP, sem duplicar regras
-externas desnecessariamente. Avaliações já possuem contratos e CRUD na API e
-serão a próxima integração Web em `WEB-003`.
+externas desnecessariamente. Avaliações possuem contratos e CRUD na API; na Web,
+`WEB-003` já integrou listagem, detalhe, criação e atualização, restando a
+exclusão do sub-recurso.
 
 Os documentos deste diretório descrevem tanto as decisões aprovadas quanto o
 plano para construir a camada de validação. Exemplos marcados como conceituais

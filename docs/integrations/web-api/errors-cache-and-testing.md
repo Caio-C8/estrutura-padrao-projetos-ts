@@ -214,11 +214,13 @@ Em `WEB-001`, `WEB-002` e na parte implementada de `WEB-003`, o cliente HTTP é
 testado com `fetch` injetado, todas as operações recebem um `ApiClient` por
 dependência e os hooks simulam o cliente central. Os testes cobrem leitura,
 criação, atualização, exclusão, invalidação e remoção de detalhes, erros
-públicos, formulários e toasts de sucesso. A criação de avaliação também
-confirma que somente listas do mesmo `produtoId` são invalidadas e que o detalhe
-retornado é escrito na chave aninhada correta. Create e update com corpo
-verificam a mensagem da response validada; delete de Produto verifica o título
-e a descrição locais usados depois de `204 No Content`.
+públicos, formulários e toasts de sucesso. Criação e atualização de avaliação
+confirmam que somente listas do mesmo `produtoId` são invalidadas e que o
+detalhe retornado é escrito na chave aninhada correta; o update também comprova
+que listas de outro produto não são invalidadas e que falhas preservam o cache.
+Create e update com corpo verificam a mensagem da response validada; delete de
+Produto verifica o título e a descrição locais usados depois de
+`204 No Content`.
 
 A integração real Web → rewrite do Next.js → API também foi exercitada
 manualmente durante o CRUD de Produto. Uma ferramenta E2E automatizada continua

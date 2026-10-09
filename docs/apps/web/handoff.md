@@ -1,7 +1,7 @@
 # Handoff da aplicação Web
 
 Atualizado em 9 de outubro de 2026 durante `WEB-003`, depois da entrega de
-listagem, detalhe e criação de Avaliação de Produto.
+listagem, detalhe, criação e edição de Avaliação de Produto.
 
 Este documento é o retrato operacional para continuar o trabalho. Planejamento
 e critérios permanentes ficam no [roadmap](./roadmap.md).
@@ -25,6 +25,7 @@ home
         └── /avaliacoes ─────────────────── listar e filtrar avaliações
               ├── /nova ─────────────────── criar avaliação
               └── /[avaliacaoId] ────────── consultar avaliação
+                    └── /editar ──────────── atualizar avaliação
 ```
 
 Todas as operações cliente seguem:
@@ -77,11 +78,14 @@ browserApiClient → /api/backend → API NestJS
 - `getAvaliacoesProduto` + `useAvaliacoesProduto` implementam a coleção;
 - `getAvaliacaoProduto` + `useAvaliacaoProduto` implementam o detalhe;
 - `createAvaliacaoProduto` + `useCreateAvaliacaoProduto` implementam criação;
+- `updateAvaliacaoProduto` + `useUpdateAvaliacaoProduto` implementam edição;
 - a criação escreve a response na chave do detalhe criado e invalida somente
   as listas do produto correspondente;
+- a atualização substitui o detalhe conhecido e invalida somente as listas do
+  mesmo `produtoId`; listas de outros produtos não são invalidadas;
 - params, query, body e responses são validados com contratos compartilhados no
   boundary;
-- update e delete de avaliação ainda não existem na Web.
+- somente delete de avaliação ainda não existe na Web.
 
 ### Listagem
 
@@ -101,15 +105,15 @@ browserApiClient → /api/backend → API NestJS
 - `PRODUTO_NAO_ENCONTRADO` retorna ao catálogo;
 - `AVALIACAO_PRODUTO_NAO_ENCONTRADA` retorna à coleção do produto;
 - falha recuperável preserva mensagem, `requisicaoId` e retry manual;
-- botões de editar e excluir ainda não devem ser adicionados antes de seus
-  fluxos existirem.
+- a ação de editar aponta para a rota pronta; a ação de excluir permanece
+  ausente até que o fluxo destrutivo esteja implementado.
 
 ### Criação e seletor de nota
 
 - `/produtos/[produtoId]/avaliacoes/nova` valida o produto e mantém seu contexto
   no cancelamento e no sucesso;
-- `AvaliacaoProdutoFormFields` contém os controles reutilizáveis por create e
-  pela futura edição;
+- `AvaliacaoProdutoFormFields` contém os controles reutilizados por create e
+  update;
 - o schema visual valida autor, nota, comentário e recomendação antes de
   transformar e aplicar `CreateAvaliacaoProdutoSchema`;
 - a nota visual é string de `"1"` a `"5"` e vira número no payload;
@@ -122,43 +126,47 @@ browserApiClient → /api/backend → API NestJS
 - falhas por campo ficam junto ao controle; falhas sem campo conhecido ficam no
   alerta geral.
 
+### Edição
+
+- `/produtos/[produtoId]/avaliacoes/[avaliacaoId]/editar` valida os dois UUIDs
+  antes de renderizar e carrega a avaliação pelo hook de detalhe existente;
+- loading inicial, atualização em segundo plano, produto ausente, avaliação
+  ausente e erro recuperável possuem estados próprios;
+- o formulário inicia preenchido, bloqueia envio sem alterações e desabilita o
+  `fieldset` durante a mutation;
+- schema local converte a nota visual para número e comentário vazio para
+  `null`; o mapper usa `dirtyFields` para enviar somente campos alterados;
+- comentário intacto permanece ausente do `PATCH`, enquanto recomendação
+  alterada para `false` é preservada;
+- sucesso usa `toast.success(response.mensagem)` e volta ao detalhe atualizado;
+- erros públicos por campo ficam junto ao respectivo controle e recebem foco;
+  falhas sem campo conhecido permanecem no alerta geral.
+
 ## Verificações atuais
 
 Em 9 de outubro de 2026:
 
-- `pnpm --filter @repo/web test`: aprovado, 38 arquivos e 174 testes;
+- `pnpm --filter @repo/web test`: aprovado, 44 arquivos e 206 testes;
 - `pnpm --filter @repo/web typecheck`: aprovado;
 - `pnpm --filter @repo/web lint`: aprovado;
 - build e `format:check`: ainda não repetidos após esta fatia;
 - revisão manual completa de teclado, foco, zoom e viewports do CRUD final de
-  avaliações: pendente até update e delete.
+  avaliações: pendente até delete.
 
 ## Próxima etapa de `WEB-003`
 
-Implementar edição antes da exclusão:
-
-1. criar `updateAvaliacaoProduto`, validando os dois params, o body parcial e
-   `AvaliacaoProdutoResponseSchema`;
-2. criar `useUpdateAvaliacaoProduto`, atualizar o detalhe retornado e invalidar
-   somente as listas do mesmo `produtoId`;
-3. criar mapper e schema locais de update sobre
-   `AvaliacaoProdutoFormFields`, enviando somente campos alterados;
-4. representar comentário apagado como `null`, comentário intacto como campo
-   ausente e comentário presente como string normalizada;
-5. criar `/produtos/[produtoId]/avaliacoes/[avaliacaoId]/editar`, com loading,
-   `404`, erro recuperável e formulário preenchido;
-6. adicionar a ação de editar no detalhe somente quando a rota estiver pronta;
-7. exibir `toast.success(response.mensagem)` e voltar ao detalhe atualizado;
-8. cobrir operação, hook, mapper, schema, loader e formulário com testes.
-
-Depois da edição:
+Implementar a exclusão de avaliação:
 
 1. criar operação e hook de delete sem response schema, pois o sucesso é
    `204 No Content`;
 2. confirmar a exclusão em `AlertDialog`, mantendo o contexto do produto;
 3. usar mensagem local de sucesso em toast, remover o detalhe excluído e
    invalidar somente as listas daquele produto;
-4. concluir revisão manual, build, formatação e documentação de `WEB-003`.
+4. adicionar a ação destrutiva ao detalhe somente quando o diálogo estiver
+   pronto e testado;
+5. cobrir operação, hook, diálogo, pending, erro recuperável, cancelamento,
+   toast e navegação com testes;
+6. concluir revisão manual, build, formatação e documentação de `WEB-003`.
 
 ## Limites mantidos
 

@@ -19,7 +19,7 @@ Não escolha breakpoints por modelos específicos de aparelho. Use o ponto em qu
 o conteúdo deixa de funcionar como critério e mantenha os tokens definidos pelo
 sistema visual.
 
-## Estado atual do fluxo de Produto
+## Estado atual dos fluxos de Produto e Avaliação
 
 - filtros empilham em telas estreitas e expandem progressivamente;
 - produtos usam cards abaixo do breakpoint da tabela;
@@ -43,6 +43,13 @@ sistema visual.
 - confirmações de criação e atualização usam a mensagem de sucesso validada da
   API em toast; após o `204`, a exclusão usa título e descrição definidos pela
   Web;
+- criação e edição de avaliação reutilizam o mesmo grupo responsivo de campos;
+  as ações empilham em telas estreitas e o conteúdo volta a uma coluna antes de
+  comprometer labels ou mensagens;
+- o seletor de nota mantém alvos de 44 px, seleção exclusiva, nomes acessíveis,
+  foco visível, teclado e anúncio textual da quantidade de estrelas;
+- a edição de avaliação preserva valores em falha recuperável, impede envio sem
+  mudanças e mantém erros da API junto ao respectivo campo;
 - o `Toaster` global preserva a confirmação durante a navegação interna sem
   inserir estado transitório na URL.
 

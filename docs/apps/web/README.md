@@ -24,7 +24,7 @@ No estado atual da base:
 - `@repo/contracts` já é dependência e está em `transpilePackages`;
 - a página inicial foi preservada e possui acesso ao catálogo em `/produtos`;
 - React Hook Form, `@hookform/resolvers` e Zod 4 sustentam os formulários de
-  criação e edição de Produto;
+  criação e edição de Produto e Avaliação de Produto;
 - Tailwind CSS 4 e shadcn/ui formam o baseline visual;
 - `components.json` usa o estilo `radix-nova`, tokens `neutral` e aliases locais;
 - as primitives instaladas possuem consumidores atuais e incluem `AlertDialog`,
@@ -44,11 +44,13 @@ No estado atual da base:
   confirmação destrutiva e toasts de sucesso; create e update exibem a mensagem
   validada da API, enquanto delete usa mensagem local após `204 No Content`;
 - `WEB-003` está em andamento: a Web já lista avaliações aninhadas com filtros
-  e paginação na URL, consulta o detalhe individual e cria uma avaliação; a
-  criação usa seletor acessível de 1 a 5 estrelas, erros por campo, invalidação
-  restrita ao `produtoId`, toast com a mensagem validada da API e navegação ao
-  detalhe criado;
-- edição e exclusão de avaliação ainda não estão implementadas na Web;
+  e paginação na URL, consulta o detalhe individual, cria e edita uma
+  avaliação; criação e edição usam seletor acessível de 1 a 5 estrelas, erros
+  por campo, invalidação restrita ao `produtoId`, toast com a mensagem validada
+  da API e navegação ao detalhe;
+- a edição envia somente campos alterados, representa a limpeza do comentário
+  com `null` e preserva `false` para recomendação; somente a exclusão de
+  avaliação permanece pendente na Web;
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
   operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários,
   diálogo de exclusão e disparo dos toasts;

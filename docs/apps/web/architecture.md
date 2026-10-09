@@ -163,6 +163,9 @@ apps/web/
 │   │   │   ├── _components/
 │   │   │   ├── [avaliacaoId]/
 │   │   │   │   ├── _components/
+│   │   │   │   ├── editar/
+│   │   │   │   │   ├── _components/
+│   │   │   │   │   └── page.tsx
 │   │   │   │   └── page.tsx
 │   │   │   ├── nova/
 │   │   │   │   ├── _components/
@@ -190,6 +193,7 @@ apps/web/
 │   │   ├── get-avaliacao-produto.ts
 │   │   ├── get-avaliacoes-produto.ts
 │   │   ├── produto-query-keys.ts
+│   │   ├── update-avaliacao-produto.ts
 │   │   ├── update-produto.ts
 │   │   ├── use-*.ts
 │   │   ├── validar-avaliacao-produto-params.ts
@@ -202,6 +206,8 @@ apps/web/
 │   │   ├── decimal-input-mask.ts
 │   │   ├── produto-form-fields.schema.ts
 │   │   ├── produto-form-fields.tsx
+│   │   ├── update-avaliacao-produto-form.mapper.ts
+│   │   ├── update-avaliacao-produto-form.schema.ts
 │   │   ├── update-produto-form.mapper.ts
 │   │   └── update-produto-form.schema.ts
 │   └── lib/
@@ -225,8 +231,7 @@ converte o layout nem seus `children` em Client Components. Os filtros usam
 navegação GET e continuam renderizáveis no servidor.
 
 Os campos compartilhados por criação e edição vivem na feature, enquanto os
-componentes que orquestram cada tela permanecem próximos das rotas. Isso já
-ocorre no CRUD de Produto e nos campos da criação de Avaliação preparados para
-a futura edição. O schema do formulário não substitui os contratos HTTP:
-mappers explícitos preservam a diferença entre string vazia, `null`,
-propriedade ausente e campo não alterado.
+componentes que orquestram cada tela permanecem próximos das rotas. Isso ocorre
+no CRUD de Produto e nos formulários de criação e edição de Avaliação. O schema
+do formulário não substitui os contratos HTTP: mappers explícitos preservam a
+diferença entre string vazia, `null`, propriedade ausente e campo não alterado.

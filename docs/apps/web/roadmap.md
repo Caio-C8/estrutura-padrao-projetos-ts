@@ -47,9 +47,9 @@ Toasts globais confirmam create, update e delete sem acoplar Sonner às operaç�
 ou aos hooks de dados.
 
 `WEB-003` está em andamento. A listagem paginada, os filtros na URL, o detalhe
-individual e a criação de avaliações já foram implementados sem incluir uma
-coleção ilimitada na response básica de Produto. Edição e exclusão são as
-próximas fatias. O estado exato e a ordem de continuação estão no
+individual, a criação e a edição de avaliações já foram implementados sem
+incluir uma coleção ilimitada na response básica de Produto. A exclusão é a
+próxima fatia. O estado exato e a ordem de continuação estão no
 [handoff](./handoff.md).
 
 ## Rotas planejadas
@@ -306,7 +306,8 @@ subordinada ao produto selecionado.
 - [x] filtros e paginação sobrevivem a reload e navegação compartilhável;
 - [ ] criação, edição e exclusão atualizam apenas caches relacionados ao
       produto correto;
-- [ ] comentário ausente, vazio e `null` seguem a semântica do contrato;
+- [x] comentário ausente, vazio e `null` seguem a semântica do contrato em
+      create e update;
 - [ ] os estados remotos e de formulário são acessíveis e responsivos;
 - [ ] exclusão exige confirmação e trata corretamente `204 No Content`;
 - [ ] fluxos críticos possuem testes;
@@ -325,9 +326,18 @@ subordinada ao produto selecionado.
   invalida somente as listas do produto e exibe toast com a mensagem da API;
 - o formulário local converte a nota visual para número, omite comentário vazio
   e usa `RadioGroup` com cinco estrelas para seleção acessível;
+- a edição valida os dois params, body parcial e response, substitui o detalhe
+  conhecido e invalida somente as listas do produto correspondente;
+- a rota de edição cobre loading, atualização em segundo plano, `404`, erro
+  recuperável e formulário preenchido; o detalhe já expõe a ação de editar;
+- o mapper de update envia somente `dirtyFields`, usa `null` ao apagar o
+  comentário, omite o comentário intacto e preserva recomendação `false`;
+- o toast usa a mensagem validada da API e a navegação retorna ao detalhe
+  atualizado;
 - operações, hooks, parsers, schemas e componentes dessa fatia possuem testes;
-- Vitest, typecheck e lint do app Web passam; build, formatação e revisão final
-  permanecem para a conclusão de `WEB-003`.
+- a suíte atual passa com 44 arquivos e 206 testes; typecheck e lint do app Web
+  também passam; exclusão, build, formatação e revisão final permanecem para a
+  conclusão de `WEB-003`.
 
 ### WEB-004 — Cobrir a interface e os fluxos críticos com testes
 

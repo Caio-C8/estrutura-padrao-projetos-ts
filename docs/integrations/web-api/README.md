@@ -36,15 +36,16 @@ No estado atual:
   responses, normalização de erros e tratamento de `204 No Content`;
 - listar, consultar, criar, atualizar e excluir Produto possuem operações e
   hooks próprios;
-- listar, consultar e criar Avaliação de Produto possuem operações e hooks
-  próprios; edição e exclusão desse sub-recurso ainda estão pendentes na Web;
+- listar, consultar, criar e atualizar Avaliação de Produto possuem operações e
+  hooks próprios; somente a exclusão desse sub-recurso ainda está pendente na
+  Web;
 - params e bodies são validados antes da request; responses com corpo são
   validadas com os schemas compartilhados;
 - create e update atualizam o detalhe conhecido e invalidam listas; delete
   invalida listas, retorna `undefined` no `204` e tem o detalhe removido pela
   interface ao navegar;
-- as query keys de avaliações sempre incluem `produtoId`; a criação preenche o
-  detalhe da avaliação retornada e invalida somente as listas daquele produto;
+- as query keys de avaliações sempre incluem `produtoId`; criação e atualização
+  preenchem o detalhe retornado e invalidam somente as listas daquele produto;
 - a interface usa a mensagem validada das responses de create e update em
   toasts de sucesso; após delete, usa mensagem local porque `204` não possui
   corpo;
@@ -63,8 +64,8 @@ No estado atual:
 
 `WEB-001` e `WEB-002` são implementações concretas concluídas para Produto. Os
 exemplos genéricos dos documentos complementares continuam sendo orientação
-para novos domínios. `WEB-003` está em andamento com leitura, detalhe e criação
-de avaliações já integrados; update e delete permanecem pendentes.
+para novos domínios. `WEB-003` está em andamento com leitura, detalhe, criação e
+atualização de avaliações já integrados; somente delete permanece pendente.
 
 ## Decisões da primeira integração
 

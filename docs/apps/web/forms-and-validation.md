@@ -11,10 +11,10 @@ Formulários interativos devem usar:
 - primitives de formulário do design system.
 
 Essas dependências estão instaladas no `@repo/web` e foram validadas com React
-19 e Zod 4 nos formulários de criação e edição de Produto e de criação de
-Avaliação de Produto. Os filtros GET de `/produtos` e da lista de avaliações
-continuam sem React Hook Form: são controles nativos submetidos pela URL e
-validados no Server Component.
+19 e Zod 4 nos formulários de criação e edição de Produto e Avaliação de
+Produto. Os filtros GET de `/produtos` e da lista de avaliações continuam sem
+React Hook Form: são controles nativos submetidos pela URL e validados no
+Server Component.
 
 ## Implementação atual de Produto
 
@@ -39,8 +39,8 @@ validados no Server Component.
 ## Implementação atual de Avaliação de Produto
 
 - `AvaliacaoProdutoFormFields` concentra autor, nota, comentário e recomendação
-  para ser reutilizado pela futura edição sem igualar os contratos completos de
-  create e update;
+  e é reutilizado por create e update sem igualar os contratos completos das
+  duas operações;
 - o estado visual representa `nota` como string de `"1"` a `"5"`, enquanto o
   output validado enviado à operação usa número;
 - a nota usa `RadioGroup` com cinco alvos do tamanho da estrela; cada radio
@@ -57,6 +57,14 @@ validados no Server Component.
 - durante o envio, o formulário bloqueia repetição, associa erros públicos aos
   campos, exibe falhas gerais inline, confirma sucesso em toast e navega para o
   detalhe criado.
+- o schema de update transforma a mesma representação visual, mas converte
+  comentário vazio em `null` para expressar limpeza explícita;
+- o mapper de update usa `dirtyFields`: campo intacto fica ausente do `PATCH`,
+  comentário apagado vira `null` e recomendação alterada para `false` permanece
+  presente;
+- a edição inicia com os valores atuais, impede submissão sem mudanças,
+  bloqueia o `fieldset` durante a mutation, mapeia erros públicos aos campos e
+  retorna ao detalhe após o toast com a mensagem validada da API.
 
 ## Contrato não é automaticamente formulário
 
