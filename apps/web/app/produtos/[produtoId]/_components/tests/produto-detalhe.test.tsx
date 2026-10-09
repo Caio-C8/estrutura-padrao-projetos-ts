@@ -184,5 +184,13 @@ describe("ProdutoDetalhe", () => {
     });
 
     expect(excluirProduto.getAttribute("data-produto-id")).toBe(PRODUTO_ID);
+
+    expect(
+      screen
+        .getByRole("link", {
+          name: "Ver avaliações",
+        })
+        .getAttribute("href"),
+    ).toBe(`/produtos/${PRODUTO_ID}/avaliacoes`);
   });
 });

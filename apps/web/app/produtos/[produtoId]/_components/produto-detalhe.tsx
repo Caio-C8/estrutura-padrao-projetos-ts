@@ -2,7 +2,13 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ExternalLink, PackageX, Pencil, RefreshCw } from "lucide-react";
+import {
+  ExternalLink,
+  PackageX,
+  Pencil,
+  RefreshCw,
+  MessagesSquare,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -159,6 +165,13 @@ export function ProdutoDetalhe({ produtoId }: ProdutoDetalheProps) {
             <Badge variant="outline">
               {formatarStatusProduto(produto.status)}
             </Badge>
+
+            <Button asChild size="sm" variant="outline">
+              <Link href={`/produtos/${produto.id}/avaliacoes`}>
+                <MessagesSquare aria-hidden="true" />
+                Ver avaliações
+              </Link>
+            </Button>
 
             <Button asChild size="sm" variant="outline">
               <Link href={`/produtos/${produto.id}/editar`}>
