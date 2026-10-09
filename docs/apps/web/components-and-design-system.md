@@ -74,11 +74,13 @@ dependências e estilos sem consumidor.
 
 `components.json` usa o estilo `radix-nova`, Tailwind CSS 4, CSS variables,
 ícones Lucide e aliases locais. As primitives presentes possuem consumidores em
-`WEB-001` ou `WEB-002`:
+`WEB-001`, `WEB-002` ou na parte implementada de `WEB-003`:
 
 - `Badge` para o status do produto;
 - `Button` para navegação, filtros, paginação, retry e ações;
 - `Input`, `Textarea`, `Checkbox`, `Label`, `Field` e `Select` nos formulários;
+- `RadioGroup` como base semântica e acessível do seletor de nota por estrelas
+  da avaliação;
 - `Separator` para organização visual dos campos;
 - `Skeleton` para carregamento;
 - `Table` para a listagem em telas largas;
@@ -90,6 +92,13 @@ Os `select` dos filtros da listagem continuam nativos porque são controles GET
 renderizáveis no servidor. A primitive `Select` atende os formulários
 interativos; não é necessário forçar a mesma implementação em contextos com
 comportamento diferente.
+
+O catálogo do shadcn/ui não oferece uma primitive específica de rating. A
+composição de estrelas permanece na feature de Avaliação, enquanto
+`components/ui/radio-group.tsx` conserva apenas a primitive genérica. Os radios
+transparentes são posicionados sobre as estrelas: não criam espaço visual
+extra, continuam presentes na árvore de acessibilidade e preservam seleção
+exclusiva e teclado.
 
 ### Toasts
 

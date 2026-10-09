@@ -210,12 +210,15 @@ Cubra fluxos críticos:
 Mocks não substituem pelo menos uma verificação real do acordo entre contratos,
 web e API.
 
-Em `WEB-001` e `WEB-002`, o cliente HTTP é testado com `fetch` injetado, todas
-as operações recebem um `ApiClient` por dependência e os hooks simulam o cliente
-central. Os testes cobrem leitura, criação, atualização, exclusão, invalidação e
-remoção do detalhe, erros públicos, formulários e os toasts de sucesso. Create e
-update verificam a mensagem da response validada; delete verifica o título e a
-descrição locais usados depois de `204 No Content`.
+Em `WEB-001`, `WEB-002` e na parte implementada de `WEB-003`, o cliente HTTP é
+testado com `fetch` injetado, todas as operações recebem um `ApiClient` por
+dependência e os hooks simulam o cliente central. Os testes cobrem leitura,
+criação, atualização, exclusão, invalidação e remoção de detalhes, erros
+públicos, formulários e toasts de sucesso. A criação de avaliação também
+confirma que somente listas do mesmo `produtoId` são invalidadas e que o detalhe
+retornado é escrito na chave aninhada correta. Create e update com corpo
+verificam a mensagem da response validada; delete de Produto verifica o título
+e a descrição locais usados depois de `204 No Content`.
 
 A integração real Web → rewrite do Next.js → API também foi exercitada
 manualmente durante o CRUD de Produto. Uma ferramenta E2E automatizada continua

@@ -11,9 +11,10 @@ Formulários interativos devem usar:
 - primitives de formulário do design system.
 
 Essas dependências estão instaladas no `@repo/web` e foram validadas com React
-19 e Zod 4 nos formulários de criação e edição de Produto. Os filtros GET de
-`/produtos` continuam sem React Hook Form: são controles nativos submetidos por
-`next/form` e validados a partir da URL no Server Component.
+19 e Zod 4 nos formulários de criação e edição de Produto e de criação de
+Avaliação de Produto. Os filtros GET de `/produtos` e da lista de avaliações
+continuam sem React Hook Form: são controles nativos submetidos pela URL e
+validados no Server Component.
 
 ## Implementação atual de Produto
 
@@ -34,6 +35,28 @@ Essas dependências estão instaladas no `@repo/web` e foram validadas com React
 - o formulário inteiro fica protegido por `fieldset disabled` durante a
   mutation, evitando submissão duplicada sem propagar `disabled` manualmente a
   cada controle.
+
+## Implementação atual de Avaliação de Produto
+
+- `AvaliacaoProdutoFormFields` concentra autor, nota, comentário e recomendação
+  para ser reutilizado pela futura edição sem igualar os contratos completos de
+  create e update;
+- o estado visual representa `nota` como string de `"1"` a `"5"`, enquanto o
+  output validado enviado à operação usa número;
+- a nota usa `RadioGroup` com cinco alvos do tamanho da estrela; cada radio
+  invisível permanece focável, cobre sua estrela e conserva nome acessível,
+  navegação por teclado e foco visível;
+- estrelas até a opção selecionada ficam preenchidas, e uma mensagem viva
+  informa a quantidade atual sem depender somente de cor;
+- comentário vazio ou composto apenas por espaços é omitido no create; texto
+  presente é normalizado e limitado a 1.000 caracteres;
+- erros de autor e nota são produzidos no schema visual antes do `pipe`, para
+  que uma falha em um campo não impeça a coleta do erro do outro;
+- o schema do formulário transforma seu input e depois aplica
+  `CreateAvaliacaoProdutoSchema`; a API continua validando novamente;
+- durante o envio, o formulário bloqueia repetição, associa erros públicos aos
+  campos, exibe falhas gerais inline, confirma sucesso em toast e navega para o
+  detalhe criado.
 
 ## Contrato não é automaticamente formulário
 

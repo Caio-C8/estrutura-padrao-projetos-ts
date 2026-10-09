@@ -46,22 +46,25 @@ exclusão confirma a remoção em cascata das avaliações e trata `204 No Conte
 Toasts globais confirmam create, update e delete sem acoplar Sonner às operações
 ou aos hooks de dados.
 
-A próxima entrega é `WEB-003`. Ela acrescentará o CRUD aninhado de avaliações
-sem incluir uma coleção ilimitada na response básica de Produto. O estado exato
-e a ordem de continuação estão no [handoff](./handoff.md).
+`WEB-003` está em andamento. A listagem paginada, os filtros na URL, o detalhe
+individual e a criação de avaliações já foram implementados sem incluir uma
+coleção ilimitada na response básica de Produto. Edição e exclusão são as
+próximas fatias. O estado exato e a ordem de continuação estão no
+[handoff](./handoff.md).
 
 ## Rotas planejadas
 
-| Rota                                                    | Responsabilidade                           | Entrega   |
-| ------------------------------------------------------- | ------------------------------------------ | --------- |
-| `/`                                                     | home atual e acesso ao catálogo            | `WEB-001` |
-| `/produtos`                                             | filtros, paginação e lista responsiva      | `WEB-001` |
-| `/produtos/novo`                                        | criação de produto                         | `WEB-002` |
-| `/produtos/[produtoId]`                                 | detalhes e ações do produto                | `WEB-002` |
-| `/produtos/[produtoId]/editar`                          | edição de produto                          | `WEB-002` |
-| `/produtos/[produtoId]/avaliacoes`                      | lista paginada e filtros de avaliações     | `WEB-003` |
-| `/produtos/[produtoId]/avaliacoes/nova`                 | criação de avaliação                       | `WEB-003` |
-| `/produtos/[produtoId]/avaliacoes/[avaliacaoId]/editar` | edição da avaliação pertencente ao produto | `WEB-003` |
+| Rota                                                    | Responsabilidade                            | Entrega   |
+| ------------------------------------------------------- | ------------------------------------------- | --------- |
+| `/`                                                     | home atual e acesso ao catálogo             | `WEB-001` |
+| `/produtos`                                             | filtros, paginação e lista responsiva       | `WEB-001` |
+| `/produtos/novo`                                        | criação de produto                          | `WEB-002` |
+| `/produtos/[produtoId]`                                 | detalhes e ações do produto                 | `WEB-002` |
+| `/produtos/[produtoId]/editar`                          | edição de produto                           | `WEB-002` |
+| `/produtos/[produtoId]/avaliacoes`                      | lista paginada e filtros de avaliações      | `WEB-003` |
+| `/produtos/[produtoId]/avaliacoes/nova`                 | criação de avaliação                        | `WEB-003` |
+| `/produtos/[produtoId]/avaliacoes/[avaliacaoId]`        | detalhe da avaliação pertencente ao produto | `WEB-003` |
+| `/produtos/[produtoId]/avaliacoes/[avaliacaoId]/editar` | edição da avaliação pertencente ao produto  | `WEB-003` |
 
 Exclusões serão ações confirmadas em diálogo, e não páginas próprias. O path de
 avaliação continuará carregando `produtoId` e `avaliacaoId`, preservando a
@@ -268,7 +271,7 @@ permitir administrar o ciclo de vida completo de um produto.
 
 ### WEB-003 — Entregar o CRUD aninhado de avaliações
 
-**Status:** próxima entrega
+**Status:** em andamento desde 9 de outubro de 2026
 
 **Contexto**
 
@@ -281,8 +284,7 @@ subordinada ao produto selecionado.
 - mostrar no detalhe do produto um resumo e acesso à coleção de avaliações;
 - implementar lista paginada com pesquisa por autor e filtro `recomenda` na
   URL;
-- implementar detalhe quando necessário ao fluxo de edição, criação, edição e
-  exclusão;
+- implementar detalhe individual, criação, edição e exclusão;
 - criar operações, hooks, query keys e invalidações que incluam `produtoId`;
 - validar params e responses com os contratos compartilhados;
 - criar formulários locais que respeitem nota de 1 a 5, comentário anulável e
@@ -301,7 +303,7 @@ subordinada ao produto selecionado.
 
 - [ ] todas as operações usam `produtoId` e, quando aplicável,
       `avaliacaoId`;
-- [ ] filtros e paginação sobrevivem a reload e navegação compartilhável;
+- [x] filtros e paginação sobrevivem a reload e navegação compartilhável;
 - [ ] criação, edição e exclusão atualizam apenas caches relacionados ao
       produto correto;
 - [ ] comentário ausente, vazio e `null` seguem a semântica do contrato;
@@ -309,6 +311,23 @@ subordinada ao produto selecionado.
 - [ ] exclusão exige confirmação e trata corretamente `204 No Content`;
 - [ ] fluxos críticos possuem testes;
 - [ ] verificações do app Web e documentação passam.
+
+**Progresso parcial verificado em 9 de outubro de 2026**
+
+- o detalhe de Produto possui acesso explícito à coleção aninhada;
+- a listagem valida `produtoId`, query e response, mantém pesquisa por autor,
+  recomendação, limite e página na URL e cobre loading, vazio, página vazia,
+  erro, `404` e sucesso;
+- as query keys carregam `produtoId` em raiz, listas e detalhes;
+- a consulta individual valida `produtoId` e `avaliacaoId` e diferencia produto
+  ausente de avaliação ausente;
+- a criação valida params, body e response, atualiza o cache do detalhe criado,
+  invalida somente as listas do produto e exibe toast com a mensagem da API;
+- o formulário local converte a nota visual para número, omite comentário vazio
+  e usa `RadioGroup` com cinco estrelas para seleção acessível;
+- operações, hooks, parsers, schemas e componentes dessa fatia possuem testes;
+- Vitest, typecheck e lint do app Web passam; build, formatação e revisão final
+  permanecem para a conclusão de `WEB-003`.
 
 ### WEB-004 — Cobrir a interface e os fluxos críticos com testes
 

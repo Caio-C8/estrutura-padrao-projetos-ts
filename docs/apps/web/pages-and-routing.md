@@ -17,10 +17,13 @@ Não crie um sistema paralelo de roteamento, loading ou erro quando a convençã
 do Next.js atende o caso.
 
 No estado atual, `/` e `/produtos/novo` são estáticas. `/produtos` é dinâmica
-porque lê `searchParams`; `/produtos/[produtoId]` e
-`/produtos/[produtoId]/editar` são dinâmicas porque recebem params. Todas mantêm
-o `page.tsx` como Server Component e isolam TanStack Query, formulários e
-diálogos nas menores fronteiras cliente necessárias.
+porque lê `searchParams`; `/produtos/[produtoId]`,
+`/produtos/[produtoId]/editar`, `/produtos/[produtoId]/avaliacoes`,
+`/produtos/[produtoId]/avaliacoes/nova` e
+`/produtos/[produtoId]/avaliacoes/[avaliacaoId]` recebem params, e a listagem de
+avaliações também lê `searchParams`. Todas mantêm o `page.tsx` como Server
+Component e isolam TanStack Query, formulários e diálogos nas menores
+fronteiras cliente necessárias.
 
 As rotas dinâmicas validam `produtoId` com `ProdutoParamsSchema` antes de
 renderizar seus consumidores. O detalhe diferencia loading, `404`, erro
@@ -28,6 +31,12 @@ recuperável e sucesso. A criação e a edição possuem metadata própria e a
 exclusão retorna diretamente à listagem. As três mutations exibem confirmação
 no `Toaster` global durante a navegação interna, sem acrescentar marcador
 transitório à URL.
+
+As rotas aninhadas de avaliações validam `produtoId` e, no detalhe,
+`avaliacaoId` antes de renderizar o consumidor cliente. A coleção preserva
+filtros e paginação na URL; o detalhe diferencia produto ausente, avaliação
+ausente e falha recuperável; a criação exibe toast de sucesso e navega para o
+detalhe criado. Edição e exclusão de avaliação ainda estão pendentes.
 
 ## Metadata e título obrigatório
 

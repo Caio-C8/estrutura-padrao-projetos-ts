@@ -1,185 +1,172 @@
 # Handoff da aplicação Web
 
-Atualizado em 6 de outubro de 2026 após a conclusão de `WEB-002` e a adoção de
-toasts de sucesso no CRUD de Produto.
+Atualizado em 9 de outubro de 2026 durante `WEB-003`, depois da entrega de
+listagem, detalhe e criação de Avaliação de Produto.
 
-Este documento é o retrato operacional para iniciar `WEB-003`. O planejamento
-e os critérios permanentes estão no [roadmap](./roadmap.md).
+Este documento é o retrato operacional para continuar o trabalho. Planejamento
+e critérios permanentes ficam no [roadmap](./roadmap.md).
 
-## Entregas concluídas
+## Estado das entregas
 
-- `WEB-001 — Entregar o baseline da Web e a lista de produtos`;
-- `WEB-002 — Entregar detalhes e CRUD de Produto`.
+- `WEB-001 — Entregar o baseline da Web e a lista de produtos`: concluída;
+- `WEB-002 — Entregar detalhes e CRUD de Produto`: concluída;
+- `WEB-003 — Entregar o CRUD aninhado de avaliações`: em andamento;
+- `WEB-004` e `WEB-005`: planejadas.
 
-A fatia vertical atual é:
+A navegação implementada é:
 
 ```text
 home
   ↓
-/produtos ─────────────── listar, filtrar e paginar
-  ├── /novo ───────────── criar
-  └── /[produtoId] ────── consultar e excluir
-        └── /editar ───── atualizar
-              ↓
-hooks TanStack Query por operação
-              ↓
-operações HTTP tipadas e validadas
-              ↓
+/produtos ───────────────────────────────── listar, filtrar e paginar
+  ├── /novo ─────────────────────────────── criar produto
+  └── /[produtoId] ──────────────────────── consultar e excluir produto
+        ├── /editar ─────────────────────── atualizar produto
+        └── /avaliacoes ─────────────────── listar e filtrar avaliações
+              ├── /nova ─────────────────── criar avaliação
+              └── /[avaliacaoId] ────────── consultar avaliação
+```
+
+Todas as operações cliente seguem:
+
+```text
+componente cliente
+       ↓
+hook TanStack Query por operação
+       ↓
+operação HTTP tipada e validada
+       ↓
 browserApiClient → /api/backend → API NestJS
 ```
 
-## Estado implementado
-
-### Baseline e renderização
+## Baseline preservado
 
 - Next.js 16, React 19, App Router e Tailwind CSS 4;
-- shadcn/ui no estilo `radix-nova`, tokens `neutral`, CSS variables, pacote
-  unificado `radix-ui` e ícones Lucide;
-- Sonner registrado uma vez no layout raiz por meio da primitive `Toaster`, com
-  posição inferior direita, cores de estado, fechamento e tema claro atual;
-- páginas e layouts permanecem Server Components;
-- TanStack Query fica restrito ao layout de `/produtos`;
-- Client Components existem somente para hooks, formulários, diálogo, toast,
-  eventos e APIs do navegador;
-- a home original foi preservada e possui a ação “Ver produtos”.
+- shadcn/ui no estilo `radix-nova`, tokens `neutral`, pacote `radix-ui` e
+  ícones Lucide;
+- páginas e layouts permanecem Server Components; hooks, formulários, diálogo,
+  toast e eventos ficam nas menores fronteiras cliente;
+- TanStack Query permanece restrito ao layout `/produtos`;
+- `createApiClient` usa `fetch`, timeout padrão de 30 segundos, cancelamento,
+  validação de response e normalização de `ApiError`;
+- leituras repetem no máximo uma vez somente em falha transitória; mutations
+  não possuem retry automático;
+- o `Toaster` do Sonner existe uma vez no layout raiz;
+- não há autenticação no exemplo didático; isso não é baseline de produção.
 
-### Infraestrutura HTTP e estado remoto
+## CRUD de Produto concluído
 
-- `createApiClient` usa `fetch` nativo e timeout padrão de 30 segundos;
-- path, timeout, body, JSON, contrato da response e consistência de status são
-  validados;
-- `204 No Content` retorna `undefined` e não recebe response schema;
-- `ApiError` preserva categoria, status, código público, erros de campo e
-  `requisicaoId` sem exibir `cause` interno;
-- navegador usa somente `/api/backend`; o cliente server-only usa
-  `${API_INTERNAL_URL}/api` com fallback local na porta 3001;
-- leituras repetem no máximo uma vez apenas para rede, timeout ou HTTP 5xx;
-- mutations usam `retry: false`;
-- não existem `staleTime`, persistência, prefetch ou hydration sem necessidade
-  medida.
+- lista responsiva com pesquisa por SKU, nome e descrição, filtros e paginação
+  na URL;
+- detalhe com datas locais, preço e peso formatados;
+- criação e edição com React Hook Form, schemas locais, erros por campo,
+  máscaras e toast com a mensagem validada da API;
+- update envia somente campos alterados e usa `null` para limpar anuláveis;
+- exclusão usa `AlertDialog`, trata `204 No Content`, remove o detalhe, invalida
+  listas e exibe mensagem local em toast.
 
-### Operações e hooks de Produto
+## Avaliações implementadas em `WEB-003`
 
-- `getProdutos` + `useProdutos`;
-- `getProduto` + `useProduto`;
-- `createProduto` + `useCreateProduto`;
-- `updateProduto` + `useUpdateProduto`;
-- `deleteProduto` + `useDeleteProduto`;
-- todas as operações recebem `ApiClient` por dependência e usam os contratos de
-  `@repo/contracts` no boundary;
-- a validação e normalização de `produtoId` é compartilhada somente depois de
-  possuir múltiplos consumidores reais;
-- query keys distinguem raiz, listas, lista por filtros, detalhes e detalhe por
-  `produtoId`;
-- create e update atualizam o detalhe conhecido e invalidam as listas; delete
-  invalida listas e a interface remove o detalhe excluído do cache.
+### Integração e cache
 
-### Listagem e detalhe
+- `avaliacaoProdutoQueryKeys` separa raiz, listas, lista por filtros, detalhes e
+  detalhe individual; todas as chaves incluem `produtoId`;
+- `validarProdutoAvaliacoesParams` valida a coleção por `produtoId`;
+- `validarAvaliacaoProdutoParams` valida o item por `produtoId` e
+  `avaliacaoId`;
+- `getAvaliacoesProduto` + `useAvaliacoesProduto` implementam a coleção;
+- `getAvaliacaoProduto` + `useAvaliacaoProduto` implementam o detalhe;
+- `createAvaliacaoProduto` + `useCreateAvaliacaoProduto` implementam criação;
+- a criação escreve a response na chave do detalhe criado e invalida somente
+  as listas do produto correspondente;
+- params, query, body e responses são validados com contratos compartilhados no
+  boundary;
+- update e delete de avaliação ainda não existem na Web.
 
-- pesquisa procura por SKU, nome e descrição conforme o contrato da API;
-- status, destaque, limite e página permanecem na URL;
-- a interface oferece limites de 10, 20 ou 50 itens;
-- filtros inválidos aparecem junto ao controle e não são encaminhados à API;
-- telas estreitas usam cards e telas largas usam tabela;
-- loading, vazio, página vazia, erro recuperável e sucesso possuem estados
-  próprios;
-- `/produtos/[produtoId]` valida UUID, diferencia `404` de erro recuperável e
-  apresenta edição e exclusão;
-- preço, peso, data de calendário e data/hora possuem formatadores próprios;
-- datas com horário são exibidas no fuso local do navegador, embora o contrato
-  continue usando ISO 8601 UTC.
+### Listagem
 
-### Criação e edição
+- `/produtos/[produtoId]/avaliacoes` valida o UUID antes de renderizar;
+- pesquisa por autor, filtro de recomendação, limite e página permanecem na
+  URL;
+- filtros inválidos aparecem junto ao controle e não chegam à API;
+- estados de loading, vazio, página vazia, erro recuperável, produto ausente e
+  sucesso estão implementados;
+- cada item mostra autor, data local, nota e acesso ao detalhe;
+- o cabeçalho oferece acesso a “Nova avaliação”.
 
-- React Hook Form, `zodResolver` e schemas Zod locais estão instalados e em uso;
-- `ProdutoFormFields` compartilha os controles, não o contrato completo das
-  operações;
-- create e update possuem schemas próprios;
-- o mapper do update envia somente campos alterados e transforma campos
-  anuláveis apagados em `null`;
-- preço e peso usam máscara decimal preenchida da direita para a esquerda, com
-  apresentação em reais e quilogramas;
-- `datetime-local` trabalha em horário local e o mapper envia ISO 8601 UTC;
-- erros públicos da API são associados aos campos quando possível; o primeiro
-  recebe foco e erros sem campo conhecido permanecem no feedback geral;
-- o formulário usa `fieldset disabled` durante a mutation e impede submissão
-  duplicada;
-- criação navega para o produto criado e edição retorna ao detalhe atualizado;
-- ambas exibem em toast a `mensagem` do envelope de sucesso validado.
+### Detalhe
 
-### Exclusão
+- `/produtos/[produtoId]/avaliacoes/[avaliacaoId]` valida os dois UUIDs;
+- a tela mostra autor, nota, recomendação, comentário e datas locais;
+- `PRODUTO_NAO_ENCONTRADO` retorna ao catálogo;
+- `AVALIACAO_PRODUTO_NAO_ENCONTRADA` retorna à coleção do produto;
+- falha recuperável preserva mensagem, `requisicaoId` e retry manual;
+- botões de editar e excluir ainda não devem ser adicionados antes de seus
+  fluxos existirem.
 
-- `AlertDialog` confirma a ação e informa que avaliações serão removidas pela
-  cascata do banco;
-- cancelar e confirmar ficam indisponíveis durante a mutation;
-- erro mantém o diálogo aberto, mostra mensagem pública e `requisicaoId` quando
-  disponível;
-- sucesso inicia `router.replace` para `/produtos`, remove o detalhe do cache e
-  deixa a lista invalidada;
-- o `204` não possui body; o toast “Produto excluído com sucesso” e sua
-  descrição são definidos pela Web;
-- não existe mais marcador transitório na URL nem componente exclusivo de
-  feedback da listagem; o `Toaster` global preserva a confirmação durante a
-  navegação interna.
+### Criação e seletor de nota
+
+- `/produtos/[produtoId]/avaliacoes/nova` valida o produto e mantém seu contexto
+  no cancelamento e no sucesso;
+- `AvaliacaoProdutoFormFields` contém os controles reutilizáveis por create e
+  pela futura edição;
+- o schema visual valida autor, nota, comentário e recomendação antes de
+  transformar e aplicar `CreateAvaliacaoProdutoSchema`;
+- a nota visual é string de `"1"` a `"5"` e vira número no payload;
+- comentário vazio é omitido; comentário presente é normalizado;
+- `RadioGroup` sustenta cinco estrelas com seleção exclusiva, teclado, nomes
+  acessíveis, foco visível e anúncio textual do valor;
+- cada radio transparente é absoluto e cobre sua estrela, mantendo semântica e
+  removendo espaço visual extra;
+- sucesso usa `toast.success(response.mensagem)` e navega para o detalhe criado;
+- falhas por campo ficam junto ao controle; falhas sem campo conhecido ficam no
+  alerta geral.
 
 ## Verificações atuais
 
-Em 6 de outubro de 2026:
+Em 9 de outubro de 2026:
 
-- lint do app Web: aprovado;
-- `next typegen` e `tsc --noEmit`: aprovados;
-- Vitest: 25 arquivos e 120 testes aprovados;
-- build de produção do Next.js: aprovado;
-- rotas geradas: `/`, `/produtos`, `/produtos/novo`,
-  `/produtos/[produtoId]` e `/produtos/[produtoId]/editar`;
-- testes E2E em navegador continuam pendentes.
+- `pnpm --filter @repo/web test`: aprovado, 38 arquivos e 174 testes;
+- `pnpm --filter @repo/web typecheck`: aprovado;
+- `pnpm --filter @repo/web lint`: aprovado;
+- build e `format:check`: ainda não repetidos após esta fatia;
+- revisão manual completa de teclado, foco, zoom e viewports do CRUD final de
+  avaliações: pendente até update e delete.
 
-O NVM pode bloquear `pnpm` no sandbox com `NVM4306`. Nesse ambiente, as
-ferramentas locais em `node_modules/.bin` foram executadas fora do isolamento;
-isso não indica falha nos scripts do projeto.
+## Próxima etapa de `WEB-003`
 
-## Próxima entrega
+Implementar edição antes da exclusão:
 
-`WEB-003 — Entregar o CRUD aninhado de avaliações` é a próxima entrega.
+1. criar `updateAvaliacaoProduto`, validando os dois params, o body parcial e
+   `AvaliacaoProdutoResponseSchema`;
+2. criar `useUpdateAvaliacaoProduto`, atualizar o detalhe retornado e invalidar
+   somente as listas do mesmo `produtoId`;
+3. criar mapper e schema locais de update sobre
+   `AvaliacaoProdutoFormFields`, enviando somente campos alterados;
+4. representar comentário apagado como `null`, comentário intacto como campo
+   ausente e comentário presente como string normalizada;
+5. criar `/produtos/[produtoId]/avaliacoes/[avaliacaoId]/editar`, com loading,
+   `404`, erro recuperável e formulário preenchido;
+6. adicionar a ação de editar no detalhe somente quando a rota estiver pronta;
+7. exibir `toast.success(response.mensagem)` e voltar ao detalhe atualizado;
+8. cobrir operação, hook, mapper, schema, loader e formulário com testes.
 
-### Primeira etapa recomendada: leitura paginada
+Depois da edição:
 
-1. confirmar os endpoints sob
-   `/api/produtos/:produtoId/avaliacoes` e os contratos já exportados;
-2. criar query keys de avaliações que sempre incluam `produtoId` e, nas listas,
-   todos os filtros;
-3. criar `getAvaliacoesProduto`, validando params, query e
-   `ListAvaliacoesProdutoResponseSchema`;
-4. criar `useAvaliacoesProduto` com cancelamento e a mesma política finita de
-   retry das leituras;
-5. acrescentar no detalhe do produto um resumo e um link para
-   `/produtos/[produtoId]/avaliacoes`, sem embutir coleção ilimitada na response
-   de Produto;
-6. implementar a página de avaliações com paginação, pesquisa por autor e
-   filtro `recomenda` na URL;
-7. cobrir loading, vazio, erro, página vazia, `404` do produto e sucesso;
-8. testar operação, keys, hook, parser de URL e componente antes das mutations.
-
-### Etapas seguintes de `WEB-003`
-
-1. consultar avaliação individual dentro do produto;
-2. criar formulário de avaliação com autor, nota de 1 a 5, comentário opcional
-   e recomendação;
-3. editar enviando somente alterações e usando `null` para limpar comentário;
-4. excluir em confirmação destrutiva e tratar `204` com mensagem da Web;
-5. invalidar somente as listas e detalhes do mesmo `produtoId`;
-6. preservar o contexto do produto em links, erros e navegação;
-7. concluir revisão manual, documentação e verificações.
+1. criar operação e hook de delete sem response schema, pois o sucesso é
+   `204 No Content`;
+2. confirmar a exclusão em `AlertDialog`, mantendo o contexto do produto;
+3. usar mensagem local de sucesso em toast, remover o detalhe excluído e
+   invalidar somente as listas daquele produto;
+4. concluir revisão manual, build, formatação e documentação de `WEB-003`.
 
 ## Limites mantidos
 
 - avaliação nunca existe fora do contexto de `produtoId`;
-- o resumo do produto não recebe uma coleção ilimitada de avaliações;
-- agregados e estatísticas não serão inventados sem endpoint e contrato;
+- a response básica de Produto não recebe coleção ilimitada de avaliações;
+- não inventar agregados ou estatísticas sem endpoint e contrato;
+- não adicionar update otimista sem semântica de conflito definida;
 - testes E2E completos pertencem a `WEB-004`;
 - autenticação, autorização e CSRF permanecem fora do exemplo público e devem
   ser decididos antes de reutilização real;
-- não criar componentes, cache, abstrações ou dependências para etapas futuras
-  sem consumidor atual;
-- não alterar contratos compartilhados apenas para adaptar controles HTML;
-- não implementar atualização otimista sem semântica de conflito definida.
+- não alterar contratos compartilhados apenas para adaptar controles HTML.

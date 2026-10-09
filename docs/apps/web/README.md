@@ -28,8 +28,9 @@ No estado atual da base:
 - Tailwind CSS 4 e shadcn/ui formam o baseline visual;
 - `components.json` usa o estilo `radix-nova`, tokens `neutral` e aliases locais;
 - as primitives instaladas possuem consumidores atuais e incluem `AlertDialog`,
-  `Badge`, `Button`, `Checkbox`, `Field`, `Input`, `Label`, `Select`,
-  `Separator`, `Skeleton`, `Table`, `Textarea` e o `Toaster` do Sonner;
+  `Badge`, `Button`, `Checkbox`, `Field`, `Input`, `Label`, `RadioGroup`,
+  `Select`, `Separator`, `Skeleton`, `Table`, `Textarea` e o `Toaster` do
+  Sonner;
 - TanStack Query 5 está configurado no segmento `/produtos`, com provider na
   menor fronteira cliente atual;
 - existem clientes HTTP separados para navegador e servidor, operações e hooks
@@ -42,14 +43,20 @@ No estado atual da base:
   formulários responsivos, máscaras decimais, datas locais, erros por campo,
   confirmação destrutiva e toasts de sucesso; create e update exibem a mensagem
   validada da API, enquanto delete usa mensagem local após `204 No Content`;
+- `WEB-003` está em andamento: a Web já lista avaliações aninhadas com filtros
+  e paginação na URL, consulta o detalhe individual e cria uma avaliação; a
+  criação usa seletor acessível de 1 a 5 estrelas, erros por campo, invalidação
+  restrita ao `produtoId`, toast com a mensagem validada da API e navegação ao
+  detalhe criado;
+- edição e exclusão de avaliação ainda não estão implementadas na Web;
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
-  operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários
+  operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários,
   diálogo de exclusão e disparo dos toasts;
 - testes E2E no navegador ainda não foram adotados.
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
 `WEB-001` e `WEB-002` estão concluídas; `WEB-003`, o CRUD aninhado de
-avaliações, é a próxima entrega no
+avaliações, está em andamento no
 [roadmap da aplicação Web](./roadmap.md). O estado operacional e a ordem exata
 de continuação estão no [handoff](./handoff.md).
 
@@ -92,7 +99,7 @@ Detalhes e exemplos estão em [Páginas e rotas](./pages-and-routing.md).
 | Assunto                                       | Documento                                                                   |
 | --------------------------------------------- | --------------------------------------------------------------------------- |
 | Entregas, estado e critérios de aceite        | [Roadmap](./roadmap.md)                                                     |
-| Estado atual e início de `WEB-003`            | [Handoff](./handoff.md)                                                     |
+| Estado atual e continuação de `WEB-003`       | [Handoff](./handoff.md)                                                     |
 | Organização, renderização e estado            | [Arquitetura](./architecture.md)                                            |
 | Rotas, layouts, metadata e estados de página  | [Páginas e rotas](./pages-and-routing.md)                                   |
 | Componentização, shadcn/ui e design system    | [Componentes e design system](./components-and-design-system.md)            |

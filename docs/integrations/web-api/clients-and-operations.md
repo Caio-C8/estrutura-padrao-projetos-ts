@@ -27,9 +27,11 @@ apps/web/
 
 A infraestrutura comum e todas as operações do CRUD Web de Produto já existem.
 Cada método e endpoint possui uma função própria; os hooks cliente permanecem
-separados das operações. `WEB-003` seguirá a mesma regra para o sub-recurso
-aninhado de avaliações, sempre carregando `produtoId`. Não crie diretórios
-vazios nem antecipe arquivos sem consumidor.
+separados das operações. Em `WEB-003`, `getAvaliacoesProduto`,
+`getAvaliacaoProduto` e `createAvaliacaoProduto` já seguem a mesma regra para o
+sub-recurso aninhado e sempre carregam `produtoId`. Update e delete de avaliação
+ainda não foram criados. Não crie diretórios vazios nem antecipe arquivos sem
+consumidor.
 
 ## Abstração comum
 
@@ -171,6 +173,12 @@ As operações de create e update validam e normalizam o body antes do envio. As
 operações por ID compartilham a conversão de falhas de `ProdutoParamsSchema`
 para `ApiError`. `deleteProduto` não configura response schema porque o contrato
 HTTP bem-sucedido é `204 No Content`.
+
+Nas avaliações, a validação compartilhada distingue params da coleção, que
+exigem `produtoId`, dos params do item, que exigem também `avaliacaoId`. Lista,
+detalhe e criação validam suas responses com os schemas exportados por
+`@repo/contracts`. A criação normaliza o body antes da request; toast e
+navegação continuam no formulário consumidor.
 
 ## Contratos
 

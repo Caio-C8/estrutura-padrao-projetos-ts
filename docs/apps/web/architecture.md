@@ -143,7 +143,8 @@ API
 
 ## Implementação atual do domínio Produto
 
-`WEB-001` e `WEB-002` materializaram a separação desta forma:
+`WEB-001`, `WEB-002` e a parte implementada de `WEB-003` materializam a
+separação desta forma:
 
 ```text
 apps/web/
@@ -158,6 +159,15 @@ apps/web/
 │   │   ├── editar/
 │   │   │   ├── _components/
 │   │   │   └── page.tsx
+│   │   ├── avaliacoes/
+│   │   │   ├── _components/
+│   │   │   ├── [avaliacaoId]/
+│   │   │   │   ├── _components/
+│   │   │   │   └── page.tsx
+│   │   │   ├── nova/
+│   │   │   │   ├── _components/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
 │   │   ├── not-found.tsx
 │   │   └── page.tsx
 │   ├── layout.tsx
@@ -167,18 +177,27 @@ apps/web/
 │   ├── page.tsx
 │   └── query-provider.tsx
 ├── components/ui/
+│   ├── radio-group.tsx
 │   └── sonner.tsx
 ├── features/produto/
 │   ├── api/
+│   │   ├── avaliacao-produto-query-keys.ts
+│   │   ├── create-avaliacao-produto.ts
 │   │   ├── create-produto.ts
 │   │   ├── delete-produto.ts
 │   │   ├── get-produto.ts
 │   │   ├── get-produtos.ts
+│   │   ├── get-avaliacao-produto.ts
+│   │   ├── get-avaliacoes-produto.ts
 │   │   ├── produto-query-keys.ts
 │   │   ├── update-produto.ts
 │   │   ├── use-*.ts
+│   │   ├── validar-avaliacao-produto-params.ts
 │   │   └── validar-produto-id.ts
 │   ├── forms/
+│   │   ├── avaliacao-produto-form-fields.schema.ts
+│   │   ├── avaliacao-produto-form-fields.tsx
+│   │   ├── create-avaliacao-produto-form.schema.ts
 │   │   ├── create-produto-form.schema.ts
 │   │   ├── decimal-input-mask.ts
 │   │   ├── produto-form-fields.schema.ts
@@ -186,6 +205,7 @@ apps/web/
 │   │   ├── update-produto-form.mapper.ts
 │   │   └── update-produto-form.schema.ts
 │   └── lib/
+│       ├── list-avaliacoes-produto-search-params.ts
 │       ├── list-produtos-search-params.ts
 │       └── produto-formatters.ts
 └── lib/
@@ -198,13 +218,15 @@ apps/web/
 ```
 
 Os arquivos `page.tsx` permanecem Server Components e validam params ou
-`searchParams`. Listagem, detalhe, formulários e diálogo destrutivo são as
+`searchParams`. Listagens, detalhes, formulários e diálogo destrutivo são as
 fronteiras Client que realmente precisam de hooks, estado ou APIs do navegador.
 O `Toaster` é uma única fronteira Client renderizada pelo layout raiz; isso não
 converte o layout nem seus `children` em Client Components. Os filtros usam
 navegação GET e continuam renderizáveis no servidor.
 
 Os campos compartilhados por criação e edição vivem na feature, enquanto os
-componentes que orquestram cada tela permanecem próximos das rotas. O schema do
-formulário não substitui os contratos HTTP: mappers explícitos preservam a
-diferença entre string vazia, `null`, propriedade ausente e campo não alterado.
+componentes que orquestram cada tela permanecem próximos das rotas. Isso já
+ocorre no CRUD de Produto e nos campos da criação de Avaliação preparados para
+a futura edição. O schema do formulário não substitui os contratos HTTP:
+mappers explícitos preservam a diferença entre string vazia, `null`,
+propriedade ausente e campo não alterado.
