@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { MessagesSquare, RefreshCw, Star } from "lucide-react";
+import { MessagesSquare, Pencil, RefreshCw, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -174,10 +174,24 @@ export function AvaliacaoProdutoDetalhe({
             </h2>
           </div>
 
-          <Badge variant="secondary" aria-label={`Nota ${avaliacao.nota} de 5`}>
-            <Star aria-hidden="true" className="fill-current" />
-            {avaliacao.nota}/5
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge
+              variant="secondary"
+              aria-label={`Nota ${avaliacao.nota} de 5`}
+            >
+              <Star aria-hidden="true" className="fill-current" />
+              {avaliacao.nota}/5
+            </Badge>
+
+            <Button asChild size="sm" variant="outline">
+              <Link
+                href={`/produtos/${avaliacao.produtoId}/avaliacoes/${avaliacao.id}/editar`}
+              >
+                <Pencil aria-hidden="true" />
+                Editar avaliação
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {isFetching ? (
