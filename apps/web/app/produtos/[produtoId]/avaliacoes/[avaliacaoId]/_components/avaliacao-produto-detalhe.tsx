@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAvaliacaoProduto } from "@/features/produto/api/use-avaliacao-produto";
 import { formatarDataHoraProduto } from "@/features/produto/lib/produto-formatters";
+import { DeleteAvaliacaoProdutoDialog } from "./delete-avaliacao-produto-dialog";
 
 type AvaliacaoProdutoDetalheProps = Readonly<{
   produtoId: string;
@@ -191,6 +192,12 @@ export function AvaliacaoProdutoDetalhe({
                 Editar avaliação
               </Link>
             </Button>
+
+            <DeleteAvaliacaoProdutoDialog
+              produtoId={avaliacao.produtoId}
+              avaliacaoId={avaliacao.id}
+              autorNome={avaliacao.autorNome}
+            />
           </div>
         </div>
 

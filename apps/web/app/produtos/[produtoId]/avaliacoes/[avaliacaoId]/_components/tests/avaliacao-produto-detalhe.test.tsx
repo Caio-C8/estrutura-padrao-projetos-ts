@@ -13,6 +13,27 @@ vi.mock("@/features/produto/api/use-avaliacao-produto", () => ({
   useAvaliacaoProduto: useAvaliacaoProdutoMock,
 }));
 
+vi.mock("../delete-avaliacao-produto-dialog", () => ({
+  DeleteAvaliacaoProdutoDialog: ({
+    produtoId,
+    avaliacaoId,
+    autorNome,
+  }: {
+    produtoId: string;
+    avaliacaoId: string;
+    autorNome: string;
+  }) => (
+    <button
+      type="button"
+      data-produto-id={produtoId}
+      data-avaliacao-id={avaliacaoId}
+      data-autor-nome={autorNome}
+    >
+      Excluir avaliação
+    </button>
+  ),
+}));
+
 const PRODUTO_ID = "b5c5f7e3-4c5f-4f61-9c67-f9da7a2584e4";
 const AVALIACAO_ID = "b48298c4-d9e5-4713-8e1b-983b6380fe43";
 
@@ -86,6 +107,24 @@ describe("AvaliacaoProdutoDetalhe", () => {
     expect(screen.getByLabelText("Nota 5 de 5")).toBeDefined();
     expect(screen.getByText("Produto excelente.")).toBeDefined();
     expect(screen.getByText("Sim")).toBeDefined();
+
+    const editarAvaliacao = screen.getByRole("link", {
+      name: "Editar avaliação",
+    });
+
+    expect(editarAvaliacao.getAttribute("href")).toBe(
+      `/produtos/${PRODUTO_ID}/avaliacoes/${AVALIACAO_ID}/editar`,
+    );
+
+    const excluirAvaliacao = screen.getByRole("button", {
+      name: "Excluir avaliação",
+    });
+
+    expect(excluirAvaliacao.getAttribute("data-produto-id")).toBe(PRODUTO_ID);
+    expect(excluirAvaliacao.getAttribute("data-avaliacao-id")).toBe(
+      AVALIACAO_ID,
+    );
+    expect(excluirAvaliacao.getAttribute("data-autor-nome")).toBe("Maria");
 
     const datas = screen.getAllByRole("time");
 
