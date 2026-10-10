@@ -1,7 +1,7 @@
 # Handoff da aplicação Web
 
-Atualizado em 10 de outubro de 2026 após a conclusão de `WEB-003`, incluindo a
-exclusão de Avaliação de Produto.
+Atualizado em 10 de outubro de 2026 após a conclusão de `WEB-003` e o
+planejamento de `WEB-003A` para modais roteáveis de criação e edição.
 
 Este documento é o retrato operacional para continuar o trabalho. Planejamento
 e critérios permanentes ficam no [roadmap](./roadmap.md).
@@ -11,6 +11,8 @@ e critérios permanentes ficam no [roadmap](./roadmap.md).
 - `WEB-001 — Entregar o baseline da Web e a lista de produtos`: concluída;
 - `WEB-002 — Entregar detalhes e CRUD de Produto`: concluída;
 - `WEB-003 — Entregar o CRUD aninhado de avaliações`: concluída;
+- `WEB-003A — Converter criação e edição em modais roteáveis`: planejada como
+  próxima entrega;
 - `WEB-004` e `WEB-005`: planejadas.
 
 A navegação implementada é:
@@ -158,17 +160,27 @@ Em 10 de outubro de 2026:
 - `pnpm --filter @repo/web build`: aprovado;
 - `pnpm format:check`: aprovado.
 
-## Próxima etapa: `WEB-004`
+## Próxima etapa: `WEB-003A`
 
-Ampliar a estratégia de testes de interface e fluxos críticos:
+Converter os quatro fluxos de criação e edição em modais roteáveis antes de
+ampliar a cobertura E2E:
 
-1. confirmar a ferramenta E2E compatível com as versões instaladas;
-2. cobrir os fluxos reais de listagem, criação, edição, exclusão e recuperação
-   de erro, incluindo o acordo Web → rewrite → API;
-3. adicionar verificações automatizadas de acessibilidade onde forem
-   confiáveis;
-4. documentar os limites da automação e preservar revisão manual de teclado,
-   foco, zoom, leitores de tela e viewports.
+1. adicionar `Dialog`, mantendo `AlertDialog` apenas para exclusões;
+2. separar os conteúdos reutilizáveis das quatro páginas sem importar
+   `page.tsx` dentro de Client Components;
+3. criar um slot paralelo com fallback nulo e rotas interceptadas;
+4. preservar página completa em acesso direto, nova aba e refresh;
+5. fechar por Cancelar, Escape, botão de fechar e histórico, bloqueando os
+   controles de fechamento durante a submissão;
+6. confirmar descarte quando houver alterações não salvas e fechar sem aviso
+   quando o formulário estiver intacto;
+7. restaurar foco ao gatilho, validar Voltar/Avançar e não criar entradas
+   artificiais no histórico;
+8. garantir conteúdo rolável, ações alcançáveis e ausência de scroll horizontal
+   em viewport estreita;
+9. preservar sucesso, toast, cache, erro da API, loading, erro recuperável e
+   `404` dos formulários de edição;
+10. testar e verificar a mudança antes de iniciar `WEB-004`.
 
 ## Limites mantidos
 

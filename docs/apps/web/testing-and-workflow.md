@@ -121,6 +121,25 @@ obrigatória. O `ResizeObserver` ausente no jsdom possui um mock mínimo no setu
 porque as primitives Radix o utilizam; o mock não substitui testes reais de
 layout, foco e teclado no navegador.
 
+Antes de iniciar `WEB-004`, `WEB-003A` deve acrescentar testes de componentes e
+de roteamento suficientes para estabilizar a nova apresentação. Cubra:
+
+- abertura pelo link interno e renderização do conteúdo no `Dialog`;
+- Cancelar, Escape, botão de fechar e clique externo;
+- bloqueio de fechamento e submissão duplicada durante pending;
+- confirmação somente quando houver alterações não salvas;
+- restauração de foco no gatilho;
+- Voltar, Avançar e sincronização da URL;
+- página completa em acesso direto, nova aba simulável e refresh;
+- reflow do conteúdo e ações em viewport estreita;
+- sucesso, erro da API, loading, retry e `404` nos formulários de edição;
+- ausência de regressão nas páginas canônicas e nos contratos de cache.
+
+Os testes unitários não substituem a verificação real do histórico e do
+comportamento soft navigation versus hard navigation. Esses cenários devem ser
+repetidos nos E2E de `WEB-004`; a implementação de `WEB-003A` não deve escolher
+uma ferramenta E2E de forma antecipada apenas para validar a estrutura.
+
 Para mudança transversal:
 
 ```bash

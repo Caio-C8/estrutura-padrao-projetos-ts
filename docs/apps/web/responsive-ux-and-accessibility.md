@@ -55,6 +55,29 @@ sistema visual.
 - o `Toaster` global preserva a confirmação durante a navegação interna sem
   inserir estado transitório na URL.
 
+## Requisitos dos modais roteáveis de `WEB-003A`
+
+- Cancelar, Escape e o botão de fechar encerram o modal quando não há pending;
+- clique externo segue a mesma política e nunca descarta alterações
+  silenciosamente;
+- durante submissão, os controles de fechamento ficam desabilitados, Escape é
+  ignorado e uma nova submissão não é iniciada;
+- formulário modificado pede confirmação antes de descartar; formulário intacto
+  não apresenta confirmação desnecessária;
+- o diálogo prende o foco enquanto aberto e, ao fechar, devolve-o ao gatilho
+  quando o elemento ainda existir;
+- Voltar fecha o modal e Avançar o reabre, mantendo URL e contexto visual;
+- acesso direto e refresh exibem a página completa, com título e estados de rota
+  preservados;
+- em viewport estreita, o modal pode ocupar quase toda a tela, respeita `svh`,
+  safe areas e teclado virtual, mantém cabeçalho e ações alcançáveis e limita a
+  rolagem ao conteúdo apropriado;
+- zoom de 200%, conteúdo longo e mensagens de erro não escondem campos ou ações;
+- loading, erro recuperável, `404` e conteúdo preenchido dos formulários de
+  edição mantêm anúncio e foco adequados no modal;
+- sucesso mantém toast e navegação existentes sem anunciar duas mudanças de
+  contexto concorrentes.
+
 ## Padrões adaptáveis
 
 - Grids reduzem colunas progressivamente.

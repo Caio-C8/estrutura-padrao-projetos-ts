@@ -88,6 +88,12 @@ dependências e estilos sem consumidor.
   destrutiva;
 - `Toaster`, baseado em Sonner, para confirmações transitórias de sucesso.
 
+`Dialog` ainda não faz parte das primitives instaladas. `WEB-003A` deverá
+adicioná-lo somente ao iniciar o primeiro modal de criação ou edição, revisar o
+código gerado e manter `AlertDialog` separado para decisões destrutivas. O modal
+de formulário precisa aceitar conteúdo rolável, cabeçalho e ações alcançáveis
+sem transformar a primitive em componente de domínio.
+
 Os `select` dos filtros da listagem continuam nativos porque são controles GET
 renderizáveis no servidor. A primitive `Select` atende os formulários
 interativos; não é necessário forçar a mesma implementação em contextos com

@@ -61,9 +61,11 @@ No estado atual da base:
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
 `WEB-001`, `WEB-002` e `WEB-003` estão concluídas. A próxima entrega planejada
-é `WEB-004`, dedicada à ampliação dos testes de interface e dos fluxos
-críticos, conforme o [roadmap da aplicação Web](./roadmap.md). O estado
-operacional e a ordem exata de continuação estão no [handoff](./handoff.md).
+é `WEB-003A`, que converterá criação e edição em modais roteáveis sem remover as
+páginas completas. `WEB-004`, dedicada à ampliação dos testes de interface e
+dos fluxos críticos, será executada depois dessa mudança de navegação, conforme
+o [roadmap da aplicação Web](./roadmap.md). O estado operacional e a ordem exata
+de continuação estão no [handoff](./handoff.md).
 
 As regras descritas nestes documentos representam o baseline desejado. Não
 presuma que uma dependência, diretório ou componente já exista sem conferir o

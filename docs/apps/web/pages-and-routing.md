@@ -41,6 +41,39 @@ confirma a ação em `AlertDialog`, usa mensagem local após o `204 No Content`,
 remove o detalhe do cache e retorna à coleção do mesmo produto sem criar uma
 entrada adicional no histórico.
 
+## Modais roteáveis planejados em `WEB-003A`
+
+Criação e edição passarão a combinar Parallel Routes e Intercepting Routes. A
+URL continuará sendo a fonte do estado de navegação, não um booleano global de
+modal.
+
+Comportamento esperado:
+
+| Entrada no fluxo                                | Apresentação esperada             |
+| ----------------------------------------------- | --------------------------------- |
+| clique em link interno durante navegação suave  | `Dialog` sobre a tela de origem   |
+| URL digitada, nova aba ou acesso externo        | página completa da rota canônica  |
+| refresh enquanto a URL do formulário está ativa | página completa da rota canônica  |
+| Voltar após abrir o modal                       | fecha o modal e recupera a origem |
+| Avançar depois de fechá-lo com Voltar           | reabre o modal e restaura a URL   |
+
+O layout que hospedar o slot deve renderizá-lo ao lado de `children`. O slot
+precisa de `default.tsx` retornando `null` para hard navigation e estados sem
+modal. Cada rota interceptada renderiza um invólucro `Dialog` e o mesmo conteúdo
+de feature usado pela página canônica.
+
+Não importe um `page.tsx` em um componente cliente para simular reutilização.
+As páginas preservam metadata, validação de params, `notFound()` e composição de
+tela cheia; formulários, carregamento e estados reutilizáveis ficam em
+componentes próprios. Cancelamento e sucesso devem ser configuráveis pelo shell
+de página ou modal, sem duplicar schema, mapper, operação ou hook.
+
+O fechamento do modal deve respeitar uma única política para Cancelar, Escape,
+botão de fechar e clique externo: pending impede fechamento; formulário alterado
+exige confirmação antes do descarte; formulário intacto fecha imediatamente.
+Quando o gatilho ainda existir, o foco retorna a ele. O histórico não deve
+receber entradas artificiais apenas para abrir ou fechar o invólucro.
+
 ## Metadata e título obrigatório
 
 Toda página deve resultar em:
@@ -150,6 +183,8 @@ assíncrono para evitar layout shift.
 - Coloque filtros compartilháveis na URL.
 - Use rotas interceptadas para modais somente quando a URL compartilhável e a
   navegação do histórico realmente fizerem parte da experiência.
+- Em rotas interceptadas, verifique separadamente navegação suave, acesso
+  direto, refresh e fallback de slots não correspondentes.
 
 ## Colocação
 

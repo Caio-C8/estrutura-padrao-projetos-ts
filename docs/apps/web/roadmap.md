@@ -28,8 +28,9 @@ dependência de Produto.
 1. `WEB-001`: baseline da Web, integração de leitura e lista de produtos;
 2. `WEB-002`: detalhes, criação, edição e exclusão de produto;
 3. `WEB-003`: lista e CRUD de avaliações dentro do produto;
-4. `WEB-004`: testes de interface e fluxos críticos;
-5. `WEB-005`: preparação explícita de segurança, observabilidade e performance
+4. `WEB-003A`: criação e edição em modais roteáveis;
+5. `WEB-004`: testes de interface e fluxos críticos;
+6. `WEB-005`: preparação explícita de segurança, observabilidade e performance
    para uso além do exemplo público.
 
 Cada objetivo deve ser concluído e verificado antes de ampliar o seguinte.
@@ -48,8 +49,9 @@ Sonner às operações ou aos hooks de dados.
 
 O CRUD aninhado de avaliações cobre listagem paginada, filtros na URL, detalhe,
 criação, edição e exclusão sem incluir uma coleção ilimitada na response básica
-de Produto. A próxima entrega é `WEB-004`. O estado exato e a ordem de
-continuação estão no [handoff](./handoff.md).
+de Produto. A próxima entrega é `WEB-003A`, que preservará as rotas completas e
+passará a apresentar criação e edição em modais durante navegação interna. O
+estado exato e a ordem de continuação estão no [handoff](./handoff.md).
 
 ## Rotas planejadas
 
@@ -68,6 +70,11 @@ continuação estão no [handoff](./handoff.md).
 Exclusões serão ações confirmadas em diálogo, e não páginas próprias. O path de
 avaliação continuará carregando `produtoId` e `avaliacaoId`, preservando a
 hierarquia e o contrato da API.
+
+`WEB-003A` não altera essas URLs. As quatro rotas de criação e edição continuam
+canônicas e renderizam páginas completas em acesso direto ou refresh; links
+internos passam a interceptá-las e apresentá-las em um slot modal durante
+navegação suave.
 
 ## Decisões transversais já tomadas
 
@@ -341,6 +348,106 @@ subordinada ao produto selecionado.
 - operações, hooks, parsers, schemas, formulários e componentes possuem testes;
 - a suíte passa com 47 arquivos e 214 testes; lint, typecheck, build e
   `format:check` também passam.
+
+### WEB-003A — Converter criação e edição em modais roteáveis
+
+**Status:** planejado como próxima entrega
+
+**Contexto**
+
+Criação e edição de Produto e Avaliação já possuem rotas completas, validação,
+formulários e estados remotos. A experiência interna deve passar a abrir esses
+fluxos sobre a tela de origem sem perder URL compartilhável, histórico do
+navegador ou fallback de página completa. Essa mudança precisa ocorrer antes de
+`WEB-004` para que os testes E2E sejam escritos contra a navegação definitiva.
+
+**Decisão arquitetural**
+
+- combinar Parallel Routes e Intercepting Routes do App Router;
+- manter `/produtos/novo`, `/produtos/[produtoId]/editar`,
+  `/produtos/[produtoId]/avaliacoes/nova` e
+  `/produtos/[produtoId]/avaliacoes/[avaliacaoId]/editar` como rotas canônicas;
+- em navegação suave iniciada pelos links da aplicação, renderizar o conteúdo
+  interceptado em um slot modal;
+- em acesso direto, abertura em nova aba ou refresh, renderizar a página
+  completa correspondente;
+- usar `Dialog` para formulários e manter `AlertDialog` reservado às
+  confirmações destrutivas;
+- não importar `page.tsx` como componente reutilizável: página, conteúdo do
+  fluxo e invólucro modal permanecem responsabilidades separadas;
+- extrair ou promover o conteúdo compartilhado somente onde página completa e
+  rota interceptada realmente o reutilizem;
+- não alterar endpoints, contratos HTTP, query keys ou semântica de cache.
+
+**Escopo**
+
+- adicionar a primitive `Dialog` quando existir o primeiro consumidor;
+- criar o slot paralelo modal, seu `default.tsx` nulo e as rotas interceptadas
+  necessárias aos quatro fluxos;
+- adaptar os formulários para que submissão e validação não conheçam a forma de
+  apresentação, enquanto página e modal controlam cancelamento e navegação;
+- manter metadata, validação de params e `notFound()` nas rotas canônicas;
+- implementar fechamento por Cancelar, Escape e botão de fechar;
+- impedir fechamento pelos controles do modal enquanto a submissão estiver em
+  andamento e impedir submissões duplicadas;
+- solicitar confirmação antes de descartar alterações realmente modificadas;
+- restaurar o foco ao gatilho que abriu o modal quando ele for fechado;
+- integrar abrir, fechar, voltar e avançar ao histórico do navegador;
+- adaptar formulários extensos a viewport estreita, teclado virtual, zoom e
+  áreas seguras, com conteúdo rolável e ações alcançáveis;
+- preservar sucesso, erro de API, loading, atualização em segundo plano e
+  `404` dos formulários de edição nos dois modos de apresentação;
+- adicionar testes de componentes e navegação proporcionais à mudança.
+
+**Fora do escopo**
+
+- transformar exclusões em páginas ou substituir seus `AlertDialog`;
+- alterar API, contratos compartilhados ou regras de produto;
+- remover as páginas completas existentes;
+- escolher ou implementar toda a ferramenta E2E de `WEB-004`;
+- criar uma abstração genérica de modal sem consumidores além desses fluxos.
+
+**Critérios de aceite**
+
+- [ ] links internos de criar e editar Produto e Avaliação abrem um `Dialog`
+      sem substituir visualmente a tela de origem;
+- [ ] Cancelar, Escape e o botão de fechar encerram o modal quando permitido;
+- [ ] durante a submissão, controles de fechamento ficam indisponíveis, Escape
+      não fecha o modal e uma segunda submissão não é disparada;
+- [ ] ao tentar fechar um formulário alterado, o usuário escolhe entre continuar
+      editando e descartar as mudanças; formulário intacto fecha sem aviso;
+- [ ] ao fechar, o foco retorna ao gatilho que abriu o modal sempre que ele
+      ainda existir;
+- [ ] Voltar fecha o modal, Avançar o reabre e a URL acompanha o estado sem
+      criar entradas artificiais;
+- [ ] acesso direto, nova aba e refresh das quatro URLs renderizam suas páginas
+      completas com metadata e validação preservadas;
+- [ ] viewport estreita não perde campos ou ações, não cria scroll horizontal
+      da página e mantém conteúdo e rodapé do modal utilizáveis;
+- [ ] sucesso conserva toast, cache e destino já definidos; erro da API mantém
+      valores e mensagens; loading, erro recuperável e `404` de edição aparecem
+      corretamente também no modal;
+- [ ] fechamento por clique externo segue a mesma proteção contra pending e
+      alterações não salvas, sem descarte silencioso;
+- [ ] páginas completas continuam funcionando sem duplicar formulários, schemas
+      ou regras de integração;
+- [ ] testes, lint, typecheck, build, formatação e documentação passam.
+
+**Ordem interna recomendada**
+
+1. instalar e revisar a primitive `Dialog` do shadcn/ui;
+2. separar conteúdo reutilizável, shell de página e orquestração de navegação;
+3. tornar cancelamento e sucesso configuráveis sem duplicar os formulários;
+4. criar o slot paralelo, `default.tsx` e o invólucro modal controlado pela
+   rota;
+5. interceptar primeiro criação e edição de Avaliação, por serem os formulários
+   menores;
+6. interceptar criação e edição de Produto com conteúdo rolável e ações
+   persistentes;
+7. implementar proteção de pending, confirmação de descarte e restauração de
+   foco;
+8. verificar acesso direto, refresh, nova aba, Voltar, Avançar, erros e `404`;
+9. revisar viewport estreita, teclado, foco e executar as verificações.
 
 ### WEB-004 — Cobrir a interface e os fluxos críticos com testes
 

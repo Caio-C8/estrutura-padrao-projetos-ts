@@ -82,6 +82,31 @@ apenas porque um botão, formulário ou dialog é interativo.
 Não extraia automaticamente cada `div`, título ou trecho curto usado uma única
 vez. Componentização excessiva dificulta acompanhar o fluxo da página.
 
+### Página completa e modal roteável
+
+Em `WEB-003A`, a mesma rota poderá ter duas apresentações sem duplicar sua regra
+de negócio:
+
+```text
+rota canônica/page.tsx ───────┐
+                             ├── conteúdo reutilizável do fluxo
+slot interceptado/page.tsx ──┘
+              │
+              └── Dialog controlado pela navegação
+```
+
+`page.tsx` não é o componente compartilhado. O arquivo especial permanece
+responsável por params, metadata, `notFound()` e composição própria da rota. O
+conteúdo reutilizável é promovido para `features/produto/components` ou para o
+ancestral `_components` mais próximo somente quando página canônica e rota
+interceptada passarem a consumi-lo de fato.
+
+O invólucro `Dialog` é a menor fronteira Client responsável por fechar,
+proteger pending, confirmar descarte e integrar o histórico. Formulários não
+devem descobrir se estão em página ou modal por leitura do DOM; recebem
+callbacks ou uma interface pequena para sucesso e cancelamento. Operações,
+hooks, schemas, mappers e query keys permanecem únicos.
+
 ## Estado
 
 Mantenha o estado no local mais próximo que atende os consumidores:
