@@ -103,25 +103,23 @@ pnpm --filter @repo/web build
 pnpm format:check
 ```
 
-O script `test` executa `vitest run`. Em 9 de outubro de 2026, a suíte possui 44
-arquivos e 206 testes. Além de `WEB-001` e `WEB-002`, ela cobre a parte já
-implementada de `WEB-003`: query keys aninhadas, validação de params, parser de
-filtros, operações e hooks de lista, detalhe, criação e edição de avaliação,
-schemas e mappers dos formulários, seleção da nota por estrelas, payload parcial
-do update, estados das telas e toast de sucesso. Os testes dos componentes
-simulam somente `toast.success` e verificam a mensagem emitida: creates e
-updates com corpo recebem a mensagem da response, enquanto delete de Produto
-usa o conteúdo local correspondente ao `204`.
+O script `test` executa `vitest run`. Em 10 de outubro de 2026, a suíte possui 47
+arquivos e 214 testes. Além de `WEB-001` e `WEB-002`, ela cobre `WEB-003`: query
+keys aninhadas, validação de params, parser de filtros, operações e hooks de
+lista, detalhe, criação, edição e exclusão de avaliação, schemas e mappers dos
+formulários, seleção da nota por estrelas, payload parcial do update, estados
+das telas e toasts de sucesso. Os testes dos componentes simulam somente
+`toast.success` e verificam a mensagem emitida: creates e updates com corpo
+recebem a mensagem da response, enquanto deletes usam conteúdo local
+correspondente ao `204`.
 
-Na última verificação registrada, `pnpm --filter @repo/web test`, `typecheck` e
-`lint` passaram. Build, `format:check`, teste manual completo do seletor por
-teclado e a revisão final de `WEB-003` ainda não foram executados para esta
-fatia.
+Na última verificação registrada, `pnpm --filter @repo/web test`, `typecheck`,
+`lint` e `build`, além de `pnpm format:check`, passaram.
 
-Testes E2E continuam pendentes e a revisão manual permanece obrigatória. O
-`ResizeObserver` ausente no jsdom possui um mock mínimo no setup porque as
-primitives Radix o utilizam; o mock não substitui testes reais de layout, foco e
-teclado no navegador.
+Testes E2E continuam planejados para `WEB-004`, e a revisão manual permanece
+obrigatória. O `ResizeObserver` ausente no jsdom possui um mock mínimo no setup
+porque as primitives Radix o utilizam; o mock não substitui testes reais de
+layout, foco e teclado no navegador.
 
 Para mudança transversal:
 

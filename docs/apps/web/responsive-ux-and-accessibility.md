@@ -37,8 +37,10 @@ sistema visual.
   semântico enviado ao backend;
 - datas com horário são apresentadas no fuso local, sem exigir que o usuário
   conheça a representação UTC da integração;
-- a exclusão usa `AlertDialog`, informa que as avaliações também serão
-  removidas, bloqueia repetição durante o pending e mantém o erro recuperável no
+- a exclusão de Produto usa `AlertDialog` e informa que as avaliações também
+  serão removidas;
+- a exclusão de Avaliação usa `AlertDialog`, identifica o autor, bloqueia
+  fechamento e repetição durante o pending e mantém o erro recuperável no
   próprio contexto;
 - confirmações de criação e atualização usam a mensagem de sucesso validada da
   API em toast; após o `204`, a exclusão usa título e descrição definidos pela

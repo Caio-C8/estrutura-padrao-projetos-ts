@@ -36,8 +36,10 @@ As rotas aninhadas de avaliações validam `produtoId` e, nas rotas de item,
 `avaliacaoId` antes de renderizar o consumidor cliente. A coleção preserva
 filtros e paginação na URL; detalhe e edição diferenciam produto ausente,
 avaliação ausente e falha recuperável. Criação e edição exibem toast com a
-mensagem validada da API e navegam para o detalhe correspondente. Somente a
-exclusão de avaliação permanece pendente.
+mensagem validada da API e navegam para o detalhe correspondente. A exclusão
+confirma a ação em `AlertDialog`, usa mensagem local após o `204 No Content`,
+remove o detalhe do cache e retorna à coleção do mesmo produto sem criar uma
+entrada adicional no histórico.
 
 ## Metadata e título obrigatório
 

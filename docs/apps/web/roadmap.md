@@ -38,19 +38,18 @@ que as revelar, desde que sejam registradas.
 
 ## Progresso atual
 
-`WEB-001` e `WEB-002` estão concluídas. A home foi preservada, o baseline
-visual, a infraestrutura HTTP e o TanStack Query foram implementados, e o CRUD
-Web de Produto cobre listagem, detalhe, criação, edição e exclusão. Filtros e
-paginação permanecem na URL; formulários possuem schemas e mappers locais; a
-exclusão confirma a remoção em cascata das avaliações e trata `204 No Content`.
-Toasts globais confirmam create, update e delete sem acoplar Sonner às operações
-ou aos hooks de dados.
+`WEB-001`, `WEB-002` e `WEB-003` estão concluídas. A home foi preservada, o
+baseline visual, a infraestrutura HTTP e o TanStack Query foram implementados,
+e o CRUD Web de Produto cobre listagem, detalhe, criação, edição e exclusão.
+Filtros e paginação permanecem na URL; formulários possuem schemas e mappers
+locais; a exclusão confirma a remoção em cascata das avaliações e trata
+`204 No Content`. Toasts globais confirmam create, update e delete sem acoplar
+Sonner às operações ou aos hooks de dados.
 
-`WEB-003` está em andamento. A listagem paginada, os filtros na URL, o detalhe
-individual, a criação e a edição de avaliações já foram implementados sem
-incluir uma coleção ilimitada na response básica de Produto. A exclusão é a
-próxima fatia. O estado exato e a ordem de continuação estão no
-[handoff](./handoff.md).
+O CRUD aninhado de avaliações cobre listagem paginada, filtros na URL, detalhe,
+criação, edição e exclusão sem incluir uma coleção ilimitada na response básica
+de Produto. A próxima entrega é `WEB-004`. O estado exato e a ordem de
+continuação estão no [handoff](./handoff.md).
 
 ## Rotas planejadas
 
@@ -271,7 +270,7 @@ permitir administrar o ciclo de vida completo de um produto.
 
 ### WEB-003 — Entregar o CRUD aninhado de avaliações
 
-**Status:** em andamento desde 9 de outubro de 2026
+**Status:** concluído em 10 de outubro de 2026
 
 **Contexto**
 
@@ -301,19 +300,19 @@ subordinada ao produto selecionado.
 
 **Critérios de aceite**
 
-- [ ] todas as operações usam `produtoId` e, quando aplicável,
+- [x] todas as operações usam `produtoId` e, quando aplicável,
       `avaliacaoId`;
 - [x] filtros e paginação sobrevivem a reload e navegação compartilhável;
-- [ ] criação, edição e exclusão atualizam apenas caches relacionados ao
+- [x] criação, edição e exclusão atualizam apenas caches relacionados ao
       produto correto;
 - [x] comentário ausente, vazio e `null` seguem a semântica do contrato em
       create e update;
-- [ ] os estados remotos e de formulário são acessíveis e responsivos;
-- [ ] exclusão exige confirmação e trata corretamente `204 No Content`;
-- [ ] fluxos críticos possuem testes;
-- [ ] verificações do app Web e documentação passam.
+- [x] os estados remotos e de formulário são acessíveis e responsivos;
+- [x] exclusão exige confirmação e trata corretamente `204 No Content`;
+- [x] fluxos críticos possuem testes;
+- [x] verificações do app Web e documentação passam.
 
-**Progresso parcial verificado em 9 de outubro de 2026**
+**Conclusão verificada em 10 de outubro de 2026**
 
 - o detalhe de Produto possui acesso explícito à coleção aninhada;
 - a listagem valida `produtoId`, query e response, mantém pesquisa por autor,
@@ -334,10 +333,14 @@ subordinada ao produto selecionado.
   comentário, omite o comentário intacto e preserva recomendação `false`;
 - o toast usa a mensagem validada da API e a navegação retorna ao detalhe
   atualizado;
-- operações, hooks, parsers, schemas e componentes dessa fatia possuem testes;
-- a suíte atual passa com 44 arquivos e 206 testes; typecheck e lint do app Web
-  também passam; exclusão, build, formatação e revisão final permanecem para a
-  conclusão de `WEB-003`.
+- a exclusão valida `produtoId` e `avaliacaoId`, não espera body no
+  `204 No Content` e invalida somente as listas do produto correspondente;
+- o detalhe confirma a ação em `AlertDialog`, mantém o erro público visível,
+  remove do cache apenas a avaliação excluída, exibe toast local e retorna à
+  coleção do produto com `router.replace`;
+- operações, hooks, parsers, schemas, formulários e componentes possuem testes;
+- a suíte passa com 47 arquivos e 214 testes; lint, typecheck, build e
+  `format:check` também passam.
 
 ### WEB-004 — Cobrir a interface e os fluxos críticos com testes
 

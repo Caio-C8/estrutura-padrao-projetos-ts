@@ -43,24 +43,27 @@ No estado atual da base:
   formulários responsivos, máscaras decimais, datas locais, erros por campo,
   confirmação destrutiva e toasts de sucesso; create e update exibem a mensagem
   validada da API, enquanto delete usa mensagem local após `204 No Content`;
-- `WEB-003` está em andamento: a Web já lista avaliações aninhadas com filtros
-  e paginação na URL, consulta o detalhe individual, cria e edita uma
-  avaliação; criação e edição usam seletor acessível de 1 a 5 estrelas, erros
-  por campo, invalidação restrita ao `produtoId`, toast com a mensagem validada
-  da API e navegação ao detalhe;
+- o CRUD aninhado de avaliações está concluído: a Web lista avaliações com
+  filtros e paginação na URL, consulta o detalhe individual, cria, edita e
+  exclui uma avaliação;
+- criação e edição usam seletor acessível de 1 a 5 estrelas, erros por campo,
+  invalidação restrita ao `produtoId`, toast com a mensagem validada da API e
+  navegação ao detalhe;
 - a edição envia somente campos alterados, representa a limpeza do comentário
-  com `null` e preserva `false` para recomendação; somente a exclusão de
-  avaliação permanece pendente na Web;
+  com `null` e preserva `false` para recomendação;
+- a exclusão valida os dois identificadores, confirma a ação em `AlertDialog`,
+  trata `204 No Content`, remove somente o detalhe excluído, invalida apenas as
+  listas do produto correspondente, usa toast local e retorna à coleção;
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
   operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários,
   diálogo de exclusão e disparo dos toasts;
 - testes E2E no navegador ainda não foram adotados.
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
-`WEB-001` e `WEB-002` estão concluídas; `WEB-003`, o CRUD aninhado de
-avaliações, está em andamento no
-[roadmap da aplicação Web](./roadmap.md). O estado operacional e a ordem exata
-de continuação estão no [handoff](./handoff.md).
+`WEB-001`, `WEB-002` e `WEB-003` estão concluídas. A próxima entrega planejada
+é `WEB-004`, dedicada à ampliação dos testes de interface e dos fluxos
+críticos, conforme o [roadmap da aplicação Web](./roadmap.md). O estado
+operacional e a ordem exata de continuação estão no [handoff](./handoff.md).
 
 As regras descritas nestes documentos representam o baseline desejado. Não
 presuma que uma dependência, diretório ou componente já exista sem conferir o
@@ -101,7 +104,7 @@ Detalhes e exemplos estão em [Páginas e rotas](./pages-and-routing.md).
 | Assunto                                       | Documento                                                                   |
 | --------------------------------------------- | --------------------------------------------------------------------------- |
 | Entregas, estado e critérios de aceite        | [Roadmap](./roadmap.md)                                                     |
-| Estado atual e continuação de `WEB-003`       | [Handoff](./handoff.md)                                                     |
+| Estado atual e próxima entrega                | [Handoff](./handoff.md)                                                     |
 | Organização, renderização e estado            | [Arquitetura](./architecture.md)                                            |
 | Rotas, layouts, metadata e estados de página  | [Páginas e rotas](./pages-and-routing.md)                                   |
 | Componentização, shadcn/ui e design system    | [Componentes e design system](./components-and-design-system.md)            |

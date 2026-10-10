@@ -36,9 +36,8 @@ No estado atual:
   responses, normalização de erros e tratamento de `204 No Content`;
 - listar, consultar, criar, atualizar e excluir Produto possuem operações e
   hooks próprios;
-- listar, consultar, criar e atualizar Avaliação de Produto possuem operações e
-  hooks próprios; somente a exclusão desse sub-recurso ainda está pendente na
-  Web;
+- listar, consultar, criar, atualizar e excluir Avaliação de Produto possuem
+  operações e hooks próprios;
 - params e bodies são validados antes da request; responses com corpo são
   validadas com os schemas compartilhados;
 - create e update atualizam o detalhe conhecido e invalidam listas; delete
@@ -46,6 +45,8 @@ No estado atual:
   interface ao navegar;
 - as query keys de avaliações sempre incluem `produtoId`; criação e atualização
   preenchem o detalhe retornado e invalidam somente as listas daquele produto;
+  exclusão invalida essas listas e tem somente o detalhe excluído removido pela
+  interface;
 - a interface usa a mensagem validada das responses de create e update em
   toasts de sucesso; após delete, usa mensagem local porque `204` não possui
   corpo;
@@ -62,10 +63,10 @@ No estado atual:
 - credenciais de autenticação no navegador já possuem o baseline de cookie
   `HttpOnly`, sem Web Storage.
 
-`WEB-001` e `WEB-002` são implementações concretas concluídas para Produto. Os
-exemplos genéricos dos documentos complementares continuam sendo orientação
-para novos domínios. `WEB-003` está em andamento com leitura, detalhe, criação e
-atualização de avaliações já integrados; somente delete permanece pendente.
+`WEB-001`, `WEB-002` e `WEB-003` são implementações concretas concluídas para
+Produto. Os exemplos genéricos dos documentos complementares continuam sendo
+orientação para novos domínios. O CRUD aninhado de avaliações está integrado de
+ponta a ponta na Web; a próxima entrega planejada é `WEB-004`.
 
 ## Decisões da primeira integração
 

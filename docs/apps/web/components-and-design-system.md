@@ -74,7 +74,7 @@ dependências e estilos sem consumidor.
 
 `components.json` usa o estilo `radix-nova`, Tailwind CSS 4, CSS variables,
 ícones Lucide e aliases locais. As primitives presentes possuem consumidores em
-`WEB-001`, `WEB-002` ou na parte implementada de `WEB-003`:
+`WEB-001`, `WEB-002` ou `WEB-003`:
 
 - `Badge` para o status do produto;
 - `Button` para navegação, filtros, paginação, retry e ações;

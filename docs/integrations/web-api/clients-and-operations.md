@@ -18,6 +18,7 @@ apps/web/
             ├── avaliacao-produto-query-keys.ts
             ├── create-avaliacao-produto.ts
             ├── create-produto.ts
+            ├── delete-avaliacao-produto.ts
             ├── delete-produto.ts
             ├── get-avaliacao-produto.ts
             ├── get-avaliacoes-produto.ts
@@ -34,10 +35,10 @@ apps/web/
 A infraestrutura comum e todas as operações do CRUD Web de Produto já existem.
 Cada método e endpoint possui uma função própria; os hooks cliente permanecem
 separados das operações. Em `WEB-003`, `getAvaliacoesProduto`,
-`getAvaliacaoProduto`, `createAvaliacaoProduto` e `updateAvaliacaoProduto` já
-seguem a mesma regra para o sub-recurso aninhado e sempre carregam `produtoId`.
-Somente delete de avaliação ainda não foi criado. Não crie diretórios vazios
-nem antecipe arquivos sem consumidor.
+`getAvaliacaoProduto`, `createAvaliacaoProduto`, `updateAvaliacaoProduto` e
+`deleteAvaliacaoProduto` seguem a mesma regra para o sub-recurso aninhado e
+sempre carregam `produtoId`. Não crie diretórios vazios nem antecipe arquivos
+sem consumidor.
 
 ## Abstração comum
 
@@ -185,7 +186,9 @@ exigem `produtoId`, dos params do item, que exigem também `avaliacaoId`. Lista,
 detalhe, criação e atualização validam suas responses com os schemas exportados
 por `@repo/contracts`. Create e update normalizam o body antes da request; no
 update, o mapper do formulário seleciona apenas campos alterados antes da
-operação. Toast e navegação continuam no formulário consumidor.
+operação. Delete valida os dois params e não configura response schema porque o
+sucesso é `204 No Content`. Toast, remoção do detalhe e navegação continuam no
+componente consumidor; o hook invalida somente as listas do produto afetado.
 
 ## Contratos
 

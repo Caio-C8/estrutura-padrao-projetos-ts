@@ -143,7 +143,7 @@ API
 
 ## Implementação atual do domínio Produto
 
-`WEB-001`, `WEB-002` e a parte implementada de `WEB-003` materializam a
+`WEB-001`, `WEB-002` e `WEB-003` materializam a
 separação desta forma:
 
 ```text
@@ -187,6 +187,7 @@ apps/web/
 │   │   ├── avaliacao-produto-query-keys.ts
 │   │   ├── create-avaliacao-produto.ts
 │   │   ├── create-produto.ts
+│   │   ├── delete-avaliacao-produto.ts
 │   │   ├── delete-produto.ts
 │   │   ├── get-produto.ts
 │   │   ├── get-produtos.ts
