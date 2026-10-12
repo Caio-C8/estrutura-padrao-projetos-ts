@@ -38,6 +38,7 @@ export function CreateAvaliacaoProdutoModal({
     <RouteFormDialog
       titulo="Nova avaliação"
       descricao="Preencha os dados para adicionar uma avaliação ao produto."
+      hrefRetornoFoco={`/produtos/${produtoId}/avaliacoes/nova`}
       possuiAlteracoes={estadoFormulario.possuiAlteracoes}
       enviando={estadoFormulario.enviando}
     >

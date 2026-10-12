@@ -34,6 +34,7 @@ export function EditarProdutoModal({ produtoId }: EditarProdutoModalProps) {
       titulo="Editar produto"
       descricao="Atualize somente as informações necessárias. Os campos não alterados serão preservados."
       largura="ampla"
+      hrefRetornoFoco={`/produtos/${produtoId}/editar`}
       possuiAlteracoes={estadoFormulario.possuiAlteracoes}
       enviando={estadoFormulario.enviando}
     >

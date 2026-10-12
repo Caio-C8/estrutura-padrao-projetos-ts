@@ -24,6 +24,7 @@ function renderDialog({
     <RouteFormDialog
       titulo="Nova avaliação"
       descricao="Preencha os dados da avaliação."
+      hrefRetornoFoco="/produtos/teste/avaliacoes/nova"
       possuiAlteracoes={possuiAlteracoes}
       enviando={enviando}
     >

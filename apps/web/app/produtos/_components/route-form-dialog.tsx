@@ -29,6 +29,7 @@ type RouteFormDialogProps = Readonly<{
   descricao: string;
   possuiAlteracoes: boolean;
   enviando: boolean;
+  hrefRetornoFoco: string;
   largura?: "normal" | "ampla";
   children: (controls: RouteFormDialogControls) => ReactNode;
 }>;
@@ -38,6 +39,7 @@ export function RouteFormDialog({
   descricao,
   possuiAlteracoes,
   enviando,
+  hrefRetornoFoco,
   largura = "normal",
   children,
 }: RouteFormDialogProps) {
@@ -77,6 +79,17 @@ export function RouteFormDialog({
             largura === "ampla" ? "max-w-4xl" : "max-w-2xl"
           }`}
           closeDisabled={enviando}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+
+            const gatilho = document.querySelector<HTMLAnchorElement>(
+              `a[href="${hrefRetornoFoco}"]`,
+            );
+
+            gatilho?.focus({
+              preventScroll: true,
+            });
+          }}
           onEscapeKeyDown={(event) => {
             if (enviando) {
               event.preventDefault();

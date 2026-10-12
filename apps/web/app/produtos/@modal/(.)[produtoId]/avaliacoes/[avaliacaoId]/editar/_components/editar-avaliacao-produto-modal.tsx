@@ -39,6 +39,7 @@ export function EditarAvaliacaoProdutoModal({
     <RouteFormDialog
       titulo="Editar avaliação"
       descricao="Atualize somente as informações necessárias. Os campos não alterados serão preservados."
+      hrefRetornoFoco={`/produtos/${produtoId}/avaliacoes/${avaliacaoId}/editar`}
       possuiAlteracoes={estadoFormulario.possuiAlteracoes}
       enviando={estadoFormulario.enviando}
     >

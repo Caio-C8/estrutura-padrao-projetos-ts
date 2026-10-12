@@ -31,6 +31,7 @@ export function CreateProdutoModal() {
     <RouteFormDialog
       titulo="Novo produto"
       descricao="Preencha os dados para adicionar um produto ao catálogo."
+      hrefRetornoFoco="/produtos/novo"
       largura="ampla"
       possuiAlteracoes={estadoFormulario.possuiAlteracoes}
       enviando={estadoFormulario.enviando}
