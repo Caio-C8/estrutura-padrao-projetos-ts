@@ -37,3 +37,8 @@ pnpm-debug.log*
 *.swp
 .DS_Store
 Thumbs.db
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
