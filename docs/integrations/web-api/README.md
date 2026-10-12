@@ -63,10 +63,11 @@ No estado atual:
 - credenciais de autenticação no navegador já possuem o baseline de cookie
   `HttpOnly`, sem Web Storage.
 
-`WEB-001`, `WEB-002` e `WEB-003` são implementações concretas concluídas para
-Produto. Os exemplos genéricos dos documentos complementares continuam sendo
-orientação para novos domínios. O CRUD aninhado de avaliações está integrado de
-ponta a ponta na Web; a próxima entrega planejada é `WEB-004`.
+`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` são implementações concretas
+concluídas para Produto. Os exemplos genéricos dos documentos complementares
+continuam sendo orientação para novos domínios. Os modais roteáveis reutilizam
+as mesmas operações, hooks, contratos, query keys e regras de cache das páginas
+completas; a próxima entrega planejada é `WEB-004`.
 
 ## Decisões da primeira integração
 

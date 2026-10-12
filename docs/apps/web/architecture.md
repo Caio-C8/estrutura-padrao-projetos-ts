@@ -84,7 +84,7 @@ vez. Componentização excessiva dificulta acompanhar o fluxo da página.
 
 ### Página completa e modal roteável
 
-Em `WEB-003A`, a mesma rota poderá ter duas apresentações sem duplicar sua regra
+Desde `WEB-003A`, a mesma rota possui duas apresentações sem duplicar sua regra
 de negócio:
 
 ```text
@@ -96,16 +96,15 @@ slot interceptado/page.tsx ──┘
 ```
 
 `page.tsx` não é o componente compartilhado. O arquivo especial permanece
-responsável por params, metadata, `notFound()` e composição própria da rota. O
-conteúdo reutilizável é promovido para `features/produto/components` ou para o
-ancestral `_components` mais próximo somente quando página canônica e rota
-interceptada passarem a consumi-lo de fato.
+responsável por params, metadata, `notFound()` e composição própria da rota. Os
+formulários e carregadores reutilizados pela página canônica e pela rota
+interceptada permanecem nos `_components` das respectivas features de rota.
 
-O invólucro `Dialog` é a menor fronteira Client responsável por fechar,
-proteger pending, confirmar descarte e integrar o histórico. Formulários não
-devem descobrir se estão em página ou modal por leitura do DOM; recebem
-callbacks ou uma interface pequena para sucesso e cancelamento. Operações,
-hooks, schemas, mappers e query keys permanecem únicos.
+`RouteFormDialog`, em `app/produtos/_components`, é a menor fronteira Client
+responsável por fechar, proteger pending, confirmar descarte e integrar o
+histórico. Os formulários não descobrem se estão em página ou modal por leitura
+do DOM: recebem callbacks opcionais para cancelamento, sucesso e estado. As
+operações, hooks, schemas, mappers e query keys permanecem únicos.
 
 ## Estado
 
@@ -168,15 +167,24 @@ API
 
 ## Implementação atual do domínio Produto
 
-`WEB-001`, `WEB-002` e `WEB-003` materializam a
+`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` materializam a
 separação desta forma:
 
 ```text
 apps/web/
 ├── app/produtos/
+│   ├── @modal/
+│   │   ├── (.)novo/
+│   │   ├── (.)[produtoId]/editar/
+│   │   ├── (.)[produtoId]/avaliacoes/nova/
+│   │   ├── (.)[produtoId]/avaliacoes/[avaliacaoId]/editar/
+│   │   ├── [...catchAll]/page.tsx
+│   │   ├── default.tsx
+│   │   └── page.tsx
 │   ├── _components/
 │   │   ├── produtos-filtros.tsx
-│   │   └── produtos-listagem.tsx
+│   │   ├── produtos-listagem.tsx
+│   │   └── route-form-dialog.tsx
 │   ├── [produtoId]/
 │   │   ├── _components/
 │   │   │   ├── delete-produto-dialog.tsx
@@ -205,6 +213,7 @@ apps/web/
 │   ├── page.tsx
 │   └── query-provider.tsx
 ├── components/ui/
+│   ├── dialog.tsx
 │   ├── radio-group.tsx
 │   └── sonner.tsx
 ├── features/produto/

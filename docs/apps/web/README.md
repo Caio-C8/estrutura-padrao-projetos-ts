@@ -28,9 +28,9 @@ No estado atual da base:
 - Tailwind CSS 4 e shadcn/ui formam o baseline visual;
 - `components.json` usa o estilo `radix-nova`, tokens `neutral` e aliases locais;
 - as primitives instaladas possuem consumidores atuais e incluem `AlertDialog`,
-  `Badge`, `Button`, `Checkbox`, `Field`, `Input`, `Label`, `RadioGroup`,
-  `Select`, `Separator`, `Skeleton`, `Table`, `Textarea` e o `Toaster` do
-  Sonner;
+  `Badge`, `Button`, `Checkbox`, `Dialog`, `Field`, `Input`, `Label`,
+  `RadioGroup`, `Select`, `Separator`, `Skeleton`, `Table`, `Textarea` e o
+  `Toaster` do Sonner;
 - TanStack Query 5 está configurado no segmento `/produtos`, com provider na
   menor fronteira cliente atual;
 - existem clientes HTTP separados para navegador e servidor, operações e hooks
@@ -54,18 +54,22 @@ No estado atual da base:
 - a exclusão valida os dois identificadores, confirma a ação em `AlertDialog`,
   trata `204 No Content`, remove somente o detalhe excluído, invalida apenas as
   listas do produto correspondente, usa toast local e retorna à coleção;
+- links internos de criação e edição de Produto e Avaliação usam Parallel
+  Routes e Intercepting Routes para abrir `Dialog` sobre a tela de origem;
+  acesso direto e refresh das mesmas URLs preservam as páginas completas;
+- o invólucro compartilhado protege pending e alterações não salvas, integra
+  fechamento e histórico do navegador e mantém os estados dos formulários sem
+  duplicar schemas, operações ou regras de cache;
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
   operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários,
-  diálogo de exclusão e disparo dos toasts;
+  diálogos de formulário e exclusão e disparo dos toasts;
 - testes E2E no navegador ainda não foram adotados.
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
-`WEB-001`, `WEB-002` e `WEB-003` estão concluídas. A próxima entrega planejada
-é `WEB-003A`, que converterá criação e edição em modais roteáveis sem remover as
-páginas completas. `WEB-004`, dedicada à ampliação dos testes de interface e
-dos fluxos críticos, será executada depois dessa mudança de navegação, conforme
-o [roadmap da aplicação Web](./roadmap.md). O estado operacional e a ordem exata
-de continuação estão no [handoff](./handoff.md).
+`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` estão concluídas. A próxima entrega
+é `WEB-004`, dedicada à ampliação dos testes de interface e dos fluxos críticos,
+conforme o [roadmap da aplicação Web](./roadmap.md). O estado operacional e a
+ordem exata de continuação estão no [handoff](./handoff.md).
 
 As regras descritas nestes documentos representam o baseline desejado. Não
 presuma que uma dependência, diretório ou componente já exista sem conferir o

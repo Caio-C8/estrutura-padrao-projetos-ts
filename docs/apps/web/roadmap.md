@@ -39,21 +39,22 @@ que as revelar, desde que sejam registradas.
 
 ## Progresso atual
 
-`WEB-001`, `WEB-002` e `WEB-003` estão concluídas. A home foi preservada, o
-baseline visual, a infraestrutura HTTP e o TanStack Query foram implementados,
-e o CRUD Web de Produto cobre listagem, detalhe, criação, edição e exclusão.
-Filtros e paginação permanecem na URL; formulários possuem schemas e mappers
-locais; a exclusão confirma a remoção em cascata das avaliações e trata
-`204 No Content`. Toasts globais confirmam create, update e delete sem acoplar
-Sonner às operações ou aos hooks de dados.
+`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` estão concluídas. A home foi
+preservada, o baseline visual, a infraestrutura HTTP e o TanStack Query foram
+implementados, e o CRUD Web de Produto cobre listagem, detalhe, criação, edição
+e exclusão. Filtros e paginação permanecem na URL; formulários possuem schemas
+e mappers locais; a exclusão confirma a remoção em cascata das avaliações e
+trata `204 No Content`. Toasts globais confirmam create, update e delete sem
+acoplar Sonner às operações ou aos hooks de dados.
 
 O CRUD aninhado de avaliações cobre listagem paginada, filtros na URL, detalhe,
 criação, edição e exclusão sem incluir uma coleção ilimitada na response básica
-de Produto. A próxima entrega é `WEB-003A`, que preservará as rotas completas e
-passará a apresentar criação e edição em modais durante navegação interna. O
-estado exato e a ordem de continuação estão no [handoff](./handoff.md).
+de Produto. As quatro rotas de criação e edição abrem em modais durante
+navegação interna e continuam como páginas completas em acesso direto ou
+refresh. A próxima entrega é `WEB-004`; o estado exato e a ordem de continuação
+estão no [handoff](./handoff.md).
 
-## Rotas planejadas
+## Rotas implementadas
 
 | Rota                                                    | Responsabilidade                            | Entrega   |
 | ------------------------------------------------------- | ------------------------------------------- | --------- |
@@ -71,10 +72,9 @@ Exclusões serão ações confirmadas em diálogo, e não páginas próprias. O 
 avaliação continuará carregando `produtoId` e `avaliacaoId`, preservando a
 hierarquia e o contrato da API.
 
-`WEB-003A` não altera essas URLs. As quatro rotas de criação e edição continuam
+`WEB-003A` não alterou essas URLs. As quatro rotas de criação e edição continuam
 canônicas e renderizam páginas completas em acesso direto ou refresh; links
-internos passam a interceptá-las e apresentá-las em um slot modal durante
-navegação suave.
+internos as interceptam e apresentam em um slot modal durante navegação suave.
 
 ## Decisões transversais já tomadas
 
@@ -351,7 +351,7 @@ subordinada ao produto selecionado.
 
 ### WEB-003A — Converter criação e edição em modais roteáveis
 
-**Status:** planejado como próxima entrega
+**Status:** concluído em 12 de outubro de 2026
 
 **Contexto**
 
@@ -409,29 +409,46 @@ navegador ou fallback de página completa. Essa mudança precisa ocorrer antes d
 
 **Critérios de aceite**
 
-- [ ] links internos de criar e editar Produto e Avaliação abrem um `Dialog`
+- [x] links internos de criar e editar Produto e Avaliação abrem um `Dialog`
       sem substituir visualmente a tela de origem;
-- [ ] Cancelar, Escape e o botão de fechar encerram o modal quando permitido;
-- [ ] durante a submissão, controles de fechamento ficam indisponíveis, Escape
+- [x] Cancelar, Escape e o botão de fechar encerram o modal quando permitido;
+- [x] durante a submissão, controles de fechamento ficam indisponíveis, Escape
       não fecha o modal e uma segunda submissão não é disparada;
-- [ ] ao tentar fechar um formulário alterado, o usuário escolhe entre continuar
+- [x] ao tentar fechar um formulário alterado, o usuário escolhe entre continuar
       editando e descartar as mudanças; formulário intacto fecha sem aviso;
-- [ ] ao fechar, o foco retorna ao gatilho que abriu o modal sempre que ele
+- [x] ao fechar, o foco retorna ao gatilho que abriu o modal sempre que ele
       ainda existir;
-- [ ] Voltar fecha o modal, Avançar o reabre e a URL acompanha o estado sem
+- [x] Voltar fecha o modal, Avançar o reabre e a URL acompanha o estado sem
       criar entradas artificiais;
-- [ ] acesso direto, nova aba e refresh das quatro URLs renderizam suas páginas
+- [x] acesso direto, nova aba e refresh das quatro URLs renderizam suas páginas
       completas com metadata e validação preservadas;
-- [ ] viewport estreita não perde campos ou ações, não cria scroll horizontal
+- [x] viewport estreita não perde campos ou ações, não cria scroll horizontal
       da página e mantém conteúdo e rodapé do modal utilizáveis;
-- [ ] sucesso conserva toast, cache e destino já definidos; erro da API mantém
+- [x] sucesso conserva toast, cache e destino já definidos; erro da API mantém
       valores e mensagens; loading, erro recuperável e `404` de edição aparecem
       corretamente também no modal;
-- [ ] fechamento por clique externo segue a mesma proteção contra pending e
+- [x] fechamento por clique externo segue a mesma proteção contra pending e
       alterações não salvas, sem descarte silencioso;
-- [ ] páginas completas continuam funcionando sem duplicar formulários, schemas
+- [x] páginas completas continuam funcionando sem duplicar formulários, schemas
       ou regras de integração;
-- [ ] testes, lint, typecheck, build, formatação e documentação passam.
+- [x] testes, lint, typecheck, build, formatação e documentação passam.
+
+**Conclusão verificada em 12 de outubro de 2026**
+
+- `app/produtos/layout.tsx` hospeda o slot `@modal` dentro do mesmo provider da
+  rota canônica;
+- quatro Intercepting Routes cobrem criação e edição de Produto e Avaliação;
+- `default.tsx`, `[...catchAll]/page.tsx` e `page.tsx` fornecem os fallbacks
+  nulos do slot; o fallback do índice estabiliza a primeira navegação a partir
+  de `/produtos`;
+- `RouteFormDialog` centraliza fechamento, pending, confirmação de descarte,
+  conteúdo rolável e integração com o histórico;
+- formulários e carregadores são reutilizados por páginas e modais por meio de
+  callbacks opcionais, sem duplicar operações, contratos ou regras de cache;
+- a revisão manual confirmou os fluxos de teclado, foco, histórico, hard e soft
+  navigation, viewport estreita, sucesso, erro e `404`;
+- a suíte passa com 48 arquivos e 230 testes; lint, typecheck, build e
+  `format:check` também passam.
 
 **Ordem interna recomendada**
 

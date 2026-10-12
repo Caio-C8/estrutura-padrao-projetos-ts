@@ -103,15 +103,13 @@ pnpm --filter @repo/web build
 pnpm format:check
 ```
 
-O script `test` executa `vitest run`. Em 10 de outubro de 2026, a suíte possui 47
-arquivos e 214 testes. Além de `WEB-001` e `WEB-002`, ela cobre `WEB-003`: query
-keys aninhadas, validação de params, parser de filtros, operações e hooks de
-lista, detalhe, criação, edição e exclusão de avaliação, schemas e mappers dos
-formulários, seleção da nota por estrelas, payload parcial do update, estados
-das telas e toasts de sucesso. Os testes dos componentes simulam somente
-`toast.success` e verificam a mensagem emitida: creates e updates com corpo
-recebem a mensagem da response, enquanto deletes usam conteúdo local
-correspondente ao `204`.
+O script `test` executa `vitest run`. Em 12 de outubro de 2026, a suíte possui 48
+arquivos e 230 testes. Além dos CRUDs de Produto e Avaliação, ela cobre o
+`RouteFormDialog`, a confirmação de descarte e os callbacks que desacoplam os
+formulários da apresentação como página ou modal. Os testes dos componentes
+simulam somente `toast.success` e verificam a mensagem emitida: creates e
+updates com corpo recebem a mensagem da response, enquanto deletes usam
+conteúdo local correspondente ao `204`.
 
 Na última verificação registrada, `pnpm --filter @repo/web test`, `typecheck`,
 `lint` e `build`, além de `pnpm format:check`, passaram.
@@ -121,24 +119,12 @@ obrigatória. O `ResizeObserver` ausente no jsdom possui um mock mínimo no setu
 porque as primitives Radix o utilizam; o mock não substitui testes reais de
 layout, foco e teclado no navegador.
 
-Antes de iniciar `WEB-004`, `WEB-003A` deve acrescentar testes de componentes e
-de roteamento suficientes para estabilizar a nova apresentação. Cubra:
-
-- abertura pelo link interno e renderização do conteúdo no `Dialog`;
-- Cancelar, Escape, botão de fechar e clique externo;
-- bloqueio de fechamento e submissão duplicada durante pending;
-- confirmação somente quando houver alterações não salvas;
-- restauração de foco no gatilho;
-- Voltar, Avançar e sincronização da URL;
-- página completa em acesso direto, nova aba simulável e refresh;
-- reflow do conteúdo e ações em viewport estreita;
-- sucesso, erro da API, loading, retry e `404` nos formulários de edição;
-- ausência de regressão nas páginas canônicas e nos contratos de cache.
-
-Os testes unitários não substituem a verificação real do histórico e do
-comportamento soft navigation versus hard navigation. Esses cenários devem ser
-repetidos nos E2E de `WEB-004`; a implementação de `WEB-003A` não deve escolher
-uma ferramenta E2E de forma antecipada apenas para validar a estrutura.
+Na conclusão de `WEB-003A`, a revisão manual confirmou abertura por link
+interno, todos os controles de fechamento, proteção de pending e alterações não
+salvas, restauração de foco, Voltar e Avançar, acesso direto e refresh, viewport
+estreita e os estados de sucesso, erro e `404`. Esses cenários devem ser
+automatizados nos E2E de `WEB-004`, pois testes unitários não reproduzem por
+completo o histórico nem a diferença entre soft navigation e hard navigation.
 
 Para mudança transversal:
 

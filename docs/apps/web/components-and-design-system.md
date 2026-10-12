@@ -73,8 +73,8 @@ dependências e estilos sem consumidor.
 ### Estado implementado
 
 `components.json` usa o estilo `radix-nova`, Tailwind CSS 4, CSS variables,
-ícones Lucide e aliases locais. As primitives presentes possuem consumidores em
-`WEB-001`, `WEB-002` ou `WEB-003`:
+ícones Lucide e aliases locais. As primitives presentes possuem consumidores
+nas entregas concluídas da Web:
 
 - `Badge` para o status do produto;
 - `Button` para navegação, filtros, paginação, retry e ações;
@@ -86,13 +86,15 @@ dependências e estilos sem consumidor.
 - `Table` para a listagem em telas largas;
 - `AlertDialog` para confirmar a exclusão e manter foco e contexto da ação
   destrutiva;
+- `Dialog` como primitive acessível dos quatro formulários abertos por rotas
+  interceptadas;
 - `Toaster`, baseado em Sonner, para confirmações transitórias de sucesso.
 
-`Dialog` ainda não faz parte das primitives instaladas. `WEB-003A` deverá
-adicioná-lo somente ao iniciar o primeiro modal de criação ou edição, revisar o
-código gerado e manter `AlertDialog` separado para decisões destrutivas. O modal
-de formulário precisa aceitar conteúdo rolável, cabeçalho e ações alcançáveis
-sem transformar a primitive em componente de domínio.
+`components/ui/dialog.tsx` permanece agnóstico de domínio.
+`app/produtos/_components/route-form-dialog.tsx` compõe a primitive com título,
+descrição, conteúdo rolável, proteção de pending e confirmação de descarte. O
+`AlertDialog` continua separado para decisões destrutivas e para a confirmação
+secundária de descarte de alterações não salvas.
 
 Os `select` dos filtros da listagem continuam nativos porque são controles GET
 renderizáveis no servidor. A primitive `Select` atende os formulários

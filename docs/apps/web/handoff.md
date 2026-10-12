@@ -1,7 +1,7 @@
 # Handoff da aplicação Web
 
-Atualizado em 10 de outubro de 2026 após a conclusão de `WEB-003` e o
-planejamento de `WEB-003A` para modais roteáveis de criação e edição.
+Atualizado em 12 de outubro de 2026 após a conclusão e verificação de
+`WEB-003A`, que entregou os modais roteáveis de criação e edição.
 
 Este documento é o retrato operacional para continuar o trabalho. Planejamento
 e critérios permanentes ficam no [roadmap](./roadmap.md).
@@ -11,9 +11,10 @@ e critérios permanentes ficam no [roadmap](./roadmap.md).
 - `WEB-001 — Entregar o baseline da Web e a lista de produtos`: concluída;
 - `WEB-002 — Entregar detalhes e CRUD de Produto`: concluída;
 - `WEB-003 — Entregar o CRUD aninhado de avaliações`: concluída;
-- `WEB-003A — Converter criação e edição em modais roteáveis`: planejada como
-  próxima entrega;
-- `WEB-004` e `WEB-005`: planejadas.
+- `WEB-003A — Converter criação e edição em modais roteáveis`: concluída;
+- `WEB-004 — Cobrir a interface e os fluxos críticos com testes`: próxima
+  entrega;
+- `WEB-005`: planejada.
 
 A navegação implementada é:
 
@@ -150,37 +151,59 @@ browserApiClient → /api/backend → API NestJS
 - erros públicos por campo ficam junto ao respectivo controle e recebem foco;
   falhas sem campo conhecido permanecem no alerta geral.
 
+## Modais roteáveis implementados em `WEB-003A`
+
+- links internos para criar e editar Produto ou Avaliação abrem um `Dialog`
+  sobre a tela de origem por Parallel Routes e Intercepting Routes;
+- as quatro URLs continuam canônicas e renderizam página completa em acesso
+  direto, nova aba ou refresh;
+- `app/produtos/layout.tsx` renderiza `children` e o slot `@modal` dentro do
+  mesmo `ProdutosQueryProvider`;
+- o slot possui `default.tsx`, `[...catchAll]/page.tsx` e `page.tsx` nulos; o
+  último cobre o índice `/produtos`, que não corresponde ao catch-all;
+- `RouteFormDialog` compõe a primitive `Dialog`, usa `router.back()` para
+  fechar e centraliza Cancelar, Escape, botão de fechar e clique externo;
+- pending bloqueia fechamento e submissão duplicada; alterações não salvas
+  exigem confirmação em `AlertDialog` antes do descarte;
+- o foco retorna ao gatilho quando ele ainda existe, e Voltar e Avançar
+  acompanham URL e estado visual;
+- os formulários recebem callbacks opcionais de cancelamento, sucesso e estado,
+  preservando a mesma validação, integração e cache nos dois modos;
+- criação e edição de Produto usam a largura ampla; os formulários de Avaliação
+  usam a largura normal; ambos limitam altura por `svh` e mantêm conteúdo
+  rolável em viewport estreita;
+- loading, atualização em segundo plano, erro recuperável, `404`, toast e
+  destinos de sucesso das páginas completas foram preservados nos modais.
+
 ## Verificações atuais
 
-Em 10 de outubro de 2026:
+Em 12 de outubro de 2026:
 
-- `pnpm --filter @repo/web test`: aprovado, 47 arquivos e 214 testes;
+- `pnpm --filter @repo/web test`: aprovado, 48 arquivos e 230 testes;
 - `pnpm --filter @repo/web typecheck`: aprovado;
 - `pnpm --filter @repo/web lint`: aprovado;
 - `pnpm --filter @repo/web build`: aprovado;
 - `pnpm format:check`: aprovado.
 
-## Próxima etapa: `WEB-003A`
+Além das verificações automatizadas, a revisão manual confirmou abertura e
+fechamento, pending, descarte de alterações, foco, Voltar e Avançar, acesso
+direto e refresh, viewport estreita e os estados de sucesso, erro e `404`.
 
-Converter os quatro fluxos de criação e edição em modais roteáveis antes de
-ampliar a cobertura E2E:
+## Próxima etapa: `WEB-004`
 
-1. adicionar `Dialog`, mantendo `AlertDialog` apenas para exclusões;
-2. separar os conteúdos reutilizáveis das quatro páginas sem importar
-   `page.tsx` dentro de Client Components;
-3. criar um slot paralelo com fallback nulo e rotas interceptadas;
-4. preservar página completa em acesso direto, nova aba e refresh;
-5. fechar por Cancelar, Escape, botão de fechar e histórico, bloqueando os
-   controles de fechamento durante a submissão;
-6. confirmar descarte quando houver alterações não salvas e fechar sem aviso
-   quando o formulário estiver intacto;
-7. restaurar foco ao gatilho, validar Voltar/Avançar e não criar entradas
-   artificiais no histórico;
-8. garantir conteúdo rolável, ações alcançáveis e ausência de scroll horizontal
-   em viewport estreita;
-9. preservar sucesso, toast, cache, erro da API, loading, erro recuperável e
-   `404` dos formulários de edição;
-10. testar e verificar a mudança antes de iniciar `WEB-004`.
+Ampliar a cobertura automatizada contra a navegação definitiva:
+
+1. confirmar uma ferramenta E2E compatível com Next.js 16 e React 19 em sua
+   documentação oficial e registrar a decisão;
+2. testar clientes, parsing de contratos, queries e erros sem depender do DOM;
+3. ampliar testes de componentes e formulários pelo comportamento observável;
+4. cobrir em navegador listagem, criação, edição, exclusão e recuperação de
+   erro de Produto e Avaliação;
+5. automatizar soft navigation, hard navigation, refresh, Voltar, Avançar e
+   restauração de foco dos modais;
+6. adicionar verificações automatizadas de acessibilidade onde trouxerem
+   cobertura real, mantendo revisão manual de teclado, zoom e viewport;
+7. executar as verificações completas e atualizar roadmap e handoff.
 
 ## Limites mantidos
 

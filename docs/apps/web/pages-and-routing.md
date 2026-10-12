@@ -41,13 +41,12 @@ confirma a ação em `AlertDialog`, usa mensagem local após o `204 No Content`,
 remove o detalhe do cache e retorna à coleção do mesmo produto sem criar uma
 entrada adicional no histórico.
 
-## Modais roteáveis planejados em `WEB-003A`
+## Modais roteáveis implementados em `WEB-003A`
 
-Criação e edição passarão a combinar Parallel Routes e Intercepting Routes. A
-URL continuará sendo a fonte do estado de navegação, não um booleano global de
-modal.
+Criação e edição combinam Parallel Routes e Intercepting Routes. A URL é a
+fonte do estado de navegação, não um booleano global de modal.
 
-Comportamento esperado:
+Comportamento implementado:
 
 | Entrada no fluxo                                | Apresentação esperada             |
 | ----------------------------------------------- | --------------------------------- |
@@ -57,22 +56,32 @@ Comportamento esperado:
 | Voltar após abrir o modal                       | fecha o modal e recupera a origem |
 | Avançar depois de fechá-lo com Voltar           | reabre o modal e restaura a URL   |
 
-O layout que hospedar o slot deve renderizá-lo ao lado de `children`. O slot
-precisa de `default.tsx` retornando `null` para hard navigation e estados sem
-modal. Cada rota interceptada renderiza um invólucro `Dialog` e o mesmo conteúdo
-de feature usado pela página canônica.
+`app/produtos/layout.tsx` renderiza o slot `@modal` ao lado de `children`, dentro
+do mesmo `ProdutosQueryProvider`. O slot possui três fallbacks nulos com funções
+distintas:
+
+- `default.tsx` atende hard navigation quando o estado ativo do slot não pode
+  ser recuperado;
+- `[...catchAll]/page.tsx` limpa o modal em navegações suaves para outros
+  segmentos;
+- `page.tsx` cobre o índice `/produtos`, que não corresponde ao catch-all, e
+  evita que a primeira navegação a partir da lista preserve um estado de slot
+  indefinido.
+
+Cada uma das quatro rotas interceptadas renderiza `RouteFormDialog` e o mesmo
+formulário ou carregador usado pela página canônica.
 
 Não importe um `page.tsx` em um componente cliente para simular reutilização.
 As páginas preservam metadata, validação de params, `notFound()` e composição de
 tela cheia; formulários, carregamento e estados reutilizáveis ficam em
-componentes próprios. Cancelamento e sucesso devem ser configuráveis pelo shell
-de página ou modal, sem duplicar schema, mapper, operação ou hook.
+componentes próprios. Cancelamento, sucesso e estado são configuráveis pelo
+shell de página ou modal, sem duplicar schema, mapper, operação ou hook.
 
-O fechamento do modal deve respeitar uma única política para Cancelar, Escape,
-botão de fechar e clique externo: pending impede fechamento; formulário alterado
+O fechamento do modal respeita uma única política para Cancelar, Escape, botão
+de fechar e clique externo: pending impede fechamento; formulário alterado
 exige confirmação antes do descarte; formulário intacto fecha imediatamente.
-Quando o gatilho ainda existir, o foco retorna a ele. O histórico não deve
-receber entradas artificiais apenas para abrir ou fechar o invólucro.
+Quando o gatilho ainda existe, o foco retorna a ele. Fechar usa o histórico da
+rota, sem criar uma entrada artificial apenas para ocultar o invólucro.
 
 ## Metadata e título obrigatório
 
