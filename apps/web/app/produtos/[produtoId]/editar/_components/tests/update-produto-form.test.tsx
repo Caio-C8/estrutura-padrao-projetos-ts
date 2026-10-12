@@ -220,14 +220,94 @@ describe("UpdateProdutoForm", () => {
     expect(replaceMock).not.toHaveBeenCalled();
   });
 
-  it("desabilita os controles enquanto a atualização está pendente", () => {
+  it("delega o cancelamento quando o consumidor fornece callback", () => {
+    const onCancel = vi.fn();
+
+    render(<UpdateProdutoForm produto={PRODUTO} onCancel={onCancel} />);
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Cancelar",
+      }),
+    );
+
+    expect(onCancel).toHaveBeenCalledOnce();
+
+    expect(
+      screen.queryByRole("link", {
+        name: "Cancelar",
+      }),
+    ).toBeNull();
+  });
+
+  it("delega a navegação de sucesso quando o consumidor fornece callback", async () => {
+    mutateAsyncMock.mockResolvedValue(RESPOSTA_ATUALIZADA);
+
+    const onSuccess = vi.fn();
+
+    render(<UpdateProdutoForm produto={PRODUTO} onSuccess={onSuccess} />);
+
+    fireEvent.change(screen.getByLabelText(/^Nome/), {
+      target: {
+        value: "Notebook atualizado",
+      },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Salvar alterações",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalledWith(RESPOSTA_ATUALIZADA);
+    });
+
+    expect(toastSuccessMock).toHaveBeenCalledWith(RESPOSTA_ATUALIZADA.mensagem);
+
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it("informa quando o formulário possui alterações", async () => {
+    const onStateChange = vi.fn();
+
+    render(
+      <UpdateProdutoForm produto={PRODUTO} onStateChange={onStateChange} />,
+    );
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith({
+        possuiAlteracoes: false,
+        enviando: false,
+      });
+    });
+
+    fireEvent.change(screen.getByLabelText(/^Nome/), {
+      target: {
+        value: "Notebook atualizado",
+      },
+    });
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenLastCalledWith({
+        possuiAlteracoes: true,
+        enviando: false,
+      });
+    });
+  });
+
+  it("desabilita os controles enquanto a atualização está pendente", async () => {
+    const onStateChange = vi.fn();
+
     useUpdateProdutoMock.mockReturnValue({
       mutateAsync: mutateAsyncMock,
       reset: resetMutationMock,
       isPending: true,
     });
 
-    render(<UpdateProdutoForm produto={PRODUTO} />);
+    render(
+      <UpdateProdutoForm produto={PRODUTO} onStateChange={onStateChange} />,
+    );
 
     expect(
       screen
@@ -242,5 +322,12 @@ describe("UpdateProdutoForm", () => {
 
     expect(fieldset).not.toBeNull();
     expect((fieldset as HTMLFieldSetElement).disabled).toBe(true);
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith({
+        possuiAlteracoes: false,
+        enviando: true,
+      });
+    });
   });
 });

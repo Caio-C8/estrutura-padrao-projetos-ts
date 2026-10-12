@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +12,10 @@ import {
 } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import type { AvaliacaoProdutoDetalhadoResponse } from "@repo/contracts";
+import type {
+  AvaliacaoProdutoDetalhadoResponse,
+  AvaliacaoProdutoResponse,
+} from "@repo/contracts";
 import { Button } from "@/components/ui/button";
 import { useUpdateAvaliacaoProduto } from "@/features/produto/api/use-update-avaliacao-produto";
 import { AvaliacaoProdutoFormFields } from "@/features/produto/forms/avaliacao-produto-form-fields";
@@ -27,8 +30,16 @@ import {
 } from "@/features/produto/forms/update-avaliacao-produto-form.schema";
 import { isApiError } from "@/lib/api/core/api-error";
 
+export type UpdateAvaliacaoProdutoFormState = Readonly<{
+  possuiAlteracoes: boolean;
+  enviando: boolean;
+}>;
+
 type UpdateAvaliacaoProdutoFormProps = Readonly<{
   avaliacao: AvaliacaoProdutoDetalhadoResponse;
+  onCancel?: () => void;
+  onSuccess?: (response: AvaliacaoProdutoResponse) => void;
+  onStateChange?: (state: UpdateAvaliacaoProdutoFormState) => void;
 }>;
 
 const CAMPOS_FORMULARIO = new Set<FieldPath<UpdateAvaliacaoProdutoFormInput>>([
@@ -48,6 +59,9 @@ function ehCampoFormulario(
 
 export function UpdateAvaliacaoProdutoForm({
   avaliacao,
+  onCancel,
+  onSuccess,
+  onStateChange,
 }: UpdateAvaliacaoProdutoFormProps) {
   const router = useRouter();
 
@@ -69,6 +83,13 @@ export function UpdateAvaliacaoProdutoForm({
   const enviando = form.formState.isSubmitting || mutation.isPending;
   const possuiAlteracoes = form.formState.isDirty;
 
+  useEffect(() => {
+    onStateChange?.({
+      possuiAlteracoes,
+      enviando,
+    });
+  }, [enviando, onStateChange, possuiAlteracoes]);
+
   const onSubmit: SubmitHandler<UpdateAvaliacaoProdutoFormData> = async (
     dados,
   ) => {
@@ -84,6 +105,11 @@ export function UpdateAvaliacaoProdutoForm({
       const response = await mutation.mutateAsync(body);
 
       toast.success(response.mensagem);
+
+      if (onSuccess) {
+        onSuccess(response);
+        return;
+      }
 
       router.replace(
         `/produtos/${response.dados.produtoId}/avaliacoes/${response.dados.id}`,
@@ -151,6 +177,10 @@ export function UpdateAvaliacaoProdutoForm({
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           {enviando ? (
             <Button type="button" variant="outline" disabled>
+              Cancelar
+            </Button>
+          ) : onCancel ? (
+            <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>
           ) : (

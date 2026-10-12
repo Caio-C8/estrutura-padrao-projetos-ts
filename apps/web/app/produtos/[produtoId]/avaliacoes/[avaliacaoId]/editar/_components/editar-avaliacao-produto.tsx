@@ -1,15 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
+import type { AvaliacaoProdutoResponse } from "@repo/contracts";
 import Link from "next/link";
 import { MessagesSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAvaliacaoProduto } from "@/features/produto/api/use-avaliacao-produto";
-import { UpdateAvaliacaoProdutoForm } from "./update-avaliacao-produto-form";
+import {
+  UpdateAvaliacaoProdutoForm,
+  type UpdateAvaliacaoProdutoFormState,
+} from "./update-avaliacao-produto-form";
 
 type EditarAvaliacaoProdutoProps = Readonly<{
   produtoId: string;
   avaliacaoId: string;
+  onCancel?: () => void;
+  onSuccess?: (response: AvaliacaoProdutoResponse) => void;
+  onStateChange?: (state: UpdateAvaliacaoProdutoFormState) => void;
 }>;
 
 function EditarAvaliacaoProdutoLoading() {
@@ -85,9 +93,23 @@ function RecursoNaoEncontrado({
 export function EditarAvaliacaoProduto({
   produtoId,
   avaliacaoId,
+  onCancel,
+  onSuccess,
+  onStateChange,
 }: EditarAvaliacaoProdutoProps) {
   const { data, error, isError, isFetching, isPending, refetch } =
     useAvaliacaoProduto(produtoId, avaliacaoId);
+
+  useEffect(() => {
+    if (!isPending && !isError) {
+      return;
+    }
+
+    onStateChange?.({
+      possuiAlteracoes: false,
+      enviando: false,
+    });
+  }, [isError, isPending, onStateChange]);
 
   if (isPending) {
     return <EditarAvaliacaoProdutoLoading />;
@@ -134,7 +156,12 @@ export function EditarAvaliacaoProduto({
         </p>
       ) : null}
 
-      <UpdateAvaliacaoProdutoForm avaliacao={data.dados} />
+      <UpdateAvaliacaoProdutoForm
+        avaliacao={data.dados}
+        onCancel={onCancel}
+        onSuccess={onSuccess}
+        onStateChange={onStateChange}
+      />
     </>
   );
 }

@@ -218,20 +218,98 @@ describe("CreateProdutoForm", () => {
     expect(replaceMock).not.toHaveBeenCalled();
   });
 
-  it("desabilita a submissão enquanto a criação está pendente", () => {
+  it("desabilita a submissão enquanto a criação está pendente", async () => {
+    const onStateChange = vi.fn();
+
     useCreateProdutoMock.mockReturnValue({
       mutateAsync: mutateAsyncMock,
       reset: resetMutationMock,
       isPending: true,
     });
 
-    render(<CreateProdutoForm />);
+    render(<CreateProdutoForm onStateChange={onStateChange} />);
 
     const botao = screen.getByRole("button", {
       name: "Salvando…",
     });
 
     expect(botao.hasAttribute("disabled")).toBe(true);
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith({
+        possuiAlteracoes: false,
+        enviando: true,
+      });
+    });
+  });
+
+  it("delega o cancelamento quando o consumidor fornece callback", () => {
+    const onCancel = vi.fn();
+
+    render(<CreateProdutoForm onCancel={onCancel} />);
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Cancelar",
+      }),
+    );
+
+    expect(onCancel).toHaveBeenCalledOnce();
+
+    expect(
+      screen.queryByRole("link", {
+        name: "Cancelar",
+      }),
+    ).toBeNull();
+  });
+
+  it("delega a navegação de sucesso quando o consumidor fornece callback", async () => {
+    mutateAsyncMock.mockResolvedValue(RESPOSTA);
+
+    const onSuccess = vi.fn();
+
+    render(<CreateProdutoForm onSuccess={onSuccess} />);
+
+    preencherCamposObrigatorios();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Salvar produto",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalledWith(RESPOSTA);
+    });
+
+    expect(toastSuccessMock).toHaveBeenCalledWith(RESPOSTA.mensagem);
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it("informa quando o formulário possui alterações", async () => {
+    const onStateChange = vi.fn();
+
+    render(<CreateProdutoForm onStateChange={onStateChange} />);
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith({
+        possuiAlteracoes: false,
+        enviando: false,
+      });
+    });
+
+    fireEvent.change(screen.getByLabelText(/^Nome/), {
+      target: {
+        value: "Produto alterado",
+      },
+    });
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenLastCalledWith({
+        possuiAlteracoes: true,
+        enviando: false,
+      });
+    });
   });
 
   it("aplica máscaras de preço e peso da direita para a esquerda", () => {

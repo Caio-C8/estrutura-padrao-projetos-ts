@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +22,18 @@ import {
 } from "@/features/produto/forms/create-produto-form.schema";
 import { ProdutoFormFields } from "@/features/produto/forms/produto-form-fields";
 import { toast } from "sonner";
+import type { ProdutoResponse } from "@repo/contracts";
+
+export type CreateProdutoFormState = Readonly<{
+  possuiAlteracoes: boolean;
+  enviando: boolean;
+}>;
+
+type CreateProdutoFormProps = Readonly<{
+  onCancel?: () => void;
+  onSuccess?: (response: ProdutoResponse) => void;
+  onStateChange?: (state: CreateProdutoFormState) => void;
+}>;
 
 const CAMPOS_FORMULARIO = new Set<FieldPath<CreateProdutoFormInput>>([
   "sku",
@@ -43,7 +55,11 @@ function ehCampoFormulario(
   return CAMPOS_FORMULARIO.has(campo as FieldPath<CreateProdutoFormInput>);
 }
 
-export function CreateProdutoForm() {
+export function CreateProdutoForm({
+  onCancel,
+  onSuccess,
+  onStateChange,
+}: CreateProdutoFormProps = {}) {
   const router = useRouter();
   const mutation = useCreateProduto();
   const [erroGeral, setErroGeral] = useState<string | null>(null);
@@ -57,6 +73,15 @@ export function CreateProdutoForm() {
 
   const enviando = form.formState.isSubmitting || mutation.isPending;
 
+  const possuiAlteracoes = form.formState.isDirty;
+
+  useEffect(() => {
+    onStateChange?.({
+      possuiAlteracoes,
+      enviando,
+    });
+  }, [enviando, onStateChange, possuiAlteracoes]);
+
   const onSubmit: SubmitHandler<CreateProdutoFormData> = async (dados) => {
     setErroGeral(null);
     mutation.reset();
@@ -65,6 +90,11 @@ export function CreateProdutoForm() {
       const response = await mutation.mutateAsync(dados);
 
       toast.success(response.mensagem);
+
+      if (onSuccess) {
+        onSuccess(response);
+        return;
+      }
 
       router.replace(`/produtos/${response.dados.id}`);
     } catch (error: unknown) {
@@ -123,6 +153,10 @@ export function CreateProdutoForm() {
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           {enviando ? (
             <Button type="button" variant="outline" disabled>
+              Cancelar
+            </Button>
+          ) : onCancel ? (
+            <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>
           ) : (

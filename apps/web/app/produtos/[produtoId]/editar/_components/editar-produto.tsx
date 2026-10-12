@@ -1,14 +1,22 @@
 "use client";
 
+import { useEffect } from "react";
+import type { ProdutoResponse } from "@repo/contracts";
 import Link from "next/link";
 import { PackageX, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProduto } from "@/features/produto/api/use-produto";
-import { UpdateProdutoForm } from "./update-produto-form";
+import {
+  UpdateProdutoForm,
+  type UpdateProdutoFormState,
+} from "./update-produto-form";
 
 type EditarProdutoProps = Readonly<{
   produtoId: string;
+  onCancel?: () => void;
+  onSuccess?: (response: ProdutoResponse) => void;
+  onStateChange?: (state: UpdateProdutoFormState) => void;
 }>;
 
 function EditarProdutoLoading() {
@@ -58,9 +66,25 @@ function ProdutoNaoEncontrado() {
   );
 }
 
-export function EditarProduto({ produtoId }: EditarProdutoProps) {
+export function EditarProduto({
+  produtoId,
+  onCancel,
+  onSuccess,
+  onStateChange,
+}: EditarProdutoProps) {
   const { data, error, isError, isFetching, isPending, refetch } =
     useProduto(produtoId);
+
+  useEffect(() => {
+    if (!isPending && !isError) {
+      return;
+    }
+
+    onStateChange?.({
+      possuiAlteracoes: false,
+      enviando: false,
+    });
+  }, [isError, isPending, onStateChange]);
 
   if (isPending) {
     return <EditarProdutoLoading />;
@@ -106,7 +130,12 @@ export function EditarProduto({ produtoId }: EditarProdutoProps) {
         </p>
       ) : null}
 
-      <UpdateProdutoForm produto={data.dados} />
+      <UpdateProdutoForm
+        produto={data.dados}
+        onCancel={onCancel}
+        onSuccess={onSuccess}
+        onStateChange={onStateChange}
+      />
     </>
   );
 }

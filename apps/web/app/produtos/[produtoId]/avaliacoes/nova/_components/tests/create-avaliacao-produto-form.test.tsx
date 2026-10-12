@@ -234,14 +234,21 @@ describe("CreateAvaliacaoProdutoForm", () => {
     expect(toastSuccessMock).not.toHaveBeenCalled();
   });
 
-  it("desabilita a submissão enquanto a criação está pendente", () => {
+  it("desabilita a submissão enquanto a criação está pendente", async () => {
+    const onStateChange = vi.fn();
+
     useCreateAvaliacaoProdutoMock.mockReturnValue({
       mutateAsync: mutateAsyncMock,
       reset: resetMutationMock,
       isPending: true,
     });
 
-    render(<CreateAvaliacaoProdutoForm produtoId={PRODUTO_ID} />);
+    render(
+      <CreateAvaliacaoProdutoForm
+        produtoId={PRODUTO_ID}
+        onStateChange={onStateChange}
+      />,
+    );
 
     expect(
       screen
@@ -250,5 +257,93 @@ describe("CreateAvaliacaoProdutoForm", () => {
         })
         .hasAttribute("disabled"),
     ).toBe(true);
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith({
+        possuiAlteracoes: false,
+        enviando: true,
+      });
+    });
+  });
+
+  it("delega o cancelamento quando o consumidor fornece callback", () => {
+    const onCancel = vi.fn();
+
+    render(
+      <CreateAvaliacaoProdutoForm produtoId={PRODUTO_ID} onCancel={onCancel} />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Cancelar",
+      }),
+    );
+
+    expect(onCancel).toHaveBeenCalledOnce();
+
+    expect(
+      screen.queryByRole("link", {
+        name: "Cancelar",
+      }),
+    ).toBeNull();
+  });
+
+  it("delega a navegação de sucesso quando o consumidor fornece callback", async () => {
+    mutateAsyncMock.mockResolvedValue(RESPOSTA);
+
+    const onSuccess = vi.fn();
+
+    render(
+      <CreateAvaliacaoProdutoForm
+        produtoId={PRODUTO_ID}
+        onSuccess={onSuccess}
+      />,
+    );
+
+    preencherCamposObrigatorios();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Salvar avaliação",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalledWith(RESPOSTA);
+    });
+
+    expect(toastSuccessMock).toHaveBeenCalledWith(RESPOSTA.mensagem);
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it("informa quando o formulário possui alterações", async () => {
+    const onStateChange = vi.fn();
+
+    render(
+      <CreateAvaliacaoProdutoForm
+        produtoId={PRODUTO_ID}
+        onStateChange={onStateChange}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith({
+        possuiAlteracoes: false,
+        enviando: false,
+      });
+    });
+
+    fireEvent.change(screen.getByLabelText(/^Nome do autor/), {
+      target: {
+        value: "Maria",
+      },
+    });
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenLastCalledWith({
+        possuiAlteracoes: true,
+        enviando: false,
+      });
+    });
   });
 });

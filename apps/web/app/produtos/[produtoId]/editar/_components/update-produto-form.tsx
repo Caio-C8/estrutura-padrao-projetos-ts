@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,10 @@ import {
   type SubmitHandler,
 } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
-import type { ProdutoDetalhadoResponse } from "@repo/contracts";
+import type {
+  ProdutoDetalhadoResponse,
+  ProdutoResponse,
+} from "@repo/contracts";
 import { Button } from "@/components/ui/button";
 import { isApiError } from "@/lib/api/core/api-error";
 import { useUpdateProduto } from "@/features/produto/api/use-update-produto";
@@ -27,8 +30,16 @@ import {
 } from "@/features/produto/forms/update-produto-form.schema";
 import { toast } from "sonner";
 
+export type UpdateProdutoFormState = Readonly<{
+  possuiAlteracoes: boolean;
+  enviando: boolean;
+}>;
+
 type UpdateProdutoFormProps = Readonly<{
   produto: ProdutoDetalhadoResponse;
+  onCancel?: () => void;
+  onSuccess?: (response: ProdutoResponse) => void;
+  onStateChange?: (state: UpdateProdutoFormState) => void;
 }>;
 
 const CAMPOS_FORMULARIO = new Set<FieldPath<UpdateProdutoFormInput>>([
@@ -51,7 +62,12 @@ function ehCampoFormulario(
   return CAMPOS_FORMULARIO.has(campo as FieldPath<UpdateProdutoFormInput>);
 }
 
-export function UpdateProdutoForm({ produto }: UpdateProdutoFormProps) {
+export function UpdateProdutoForm({
+  produto,
+  onCancel,
+  onSuccess,
+  onStateChange,
+}: UpdateProdutoFormProps) {
   const router = useRouter();
   const mutation = useUpdateProduto(produto.id);
   const [erroGeral, setErroGeral] = useState<string | null>(null);
@@ -66,6 +82,13 @@ export function UpdateProdutoForm({ produto }: UpdateProdutoFormProps) {
   const enviando = form.formState.isSubmitting || mutation.isPending;
   const possuiAlteracoes = form.formState.isDirty;
 
+  useEffect(() => {
+    onStateChange?.({
+      possuiAlteracoes,
+      enviando,
+    });
+  }, [enviando, onStateChange, possuiAlteracoes]);
+
   const onSubmit: SubmitHandler<UpdateProdutoFormData> = async (dados) => {
     setErroGeral(null);
     mutation.reset();
@@ -76,6 +99,11 @@ export function UpdateProdutoForm({ produto }: UpdateProdutoFormProps) {
       const response = await mutation.mutateAsync(body);
 
       toast.success(response.mensagem);
+
+      if (onSuccess) {
+        onSuccess(response);
+        return;
+      }
 
       router.replace(`/produtos/${response.dados.id}`);
     } catch (error: unknown) {
@@ -134,6 +162,10 @@ export function UpdateProdutoForm({ produto }: UpdateProdutoFormProps) {
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           {enviando ? (
             <Button type="button" variant="outline" disabled>
+              Cancelar
+            </Button>
+          ) : onCancel ? (
+            <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>
           ) : (
