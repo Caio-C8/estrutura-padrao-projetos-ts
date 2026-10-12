@@ -61,10 +61,19 @@ A base usa:
 O script de typecheck executa `next typegen` antes de `tsc --noEmit`, evitando
 que tipos de rota antigos em `.next` sejam usados pela verificação.
 
-Playwright ou outra ferramenta E2E, axe e MSW continuam pendentes. Não os
-instale antecipadamente: `WEB-004` deve escolher a cobertura E2E e de
-acessibilidade, enquanto MSW só se justifica se mocks no nível de rede
-trouxerem benefício sobre a injeção atual de `ApiClient` e os mocks dos hooks.
+A base também usa:
+
+- Playwright Test para fluxos E2E no navegador;
+- Chromium como projeto automatizado inicial;
+- `@axe-core/playwright` para verificações automatizáveis de acessibilidade;
+- `page.route` por meio de um mock estrito próprio para controlar o boundary
+  `/api/backend`;
+- fixtures validadas por schemas de `@repo/contracts`;
+- build de produção e `next start` durante a execução local;
+- um worker, retries finitos e timeout global no CI.
+
+MSW não foi adotado porque a interceptação nativa do Playwright atende os
+cenários atuais sem introduzir outro service worker ou outra camada de mock.
 
 ## Teste visual e manual
 
@@ -103,6 +112,30 @@ pnpm --filter @repo/web build
 pnpm format:check
 ```
 
+Para instalar o Chromium do Playwright em uma máquina nova:
+
+```bash
+pnpm --filter @repo/web exec playwright install chromium
+```
+
+Para executar os E2E:
+
+```bash
+pnpm --filter @repo/web test:e2e
+```
+
+Para acompanhar o navegador ou usar a interface interativa:
+
+```bash
+pnpm --filter @repo/web test:e2e:headed
+pnpm --filter @repo/web test:e2e:ui
+```
+
+O script E2E cria um build de produção, inicia `next start` na porta `3100` e
+encerra o servidor ao concluir. `PLAYWRIGHT_PORT` altera a porta local e
+`PLAYWRIGHT_BASE_URL` desativa o servidor local e aponta a suíte para uma URL
+externa.
+
 O script `test` executa `vitest run`. Em 12 de outubro de 2026, a suíte possui 48
 arquivos e 230 testes. Além dos CRUDs de Produto e Avaliação, ela cobre o
 `RouteFormDialog`, a confirmação de descarte e os callbacks que desacoplam os
@@ -111,20 +144,32 @@ simulam somente `toast.success` e verificam a mensagem emitida: creates e
 updates com corpo recebem a mensagem da response, enquanto deletes usam
 conteúdo local correspondente ao `204`.
 
-Na última verificação registrada, `pnpm --filter @repo/web test`, `typecheck`,
-`lint` e `build`, além de `pnpm format:check`, passaram.
+A suíte Playwright possui 17 testes. Ela cobre home, metadata, listagem, filtros,
+retry manual, criação, edição, exclusão, falha destrutiva, navegação modal,
+refresh, histórico, foco, pending, viewport estreita, `404`, preservação dos
+valores após erro e o CRUD de avaliações.
 
-Testes E2E continuam planejados para `WEB-004`, e a revisão manual permanece
-obrigatória. O `ResizeObserver` ausente no jsdom possui um mock mínimo no setup
-porque as primitives Radix o utilizam; o mock não substitui testes reais de
-layout, foco e teclado no navegador.
+O mock de rede registra expectations por método e path, aceita contagem exata,
+valida query e payload dentro do responder e falha no teardown quando recebe
+uma request inesperada ou quando uma request esperada não ocorre. As fixtures de
+response são analisadas pelos schemas compartilhados antes de serem entregues à
+aplicação.
 
-Na conclusão de `WEB-003A`, a revisão manual confirmou abertura por link
-interno, todos os controles de fechamento, proteção de pending e alterações não
-salvas, restauração de foco, Voltar e Avançar, acesso direto e refresh, viewport
-estreita e os estados de sucesso, erro e `404`. Esses cenários devem ser
-automatizados nos E2E de `WEB-004`, pois testes unitários não reproduzem por
-completo o histórico nem a diferença entre soft navigation e hard navigation.
+A verificação axe atual cobre a home com regras WCAG A e AA automatizáveis. Esse
+resultado não comprova conformidade integral: teclado, foco em todos os estados,
+zoom, contraste contextual, leitores de tela e julgamento humano continuam
+exigindo revisão manual.
+
+O CI instala somente Chromium, executa os E2E com um worker e preserva retries e
+timeout finitos. A suíte foi aprovada localmente e no GitHub Actions.
+
+Os testes atuais interceptam `/api/backend` e verificam o comportamento da Web
+no navegador. Eles não substituem uma futura execução com Web, rewrite e API
+reais nem os testes E2E HTTP ainda pendentes na API.
+
+O `ResizeObserver` ausente no jsdom possui um mock mínimo no setup porque as
+primitives Radix o utilizam; o mock não substitui testes reais de layout, foco e
+teclado no navegador.
 
 Para mudança transversal:
 
@@ -132,6 +177,7 @@ Para mudança transversal:
 pnpm check
 pnpm format:check
 pnpm build
+pnpm --filter @repo/web test:e2e
 ```
 
 No Next.js 16, `next build` não substitui o lint. Execute ambos.

@@ -1,7 +1,8 @@
 # Handoff da aplicação Web
 
 Atualizado em 12 de outubro de 2026 após a conclusão e verificação de
-`WEB-003A`, que entregou os modais roteáveis de criação e edição.
+`WEB-004`, que adicionou a cobertura E2E dos fluxos críticos e sua execução no
+CI.
 
 Este documento é o retrato operacional para continuar o trabalho. Planejamento
 e critérios permanentes ficam no [roadmap](./roadmap.md).
@@ -12,9 +13,9 @@ e critérios permanentes ficam no [roadmap](./roadmap.md).
 - `WEB-002 — Entregar detalhes e CRUD de Produto`: concluída;
 - `WEB-003 — Entregar o CRUD aninhado de avaliações`: concluída;
 - `WEB-003A — Converter criação e edição em modais roteáveis`: concluída;
-- `WEB-004 — Cobrir a interface e os fluxos críticos com testes`: próxima
-  entrega;
-- `WEB-005`: planejada.
+- `WEB-004 — Cobrir a interface e os fluxos críticos com testes`: concluída;
+- `WEB-005 — Preparar segurança, observabilidade e performance de produção`:
+  próxima entrega.
 
 A navegação implementada é:
 
@@ -175,35 +176,54 @@ browserApiClient → /api/backend → API NestJS
 - loading, atualização em segundo plano, erro recuperável, `404`, toast e
   destinos de sucesso das páginas completas foram preservados nos modais.
 
+## Testes E2E implementados em `WEB-004`
+
+- Playwright Test executa 17 cenários no Chromium;
+- o servidor de teste usa o build de produção do Next.js;
+- `PLAYWRIGHT_BASE_URL` permite apontar a suíte para um ambiente externo;
+- fixtures de sucesso e erro são validadas por `@repo/contracts`;
+- o mock de rede exige contagens exatas e rejeita requests não configuradas;
+- listagem, filtros, retry, criação, edição, exclusão e falhas da API possuem
+  cobertura;
+- os modais cobrem soft navigation, refresh, Voltar, Avançar, restauração de
+  foco, descarte de alterações, pending e viewport estreita;
+- o CRUD de avaliações é exercitado da listagem até a exclusão;
+- axe verifica na home problemas automatizáveis de acessibilidade WCAG A e AA;
+- o CI instala somente Chromium, usa um worker e executa a suíte completa;
+- os testes interceptam a API; uma verificação futura com Web e API reais ainda
+  é necessária para provar o boundary completo entre os processos;
+- Chromium é o navegador automatizado atual; outros motores e testes manuais de
+  acessibilidade permanecem fora desse baseline.
+
 ## Verificações atuais
 
 Em 12 de outubro de 2026:
 
 - `pnpm --filter @repo/web test`: aprovado, 48 arquivos e 230 testes;
+- `pnpm --filter @repo/web test:e2e`: aprovado, 17 testes no Chromium;
 - `pnpm --filter @repo/web typecheck`: aprovado;
 - `pnpm --filter @repo/web lint`: aprovado;
 - `pnpm --filter @repo/web build`: aprovado;
-- `pnpm format:check`: aprovado.
+- `pnpm format:check`: aprovado;
+- workflow `validate` do GitHub Actions: aprovado, incluindo instalação do
+  Chromium e execução dos E2E.
 
-Além das verificações automatizadas, a revisão manual confirmou abertura e
-fechamento, pending, descarte de alterações, foco, Voltar e Avançar, acesso
-direto e refresh, viewport estreita e os estados de sucesso, erro e `404`.
+A revisão manual continua responsável por aspectos não completamente cobertos
+pela automação, incluindo leitores de tela, zoom, teclado em todos os fluxos,
+motores de navegador adicionais e integração com uma API real.
 
-## Próxima etapa: `WEB-004`
+## Próxima etapa: `WEB-005`
 
-Ampliar a cobertura automatizada contra a navegação definitiva:
+Preparar explicitamente o exemplo para decisões de produção:
 
-1. confirmar uma ferramenta E2E compatível com Next.js 16 e React 19 em sua
-   documentação oficial e registrar a decisão;
-2. testar clientes, parsing de contratos, queries e erros sem depender do DOM;
-3. ampliar testes de componentes e formulários pelo comportamento observável;
-4. cobrir em navegador listagem, criação, edição, exclusão e recuperação de
-   erro de Produto e Avaliação;
-5. automatizar soft navigation, hard navigation, refresh, Voltar, Avançar e
-   restauração de foco dos modais;
-6. adicionar verificações automatizadas de acessibilidade onde trouxerem
-   cobertura real, mantendo revisão manual de teclado, zoom e viewport;
-7. executar as verificações completas e atualizar roadmap e handoff.
+1. definir autenticação, autorização por recurso, cookie `HttpOnly`,
+   `credentials` e proteção CSRF;
+2. revisar timeout, retry, cache e revalidação a partir de métricas reais;
+3. propagar ou registrar `X-Request-Id` sem expor dados sensíveis;
+4. definir observabilidade de duração, volume, falhas e saturação;
+5. medir Core Web Vitals e operações com cenários equivalentes;
+6. revisar CSP, headers, variáveis públicas, dependências e conteúdo de erros;
+7. registrar metas e alertas contextuais somente depois de obter um baseline.
 
 ## Limites mantidos
 
@@ -211,7 +231,8 @@ Ampliar a cobertura automatizada contra a navegação definitiva:
 - a response básica de Produto não recebe coleção ilimitada de avaliações;
 - não inventar agregados ou estatísticas sem endpoint e contrato;
 - não adicionar update otimista sem semântica de conflito definida;
-- testes E2E completos pertencem a `WEB-004`;
+- os E2E atuais usam Chromium e API interceptada; outros navegadores e uma
+  execução integrada com a API real continuam ampliações explícitas;
 - autenticação, autorização e CSRF permanecem fora do exemplo público e devem
   ser decididos antes de reutilização real;
 - não alterar contratos compartilhados apenas para adaptar controles HTML.

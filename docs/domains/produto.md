@@ -78,38 +78,42 @@ marcada como concluída depois das verificações correspondentes.
 - [x] objetivos e decisões da aplicação Web registrados;
 - [x] `WEB-001`: baseline da Web e listagem de produtos implementados;
 - [x] `WEB-002`: detalhes e CRUD de Produto implementados;
-- [ ] `WEB-003`: listagem e CRUD de Avaliação implementados;
-- [ ] `WEB-004`: testes da interface e dos fluxos críticos implementados;
+- [x] `WEB-003`: listagem e CRUD de Avaliação implementados;
+- [x] `WEB-003A`: criação e edição convertidas em modais roteáveis;
+- [x] `WEB-004`: testes da interface e dos fluxos críticos implementados;
 - [ ] `WEB-005`: preparação de produção explicitamente avaliada.
 
 ## Plano da aplicação Web
 
 O trabalho da Web está dividido em entregas no
-[roadmap da aplicação Web](../apps/web/roadmap.md). As duas primeiras fatias
-verticais foram concluídas e provaram o design system, o cliente HTTP, a
-validação de requests e responses, o cache remoto, formulários e mutações:
+[roadmap da aplicação Web](../apps/web/roadmap.md). As cinco entregas concluídas
+provaram o design system, o cliente HTTP, validação de requests e responses,
+cache remoto, formulários, mutações, modais roteáveis e testes E2E:
 
 1. preservar a home e entregar `/produtos` com filtros e paginação na URL —
    concluído em `WEB-001`;
 2. entregar detalhes, criação, edição e exclusão de Produto — concluído em
    `WEB-002`;
-3. entregar a coleção paginada e o CRUD aninhado de avaliações — próxima
-   entrega;
-4. consolidar testes de interface e fluxos críticos;
-5. tomar as decisões de segurança, observabilidade e performance necessárias
-   antes de reutilizar o exemplo em produção.
+3. entregar a coleção paginada e o CRUD aninhado de avaliações — concluído em
+   `WEB-003`;
+4. converter criação e edição em modais roteáveis sem remover as páginas
+   completas — concluído em `WEB-003A`;
+5. consolidar testes de interface e fluxos críticos com Playwright — concluído
+   em `WEB-004`;
+6. tomar as decisões de segurança, observabilidade e performance necessárias
+   antes de reutilizar o exemplo em produção — próxima entrega, `WEB-005`.
 
-As rotas planejadas de avaliação mantêm `produtoId` no path. A lista básica de
-Produto não incorporará uma coleção ilimitada de avaliações; a tela de detalhe
-fornecerá contexto e acesso à coleção paginada própria.
+As rotas implementadas de avaliação mantêm `produtoId` no path. A lista básica
+de Produto não incorpora uma coleção ilimitada de avaliações; a tela de detalhe
+fornece contexto e acesso à coleção paginada própria.
 
 As decisões implementadas são `fetch` nativo para os clientes HTTP, TanStack
 Query 5 para estado remoto cliente, validação de responses por
 `@repo/contracts` e Server Components como padrão. Tailwind CSS 4 e shadcn/ui
 formam o baseline visual, com tabela em telas largas e cards em telas estreitas.
-React Hook Form com resolver Zod sustenta os formulários de Produto. Schemas e
-mappers locais convertem máscaras, datas locais, strings vazias, `null` e
-campos ausentes sem alterar os contratos externos.
+React Hook Form com resolver Zod sustenta os formulários de Produto e Avaliação.
+Schemas e mappers locais convertem máscaras, datas locais, strings vazias,
+`null` e campos ausentes sem alterar os contratos externos.
 
 ### Estado de `WEB-001` e `WEB-002`
 
@@ -438,9 +442,9 @@ restringir por `produtoId` ou verificar explicitamente o pertencimento. A
 implementação usa os dois IDs nas queries. A listagem verifica primeiro a
 existência do produto, executa busca e contagem independentes em paralelo e
 ordena por `createdAt` e `id` decrescentes. A exclusão responde
-`204 No Content`, sem corpo. Os testes E2E da API permanecem fora desta etapa
-concluída. Na aplicação Web, `WEB-001` e `WEB-002` estão concluídas e `WEB-003`
-é a próxima entrega.
+`204 No Content`, sem corpo. Os testes E2E HTTP da API permanecem pendentes. Na
+aplicação Web, `WEB-003`, `WEB-003A` e `WEB-004` estão concluídas; os E2E do
+navegador interceptam a API e, portanto, não substituem essa cobertura HTTP.
 
 ## Alcance das validações
 

@@ -63,11 +63,14 @@ No estado atual:
 - credenciais de autenticação no navegador já possuem o baseline de cookie
   `HttpOnly`, sem Web Storage.
 
-`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` são implementações concretas
-concluídas para Produto. Os exemplos genéricos dos documentos complementares
-continuam sendo orientação para novos domínios. Os modais roteáveis reutilizam
-as mesmas operações, hooks, contratos, query keys e regras de cache das páginas
-completas; a próxima entrega planejada é `WEB-004`.
+`WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A` e `WEB-004` são implementações
+concretas concluídas para Produto. Os exemplos genéricos dos documentos
+complementares continuam sendo orientação para novos domínios. Os modais
+roteáveis reutilizam as mesmas operações, hooks, contratos, query keys e regras
+de cache das páginas completas. Playwright cobre os fluxos críticos por meio da
+interceptação estrita de `/api/backend`; essa cobertura verifica a Web, mas não
+substitui uma execução futura com os processos reais da Web e da API. A próxima
+entrega planejada é `WEB-005`.
 
 ## Decisões da primeira integração
 

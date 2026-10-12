@@ -32,6 +32,13 @@
 - [OWASP: Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 - [OWASP: CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
 
+## Testes
+
+- [Playwright com Next.js](https://nextjs.org/docs/app/guides/testing/playwright)
+- [Mock de APIs no Playwright](https://playwright.dev/docs/mock)
+- [Interceptação de rede](https://playwright.dev/docs/network)
+- [Playwright no CI](https://playwright.dev/docs/ci)
+
 ## Projeto
 
 - [Contratos](../../contracts/README.md)

@@ -39,20 +39,22 @@ que as revelar, desde que sejam registradas.
 
 ## Progresso atual
 
-`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` estão concluídas. A home foi
-preservada, o baseline visual, a infraestrutura HTTP e o TanStack Query foram
-implementados, e o CRUD Web de Produto cobre listagem, detalhe, criação, edição
-e exclusão. Filtros e paginação permanecem na URL; formulários possuem schemas
-e mappers locais; a exclusão confirma a remoção em cascata das avaliações e
-trata `204 No Content`. Toasts globais confirmam create, update e delete sem
-acoplar Sonner às operações ou aos hooks de dados.
+`WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A` e `WEB-004` estão concluídas. A home
+foi preservada, o baseline visual, a infraestrutura HTTP e o TanStack Query
+foram implementados, e o CRUD Web de Produto cobre listagem, detalhe, criação,
+edição e exclusão. Filtros e paginação permanecem na URL; formulários possuem
+schemas e mappers locais; a exclusão confirma a remoção em cascata das
+avaliações e trata `204 No Content`. Toasts globais confirmam create, update e
+delete sem acoplar Sonner às operações ou aos hooks de dados.
 
 O CRUD aninhado de avaliações cobre listagem paginada, filtros na URL, detalhe,
 criação, edição e exclusão sem incluir uma coleção ilimitada na response básica
 de Produto. As quatro rotas de criação e edição abrem em modais durante
 navegação interna e continuam como páginas completas em acesso direto ou
-refresh. A próxima entrega é `WEB-004`; o estado exato e a ordem de continuação
-estão no [handoff](./handoff.md).
+refresh. Playwright automatiza 17 cenários críticos no Chromium, com mock de
+rede estrito, acessibilidade automatizável na home e execução no CI. A próxima
+entrega é `WEB-005`; o estado exato e a ordem de continuação estão no
+[handoff](./handoff.md).
 
 ## Rotas implementadas
 
@@ -468,7 +470,7 @@ navegador ou fallback de página completa. Essa mudança precisa ocorrer antes d
 
 ### WEB-004 — Cobrir a interface e os fluxos críticos com testes
 
-**Status:** planejado
+**Status:** concluído em 12 de outubro de 2026
 
 **Contexto**
 
@@ -491,12 +493,37 @@ versões instaladas.
 
 **Critérios de aceite**
 
-- [ ] ferramentas escolhidas são compatíveis com as versões instaladas;
-- [ ] testes não repetem a implementação do contrato como mocks frágeis;
-- [ ] requests inesperados falham nos testes de integração;
-- [ ] mutações destrutivas e falhas da API possuem cobertura;
-- [ ] testes rodam de forma determinística localmente e no CI;
-- [ ] limitações da automação de acessibilidade estão documentadas.
+- [x] ferramentas escolhidas são compatíveis com as versões instaladas;
+- [x] testes não repetem a implementação do contrato como mocks frágeis;
+- [x] requests inesperados falham nos testes de integração;
+- [x] mutações destrutivas e falhas da API possuem cobertura;
+- [x] testes rodam de forma determinística localmente e no CI;
+- [x] limitações da automação de acessibilidade estão documentadas.
+
+**Conclusão verificada em 12 de outubro de 2026**
+
+- Playwright Test foi adotado como runner E2E e configurado inicialmente para
+  Chromium;
+- a suíte executa contra o build de produção do Next.js e pode usar uma URL
+  externa por `PLAYWRIGHT_BASE_URL`;
+- o `webServer` usa `PLAYWRIGHT_TEST` para gerar um build compatível com
+  `next start`, sem alterar o output standalone dos builds normais;
+- fixtures de Produto, Avaliação e erro são validadas pelos schemas de
+  `@repo/contracts`;
+- `ApiMock` intercepta `/api/backend`, valida método, path, query e body e falha
+  ao receber requests inesperadas ou deixar requests esperadas pendentes;
+- 17 cenários cobrem home, metadata, listagem, filtros, retry manual, criação,
+  edição, exclusão, falha destrutiva, modais, histórico, refresh, foco, pending,
+  viewport estreita, `404`, preservação de formulário e CRUD de avaliações;
+- `@axe-core/playwright` verifica violações automatizáveis WCAG A e AA na home;
+- o CI instala somente Chromium, usa um worker, possui timeout global finito e
+  executa a suíte E2E depois das verificações e do build;
+- a suíte foi aprovada localmente e no GitHub Actions;
+- os E2E atuais interceptam a API e não substituem testes futuros que inicializem
+  Web e API reais em conjunto;
+- apenas Chromium pertence ao baseline atual; Firefox, WebKit, leitores de tela,
+  zoom e revisão completa de teclado continuam como ampliações ou verificações
+  manuais.
 
 ### WEB-005 — Preparar segurança, observabilidade e performance de produção
 

@@ -63,13 +63,23 @@ No estado atual da base:
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
   operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários,
   diálogos de formulário e exclusão e disparo dos toasts;
-- testes E2E no navegador ainda não foram adotados.
+- Playwright Test cobre 17 cenários E2E no Chromium, incluindo home, listagem,
+  criação, edição, exclusão, recuperação de falhas, modais roteáveis, histórico,
+  refresh, foco, pending, viewport estreita e o CRUD de avaliações;
+- `@axe-core/playwright` verifica na home violações automatizáveis de
+  acessibilidade WCAG A e AA; teclado, zoom, leitores de tela e demais aspectos
+  não automatizáveis continuam dependendo de revisão manual;
+- os E2E usam fixtures validadas por `@repo/contracts` e um mock de rede estrito
+  que falha quando uma request esperada não ocorre ou uma request inesperada é
+  enviada;
+- a suíte E2E executa contra o build de produção do Next.js, localmente e no CI.
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
-`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` estão concluídas. A próxima entrega
-é `WEB-004`, dedicada à ampliação dos testes de interface e dos fluxos críticos,
-conforme o [roadmap da aplicação Web](./roadmap.md). O estado operacional e a
-ordem exata de continuação estão no [handoff](./handoff.md).
+`WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A` e `WEB-004` estão concluídas. A
+próxima entrega é `WEB-005`, dedicada às decisões explícitas de segurança,
+observabilidade e performance necessárias antes de reutilizar o exemplo em
+produção, conforme o [roadmap da aplicação Web](./roadmap.md). O estado
+operacional e a ordem exata de continuação estão no [handoff](./handoff.md).
 
 As regras descritas nestes documentos representam o baseline desejado. Não
 presuma que uma dependência, diretório ou componente já exista sem conferir o
@@ -127,8 +137,9 @@ Não escolha antecipadamente sem contexto:
 
 - identidade visual, temas e tokens definitivos;
 - breakpoints específicos além do baseline da ferramenta de estilos;
-- ferramenta E2E e serviço de observabilidade; Vitest e React Testing Library
-  já são o baseline unitário e de componentes;
+- navegadores E2E adicionais e serviço de observabilidade; Vitest e React
+  Testing Library formam o baseline unitário e de componentes, enquanto
+  Playwright com Chromium forma o baseline E2E atual;
 - mecanismo de autenticação, autorização e proteção CSRF; credenciais no
   navegador já seguem o baseline de cookie `HttpOnly`;
 - política de analytics, consentimento e rastreamento;

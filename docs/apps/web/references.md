@@ -61,6 +61,13 @@ conhecida ou alterar um padrão.
 - [Vitest](https://vitest.dev/guide/)
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [Vite: resolução nativa de caminhos do `tsconfig`](https://vite.dev/config/shared-options#resolve-tsconfigpaths)
+- [Playwright com Next.js](https://nextjs.org/docs/app/guides/testing/playwright)
+- [Playwright Test](https://playwright.dev/docs/intro)
+- [Configuração de web server](https://playwright.dev/docs/test-webserver)
+- [Mock de APIs](https://playwright.dev/docs/mock)
+- [Rede e `page.route`](https://playwright.dev/docs/network)
+- [Playwright no CI](https://playwright.dev/docs/ci)
+- [Testes de acessibilidade com axe](https://playwright.dev/docs/accessibility-testing)
 
 Use referências comunitárias apenas como complemento. Decisões de autenticação
 e bibliotecas de teste devem apontar também para a fonte oficial da ferramenta

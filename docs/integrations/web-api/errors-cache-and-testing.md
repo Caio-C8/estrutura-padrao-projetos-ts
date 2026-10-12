@@ -210,20 +210,29 @@ Cubra fluxos críticos:
 Mocks não substituem pelo menos uma verificação real do acordo entre contratos,
 web e API.
 
-Em `WEB-001`, `WEB-002` e `WEB-003`, o cliente HTTP é
-testado com `fetch` injetado, todas as operações recebem um `ApiClient` por
-dependência e os hooks simulam o cliente central. Os testes cobrem leitura,
-criação, atualização, exclusão, invalidação e remoção de detalhes, erros
-públicos, formulários e toasts de sucesso. Criação e atualização de avaliação
-confirmam que somente listas do mesmo `produtoId` são invalidadas e que o
-detalhe retornado é escrito na chave aninhada correta; o update também comprova
-que listas de outro produto não são invalidadas e que falhas preservam o cache.
-Delete de avaliação comprova a mesma separação por produto, preserva caches em
-falha e remove somente a chave exata do detalhe depois do sucesso. Create e
-update com corpo verificam a mensagem da response validada; deletes de Produto
-e Avaliação verificam o título e a descrição locais usados depois de
-`204 No Content`.
+Em `WEB-001`, `WEB-002` e `WEB-003`, o cliente HTTP é testado com `fetch`
+injetado, todas as operações recebem um `ApiClient` por dependência e os hooks
+simulam o cliente central. Os testes cobrem leitura, criação, atualização,
+exclusão, invalidação e remoção de detalhes, erros públicos, formulários e
+toasts de sucesso. Criação e atualização de avaliação confirmam que somente
+listas do mesmo `produtoId` são invalidadas e que o detalhe retornado é escrito
+na chave aninhada correta; o update também comprova que listas de outro produto
+não são invalidadas e que falhas preservam o cache. Delete de avaliação
+comprova a mesma separação por produto, preserva caches em falha e remove
+somente a chave exata do detalhe depois do sucesso. Create e update com corpo
+verificam a mensagem da response validada; deletes de Produto e Avaliação
+verificam o título e a descrição locais usados depois de `204 No Content`.
 
-A integração real Web → rewrite do Next.js → API também foi exercitada
-manualmente durante o CRUD de Produto. Uma ferramenta E2E automatizada continua
-planejada para `WEB-004`.
+`WEB-004` adicionou Playwright para os fluxos críticos no navegador. A suíte
+intercepta `/api/backend`, valida método, path, query e payload e usa responses
+criadas por fixtures analisadas pelos schemas compartilhados. Requests
+inesperadas e expectations não consumidas falham no teardown do teste.
+
+Os 17 cenários cobrem sucesso e falha em listagem e mutations, retry manual,
+navegação modal, refresh, histórico, foco, pending, viewport estreita e o CRUD
+de avaliações. O CI instala Chromium e executa a mesma suíte com um worker.
+
+A integração real Web → rewrite do Next.js → API foi exercitada manualmente
+durante o CRUD de Produto, mas os E2E automatizados atuais usam responses
+interceptadas. Eles não substituem testes futuros que inicializem Web e API
+reais nem os testes E2E HTTP ainda pendentes nas rotas da API.
