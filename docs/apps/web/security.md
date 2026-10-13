@@ -16,12 +16,13 @@ Isso é uma limitação consciente e não um baseline seguro para produção.
 responses e apresenta mensagens públicas, sem expor o corpo bruto ou o `cause`
 interno dos erros.
 
-`WEB-005` endurecerá e medirá esse exemplo público, mas não implementará login,
-usuários, sessão, autenticação, autorização nem CSRF. Essa delimitação não
-remove o baseline deste documento: uma aplicação derivada que introduza
-identidade ou dados protegidos deve aplicar e testar os controles correspondentes
-antes de produção. CORS, CSP e a ocultação de controles na interface não
-transformam uma mutação pública em uma operação autorizada.
+`WEB-005` endureceu e instrumentou esse exemplo público, mas não implementou
+login, usuários, sessão, autenticação, autorização nem CSRF. O catálogo exibe
+essa limitação e orienta o uso exclusivo de dados fictícios. Essa delimitação
+não remove o baseline deste documento: uma aplicação derivada que introduza
+identidade ou dados protegidos deve aplicar e testar os controles
+correspondentes antes de produção. CORS, CSP e a ocultação de controles na
+interface não transformam uma mutação pública em uma operação autorizada.
 
 ## Fronteira server e client
 
@@ -94,13 +95,36 @@ autorização em console, analytics ou relatório de erro.
 
 ## Headers e CSP
 
-Defina uma política de headers antes da produção:
+O estado atual aplica a todas as rotas:
 
-- Content Security Policy;
-- proteção contra framing;
-- política de referrer;
-- permissions policy;
-- content type sniffing;
+- `Content-Security-Policy` com origem própria por padrão, bloqueio de objetos,
+  restrição de `base-uri`, `form-action` e `frame-ancestors` e allowlists
+  explícitas para imagens e fontes;
+- `Permissions-Policy` para desabilitar recursos não utilizados;
+- `Referrer-Policy` e `X-Content-Type-Options: nosniff`;
+- proteção contra framing por CSP e `X-Frame-Options`;
+- `poweredByHeader: false`, removendo a divulgação automática do Next.js.
+
+A política de produção não inclui `'unsafe-eval'`. Em desenvolvimento, o
+Webpack exige essa permissão para a experiência de desenvolvimento. No cliente,
+o Zod usa `z.config({ jitless: true })`, opção documentada para evitar geração
+dinâmica de função em ambientes CSP/no-eval. A suíte E2E confirma a política no
+build de produção e falha se `/produtos` emitir uma violação CSP.
+
+A verificação integrada de 13 de outubro de 2026 observou a seguinte política
+no build de produção:
+
+```text
+default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';
+```
+
+`'unsafe-inline'` ainda é permitido para scripts e estilos no exemplo atual.
+Uma aplicação que precise de uma política mais estrita deve avaliar nonces ou
+hashes junto da estratégia de renderização e cache, e não apenas remover a
+diretiva sem testar o build real.
+
+Além desses controles, defina no ambiente de implantação:
+
 - HSTS no ponto que termina TLS.
 
 CSP reduz impacto de XSS e injeção, mas sua estratégia afeta renderização,

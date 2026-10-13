@@ -27,8 +27,8 @@ No estado atual da base:
   criação e edição de Produto e Avaliação de Produto;
 - Tailwind CSS 4 e shadcn/ui formam o baseline visual;
 - `components.json` usa o estilo `radix-nova`, tokens `neutral` e aliases locais;
-- as primitives instaladas possuem consumidores atuais e incluem `AlertDialog`,
-  `Badge`, `Button`, `Checkbox`, `Dialog`, `Field`, `Input`, `Label`,
+- as primitives instaladas possuem consumidores atuais e incluem `Alert`,
+  `AlertDialog`, `Badge`, `Button`, `Checkbox`, `Dialog`, `Field`, `Input`, `Label`,
   `RadioGroup`, `Select`, `Separator`, `Skeleton`, `Table`, `Textarea` e o
   `Toaster` do Sonner;
 - TanStack Query 5 está configurado no segmento `/produtos`, com provider na
@@ -63,25 +63,34 @@ No estado atual da base:
 - Vitest 5 e React Testing Library cobrem a infraestrutura HTTP, query client,
   operações, hooks, schemas, mappers, máscaras, listagem, detalhe, formulários,
   diálogos de formulário e exclusão e disparo dos toasts;
-- Playwright Test cobre 17 cenários E2E no Chromium, incluindo home, listagem,
+- Playwright Test cobre 20 cenários E2E no Chromium, incluindo home, listagem,
   criação, edição, exclusão, recuperação de falhas, modais roteáveis, histórico,
-  refresh, foco, pending, viewport estreita e o CRUD de avaliações;
+  refresh, foco, pending, viewport estreita, o CRUD de avaliações e os headers
+  de segurança e CSP do build de produção;
 - `@axe-core/playwright` verifica na home violações automatizáveis de
   acessibilidade WCAG A e AA; teclado, zoom, leitores de tela e demais aspectos
   não automatizáveis continuam dependendo de revisão manual;
 - os E2E usam fixtures validadas por `@repo/contracts` e um mock de rede estrito
   que falha quando uma request esperada não ocorre ou uma request inesperada é
   enviada;
-- a suíte E2E executa contra o build de produção do Next.js, localmente e no CI.
+- a suíte E2E executa contra o build de produção do Next.js, localmente e no CI;
+- as páginas do catálogo avisam que o CRUD é público e deve usar somente dados
+  fictícios; isso não substitui autenticação ou autorização em aplicações reais;
+- o Next.js aplica CSP e headers de segurança, remove o header de tecnologia e
+  configura o Zod em modo `jitless` no navegador para funcionar sem
+  `'unsafe-eval'` em produção;
+- Core Web Vitals e operações da API emitem eventos normalizados, sem IDs ou
+  URLs brutas; no exemplo, o console é usado somente fora de produção e a
+  escolha de um provedor real permanece a cargo do projeto derivado.
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
-`WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A` e `WEB-004` estão concluídas. A
-próxima entrega é `WEB-005`, dedicada a endurecer e medir o exemplo público sem
-adicionar login, usuários, sessão ou autorização ao domínio didático, conforme
-o [roadmap da aplicação Web](./roadmap.md). Os requisitos para aplicações
-derivadas autenticadas permanecem no baseline de segurança e não serão tratados
-como concluídos pelo exemplo público. O estado operacional e a ordem exata de
-continuação estão no [handoff](./handoff.md).
+`WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A`, `WEB-004` e `WEB-005` estão
+concluídas, conforme o [roadmap da aplicação Web](./roadmap.md). A última entrega
+endureceu e instrumentou o exemplo público sem adicionar login, usuários,
+sessão ou autorização ao domínio didático. Os requisitos para aplicações
+derivadas autenticadas permanecem no baseline de segurança e não são tratados
+como concluídos pelo exemplo público. O estado operacional está no
+[handoff](./handoff.md); uma nova capacidade exige um novo objetivo de roadmap.
 
 As regras descritas nestes documentos representam o baseline desejado. Não
 presuma que uma dependência, diretório ou componente já exista sem conferir o
@@ -122,7 +131,7 @@ Detalhes e exemplos estão em [Páginas e rotas](./pages-and-routing.md).
 | Assunto                                       | Documento                                                                   |
 | --------------------------------------------- | --------------------------------------------------------------------------- |
 | Entregas, estado e critérios de aceite        | [Roadmap](./roadmap.md)                                                     |
-| Estado atual e próxima entrega                | [Handoff](./handoff.md)                                                     |
+| Estado operacional e continuidade             | [Handoff](./handoff.md)                                                     |
 | Organização, renderização e estado            | [Arquitetura](./architecture.md)                                            |
 | Rotas, layouts, metadata e estados de página  | [Páginas e rotas](./pages-and-routing.md)                                   |
 | Componentização, shadcn/ui e design system    | [Componentes e design system](./components-and-design-system.md)            |

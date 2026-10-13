@@ -51,6 +51,15 @@ Performance de desenvolvimento também precisa de regressão visível. Acompanhe
 - Compare bundles e artefatos após dependências relevantes.
 - Preserve lockfile e versões de runtime para tornar comparações reproduzíveis.
 
+### Artefato standalone do Next.js
+
+Com `output: "standalone"`, execute o `server.js` mínimo gerado em vez de
+`next start`. O Next.js não copia `public` nem `.next/static` para o diretório
+standalone por padrão. A imagem Docker da Web já copia esses diretórios para o
+artefato final; uma execução manual precisa reproduzir as mesmas cópias antes
+de iniciar o servidor. Sem os assets, o HTML pode responder enquanto os chunks
+retornam `404`, o que invalida qualquer verificação funcional ou de performance.
+
 ## Deploy e regressão
 
 - Registre versão ou commit nas métricas e traces.

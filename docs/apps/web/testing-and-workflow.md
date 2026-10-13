@@ -136,18 +136,20 @@ encerra o servidor ao concluir. `PLAYWRIGHT_PORT` altera a porta local e
 `PLAYWRIGHT_BASE_URL` desativa o servidor local e aponta a suíte para uma URL
 externa.
 
-O script `test` executa `vitest run`. Em 12 de outubro de 2026, a suíte possui 48
-arquivos e 230 testes. Além dos CRUDs de Produto e Avaliação, ela cobre o
+O script `test` executa `vitest run`. Em 13 de outubro de 2026, a suíte possui 52
+arquivos e 257 testes. Além dos CRUDs de Produto e Avaliação, ela cobre o
 `RouteFormDialog`, a confirmação de descarte e os callbacks que desacoplam os
 formulários da apresentação como página ou modal. Os testes dos componentes
 simulam somente `toast.success` e verificam a mensagem emitida: creates e
 updates com corpo recebem a mensagem da response, enquanto deletes usam
-conteúdo local correspondente ao `204`.
+conteúdo local correspondente ao `204`. Configuração pública, normalização de
+rotas, Web Vitals e observação das operações HTTP também possuem cobertura.
 
-A suíte Playwright possui 17 testes. Ela cobre home, metadata, listagem, filtros,
+A suíte Playwright possui 20 testes. Ela cobre home, metadata, listagem, filtros,
 retry manual, criação, edição, exclusão, falha destrutiva, navegação modal,
 refresh, histórico, foco, pending, viewport estreita, `404`, preservação dos
-valores após erro e o CRUD de avaliações.
+valores após erro, CRUD de avaliações, headers de segurança e execução de
+`/produtos` sem violações CSP no build de produção.
 
 O mock de rede registra expectations por método e path, aceita contagem exata,
 valida query e payload dentro do responder e falha no teardown quando recebe
@@ -164,8 +166,28 @@ O CI instala somente Chromium, executa os E2E com um worker e preserva retries e
 timeout finitos. A suíte foi aprovada localmente e no GitHub Actions.
 
 Os testes atuais interceptam `/api/backend` e verificam o comportamento da Web
-no navegador. Eles não substituem uma futura execução com Web, rewrite e API
-reais nem os testes E2E HTTP ainda pendentes na API.
+no navegador. A verificação manual final executou Web, rewrite e API reais, mas
+ela ainda não substitui uma suíte integrada automatizada nem os testes E2E HTTP
+pendentes na API.
+
+### Verificação local do artefato standalone
+
+Com `output: "standalone"`, o servidor mínimo deve ser iniciado pelo
+`server.js` gerado, não por `next start`. O Next.js não copia `public` nem
+`.next/static` para esse diretório por padrão. O Dockerfile já copia ambos para
+a imagem final; para testar o artefato manualmente no Windows, depois do build,
+copie os diretórios para os destinos equivalentes sob
+`apps/web/.next/standalone/apps/web` e só então execute o servidor:
+
+```powershell
+Copy-Item -Recurse -Force apps/web/public apps/web/.next/standalone/apps/web/public
+Copy-Item -Recurse -Force apps/web/.next/static apps/web/.next/standalone/apps/web/.next/static
+node apps/web/.next/standalone/apps/web/server.js
+```
+
+Sem essas cópias, o HTML pode responder enquanto os chunks em `/_next/static`
+retornam `404`, deixando Client Components sem hidratação. Esse comportamento é
+do empacotamento standalone, não da CSP.
 
 O `ResizeObserver` ausente no jsdom possui um mock mínimo no setup porque as
 primitives Radix o utilizam; o mock não substitui testes reais de layout, foco e

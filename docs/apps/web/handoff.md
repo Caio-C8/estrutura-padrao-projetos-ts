@@ -1,8 +1,8 @@
 # Handoff da aplicação Web
 
-Atualizado em 12 de outubro de 2026 após a conclusão e verificação de
-`WEB-004`, que adicionou a cobertura E2E dos fluxos críticos e sua execução no
-CI.
+Atualizado em 13 de outubro de 2026 após a conclusão e verificação de
+`WEB-005`, que endureceu e instrumentou o exemplo público sem introduzir
+identidade no domínio didático.
 
 Este documento é o retrato operacional para continuar o trabalho. Planejamento
 e critérios permanentes ficam no [roadmap](./roadmap.md).
@@ -14,8 +14,7 @@ e critérios permanentes ficam no [roadmap](./roadmap.md).
 - `WEB-003 — Entregar o CRUD aninhado de avaliações`: concluída;
 - `WEB-003A — Converter criação e edição em modais roteáveis`: concluída;
 - `WEB-004 — Cobrir a interface e os fluxos críticos com testes`: concluída;
-- `WEB-005 — Endurecer e medir o exemplo público`:
-  próxima entrega.
+- `WEB-005 — Endurecer e medir o exemplo público`: concluída.
 
 A navegação implementada é:
 
@@ -178,7 +177,7 @@ browserApiClient → /api/backend → API NestJS
 
 ## Testes E2E implementados em `WEB-004`
 
-- Playwright Test executa 17 cenários no Chromium;
+- Playwright Test executa 20 cenários no Chromium;
 - o servidor de teste usa o build de produção do Next.js;
 - `PLAYWRIGHT_BASE_URL` permite apontar a suíte para um ambiente externo;
 - fixtures de sucesso e erro são validadas por `@repo/contracts`;
@@ -195,44 +194,79 @@ browserApiClient → /api/backend → API NestJS
 - Chromium é o navegador automatizado atual; outros motores e testes manuais de
   acessibilidade permanecem fora desse baseline.
 
+## Endurecimento e medição implementados em `WEB-005`
+
+- o catálogo informa que Produto e Avaliação formam um CRUD público de
+  demonstração e que somente dados fictícios devem ser usados;
+- a API usa allowlist de `CORS_ORIGINS`, não permite credenciais, limita métodos
+  e headers e expõe `X-Request-Id` ao navegador;
+- o Next.js remove `X-Powered-By` e aplica CSP, `Permissions-Policy`,
+  `Referrer-Policy`, `X-Content-Type-Options` e proteção contra framing;
+- a CSP de produção não contém `'unsafe-eval'`; `instrumentation-client.ts`
+  configura o Zod com `jitless: true`, conforme a opção oficial para ambientes
+  com CSP sem avaliação dinâmica;
+- `NEXT_PUBLIC_APP_ENV` aceita somente ambientes conhecidos e possui fallback
+  explícito; nenhuma variável pública é tratada como local para segredo;
+- `WebVitalsReporter` registra FID, FCP, LCP, TTFB, INP e CLS com nome de rota
+  normalizado;
+- as operações da API registram nome conhecido, origem, método, resultado,
+  duração, concorrência, status e categoria de erro quando aplicáveis;
+- observação e métricas não incluem IDs, URL bruta, payload, credencial nem
+  `X-Request-Id` como dimensão;
+- o console recebe os eventos somente fora de produção; um projeto derivado
+  deve escolher seu provedor, retenção, alertas e metas conforme o contexto;
+- falha do observador não altera o resultado da operação de negócio;
+- o E2E verifica os headers em `/` e `/api/health`, ausência de
+  `'unsafe-eval'` na CSP de produção e ausência de violações CSP em
+  `/produtos`.
+
 ## Verificações atuais
 
-Em 12 de outubro de 2026:
+Em 13 de outubro de 2026:
 
-- `pnpm --filter @repo/web test`: aprovado, 48 arquivos e 230 testes;
-- `pnpm --filter @repo/web test:e2e`: aprovado, 17 testes no Chromium;
+- `pnpm --filter @repo/web test`: aprovado, 52 arquivos e 257 testes;
+- `pnpm --filter @repo/web test:e2e`: aprovado, 20 testes no Chromium;
 - `pnpm --filter @repo/web typecheck`: aprovado;
 - `pnpm --filter @repo/web lint`: aprovado;
 - `pnpm --filter @repo/web build`: aprovado;
 - `pnpm format:check`: aprovado;
 - workflow `validate` do GitHub Actions: aprovado, incluindo instalação do
-  Chromium e execução dos E2E.
+  Chromium e execução dos E2E;
+- health checks reais aprovados na API (`:3001/api/health`), na Web
+  (`:3000/api/health`) e no proxy Web–API (`:3000/api/backend/health`);
+- revisão manual aprovada para as rotas e ações, CSP e execução standalone com
+  os diretórios `public` e `.next/static` copiados para o artefato.
+
+Os health checks integrados retornaram:
+
+| Endpoint                   | Serviço           | Ambiente      | Versão  | Timestamp UTC              |
+| -------------------------- | ----------------- | ------------- | ------- | -------------------------- |
+| `:3001/api/health`         | `project-starter` | `development` | `0.1.0` | `2026-10-13T02:50:34.757Z` |
+| `:3000/api/health`         | `web`             | `development` | `0.1.0` | `2026-10-13T02:50:36.789Z` |
+| `:3000/api/backend/health` | `project-starter` | `development` | `0.1.0` | `2026-10-13T02:50:36.809Z` |
 
 A revisão manual continua responsável por aspectos não completamente cobertos
 pela automação, incluindo leitores de tela, zoom, teclado em todos os fluxos,
-motores de navegador adicionais e integração com uma API real.
+motores de navegador adicionais e a repetição automatizada da integração com a
+API real.
 
-## Próxima etapa: `WEB-005`
+## Continuação do roadmap
 
-Endurecer e medir o exemplo público sem introduzir identidade no domínio
-didático:
+Não há outra entrega Web planejada depois de `WEB-005`. Uma nova capacidade
+deve ser registrada no roadmap com contexto, escopo e critérios próprios antes
+da implementação.
 
-1. registrar que as rotas e mutações são públicas e inadequadas para dados
-   reais, privados ou sensíveis;
-2. revisar headers de segurança, divulgação de tecnologia e CSP;
-3. confirmar uma política CORS explícita e sem credenciais para o exemplo;
-4. revisar timeout, retry, cache e revalidação a partir de métricas reais;
-5. preservar ou propagar `X-Request-Id` sem expor dados sensíveis;
-6. definir observabilidade de duração, volume, falhas e saturação;
-7. medir Core Web Vitals e operações com cenários equivalentes;
-8. revisar variáveis públicas, dependências e conteúdo de erros;
-9. registrar metas e alertas contextuais somente depois de obter um baseline.
+Login, usuários, sessão, autenticação, autorização e CSRF não foram
+implementados porque o exemplo atual não possui identidade nem dados
+protegidos. O baseline correspondente continua documentado e deve ser aplicado
+por qualquer aplicação derivada que introduza esses requisitos; os checklists
+de segurança autenticada permanecem intencionalmente abertos.
 
-Login, usuários, sessão, autenticação, autorização e CSRF não serão
-implementados nesta entrega porque o exemplo atual não possui identidade nem
-dados protegidos. O baseline correspondente continua documentado e deve ser
-aplicado por qualquer aplicação derivada que introduza esses requisitos; seus
-itens não contam como concluídos nem bloqueiam `WEB-005` no exemplo público.
+A amostra manual de performance de 13 de outubro é evidência de smoke test em
+desenvolvimento. Ela não constitui baseline estatístico, meta, SLO nem teste de
+capacidade. Quando houver ambiente e volume representativos, agregue Core Web
+Vitals por p75 e operações por p50/p95/p99, separando versão, ambiente e rota ou
+operação normalizada sem dimensões sensíveis ou de alta cardinalidade.
 
 ## Limites mantidos
 

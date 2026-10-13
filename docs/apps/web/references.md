@@ -21,6 +21,9 @@ conhecida ou alterar um padrão.
 - [Acessibilidade](https://nextjs.org/docs/architecture/accessibility)
 - [Checklist de produção](https://nextjs.org/docs/app/guides/production-checklist)
 - [Content Security Policy](https://nextjs.org/docs/app/guides/content-security-policy)
+- [`instrumentation-client.js`](https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client)
+- [`useReportWebVitals`](https://nextjs.org/docs/app/api-reference/functions/use-report-web-vitals)
+- [Output standalone](https://nextjs.org/docs/app/api-reference/config/next-config-js/output)
 - [Limites dos Core Web Vitals](https://web.dev/articles/defining-core-web-vitals-thresholds)
 
 ## React
@@ -34,6 +37,7 @@ conhecida ou alterar um padrão.
 - [React Hook Form](https://react-hook-form.com/docs)
 - [Resolvers e Zod](https://github.com/react-hook-form/resolvers#zod)
 - [Zod 4](https://zod.dev/)
+- [Zod: CSP e modo `jitless`](https://zod.dev/compile#content-security-policy)
 - [Contratos do projeto](../../contracts/README.md)
 
 ## Componentes e acessibilidade

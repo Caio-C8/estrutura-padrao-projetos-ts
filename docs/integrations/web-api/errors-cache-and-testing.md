@@ -35,6 +35,13 @@ camada de integração pode preservar esse valor em seu erro normalizado e
 apresentá-lo como referência de suporte, mas não deve usá-lo como credencial,
 identidade, chave de cache ou label de métrica.
 
+O observador atual das operações registra apenas nome conhecido da operação,
+origem navegador/servidor, método, resultado, duração, concorrência, status e
+categoria normalizada de erro. Ele não registra URL bruta, IDs, query, body,
+response, credenciais nem `X-Request-Id`, e sua própria falha não altera o
+resultado da request. O console é destino somente fora de produção; provedor,
+retenção e alertas continuam decisões do projeto.
+
 ## Categorias para a interface
 
 A integração deve permitir distinguir:
@@ -111,7 +118,7 @@ aplicação por conveniência.
 ## Autenticação e CSRF
 
 O exemplo didático atual não possui credencial de autenticação e `WEB-005` não
-adicionará identidade, sessão ou proteção CSRF. Portanto, esta seção não
+adicionou identidade, sessão ou proteção CSRF. Portanto, esta seção não
 descreve uma capacidade já implementada nem um critério de conclusão dessa
 entrega; ela preserva o baseline obrigatório para aplicações derivadas
 autenticadas. Sem autorização, as mutações públicas continuam acessíveis a

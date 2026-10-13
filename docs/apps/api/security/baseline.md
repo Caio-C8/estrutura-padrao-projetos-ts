@@ -7,11 +7,16 @@ projeto derivado deve decidir quais se aplicam, configurar valores por ambiente
 e registrar exceções justificadas.
 
 No exemplo didático atual, as rotas de Produto e Avaliação são públicas e
-`WEB-005` não adicionará login, usuários, sessão, autenticação, autorização ou
+`WEB-005` não adicionou login, usuários, sessão, autenticação, autorização ou
 CSRF. Os controles de identidade descritos neste documento ficam fora do escopo
 desse exemplo por decisão explícita; isso não significa que estejam
 implementados. Eles permanecem no baseline para serem aplicados e testados
 quando uma aplicação derivada introduzir identidade ou dados protegidos.
+
+Para o exemplo público, a API restringe origens por `CORS_ORIGINS`, mantém
+`credentials: false`, limita métodos e headers e expõe somente
+`X-Request-Id`. Essa política reduz exposição acidental no navegador, mas não
+autentica nem autoriza as mutações.
 
 ## Inicialização e configuração
 

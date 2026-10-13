@@ -60,18 +60,22 @@ No estado atual:
   o navegador leia o header da resposta;
 - respostas de erro também incluem o mesmo valor em `requisicaoId`, conforme o
   contrato compartilhado;
+- a API restringe origens por `CORS_ORIGINS`, mantém `credentials: false`,
+  limita métodos e headers e expõe `X-Request-Id` ao navegador;
+- as operações HTTP emitem eventos normalizados de duração, resultado e
+  concorrência, sem payloads, credenciais, IDs ou URLs brutas;
 - credenciais de autenticação no navegador já possuem o baseline de cookie
   `HttpOnly`, sem Web Storage.
 
-`WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A` e `WEB-004` são implementações
-concretas concluídas para Produto. Os exemplos genéricos dos documentos
+`WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A`, `WEB-004` e `WEB-005` são
+implementações concretas concluídas para Produto. Os exemplos genéricos dos documentos
 complementares continuam sendo orientação para novos domínios. Os modais
 roteáveis reutilizam as mesmas operações, hooks, contratos, query keys e regras
 de cache das páginas completas. Playwright cobre os fluxos críticos por meio da
 interceptação estrita de `/api/backend`; essa cobertura verifica a Web, mas não
-substitui uma execução futura com os processos reais da Web e da API. A próxima
-entrega planejada é `WEB-005`, que endurecerá e medirá o exemplo público sem
-introduzir login, usuários, sessão, autenticação, autorização ou CSRF.
+substitui os testes E2E HTTP ainda pendentes na API. A verificação final de
+`WEB-005` também executou Web, rewrite e API reais, confirmou os três health
+checks e percorreu manualmente as rotas e mutações do exemplo.
 
 O baseline de credenciais `HttpOnly`, autorização na API, `credentials` e
 proteção CSRF permanece normativo para qualquer aplicação derivada que
@@ -227,7 +231,9 @@ produção:
 - responsável por emitir o cookie, `credentials`, atributos e fluxo CSRF;
 - propagação de correlation ID para futuras dependências e serviços externos;
 - `staleTime`, regras de cache, prefetch, hydration e revalidação;
-- observabilidade sem vazamento de dados.
+- provedor de observabilidade, retenção, alertas e metas; os pontos de
+  instrumentação e as dimensões normalizadas já estão implementados sem
+  vazamento de dados.
 
 Um agente deve apresentar essas decisões quando forem necessárias e não
 escolhê-las silenciosamente. Transporte e biblioteca de estado remoto já estão

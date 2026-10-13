@@ -27,6 +27,40 @@ persistente ou virtualização sem um gargalo medido. No build atual, `/` e
 `/produtos/novo` são estáticas; `/produtos`, `/produtos/[produtoId]` e
 `/produtos/[produtoId]/editar` são dinâmicas.
 
+`WebVitalsReporter` usa `useReportWebVitals` e associa os eventos a nomes de
+rota normalizados, sem registrar o path ou IDs. O observador das operações HTTP
+registra nome conhecido, origem navegador/servidor, método, resultado, duração,
+concorrência, status e categoria de erro quando aplicáveis. Payloads,
+credenciais, URLs brutas, IDs de recurso e `X-Request-Id` não entram nas
+dimensões. Falhas do observador são isoladas da operação de negócio.
+
+No exemplo, os eventos são enviados ao console somente fora de produção. Isso
+prova o ponto de instrumentação, mas não fornece coleta durável, agregação,
+retenção ou alertas. Um projeto derivado deve conectar um provedor real antes de
+depender desses dados operacionalmente.
+
+## Amostra manual de desenvolvimento
+
+Em 13 de outubro de 2026, uma navegação manual com Web e API locais registrou:
+
+| Fluxo normalizado | Amostras observadas                                                               |
+| ----------------- | --------------------------------------------------------------------------------- |
+| `produto.lista`   | TTFB 11,8 ms; FCP/LCP 64 ms; INP 8 ms; CLS entre 0 e 0,0002                       |
+| `avaliacao.lista` | TTFB entre 13,1 e 17,4 ms; FCP entre 56 e 76 ms; LCP entre 64 e 76 ms; FID 0,3 ms |
+
+Todas as classificações emitidas pelo navegador nessa amostra foram `good`. As
+operações de Produto e Avaliação também concluíram com sucesso; as durações
+observadas variaram de 7,5 ms a 45,4 ms e a concorrência visível permaneceu em
+
+1. Os três health checks e os fluxos CRUD foram verificados no mesmo ambiente.
+
+Esses números são um smoke test local isolado. Eles não representam dados de
+campo, p75, p95, p99, capacidade, SLO ou meta de produção e não devem ser
+comparados a outro cenário sem controlar ambiente, dados, versão, rede e
+volume. Quando houver tráfego representativo, agregue Core Web Vitals por p75 e
+operações por p50/p95/p99, além de volume, erros, saturação e tempo das
+dependências.
+
 ## Métricas mínimas
 
 Use dados de campo no percentil 75, separados ao menos entre mobile e desktop,

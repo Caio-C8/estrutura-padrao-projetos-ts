@@ -51,9 +51,9 @@ O CRUD aninhado de avaliações cobre listagem paginada, filtros na URL, detalhe
 criação, edição e exclusão sem incluir uma coleção ilimitada na response básica
 de Produto. As quatro rotas de criação e edição abrem em modais durante
 navegação interna e continuam como páginas completas em acesso direto ou
-refresh. Playwright automatiza 17 cenários críticos no Chromium, com mock de
-rede estrito, acessibilidade automatizável na home e execução no CI. A próxima
-entrega é `WEB-005`; o estado exato e a ordem de continuação estão no
+refresh. Playwright automatiza 20 cenários críticos no Chromium, com mock de
+rede estrito, acessibilidade automatizável na home, verificação de headers e CSP
+e execução no CI. `WEB-005` também está concluída; o estado operacional está no
 [handoff](./handoff.md).
 
 ## Rotas implementadas
@@ -506,8 +506,8 @@ versões instaladas.
   Chromium;
 - a suíte executa contra o build de produção do Next.js e pode usar uma URL
   externa por `PLAYWRIGHT_BASE_URL`;
-- o `webServer` usa `PLAYWRIGHT_TEST` para gerar um build compatível com
-  `next start`, sem alterar o output standalone dos builds normais;
+- o `webServer` gera o build de produção, inicia o servidor configurado para a
+  suíte e também pode apontar para uma URL externa por `PLAYWRIGHT_BASE_URL`;
 - fixtures de Produto, Avaliação e erro são validadas pelos schemas de
   `@repo/contracts`;
 - `ApiMock` intercepta `/api/backend`, valida método, path, query e body e falha
@@ -527,7 +527,7 @@ versões instaladas.
 
 ### WEB-005 — Endurecer e medir o exemplo público
 
-**Status:** planejado
+**Status:** concluído em 13 de outubro de 2026
 
 **Contexto**
 
@@ -568,20 +568,50 @@ presumida a partir da arquitetura.
 
 **Critérios de aceite de `WEB-005`**
 
-- [ ] a decisão de acesso público e o risco das mutações públicas estão
+- [x] a decisão de acesso público e o risco das mutações públicas estão
       documentados e refletidos nos testes;
-- [ ] a interface não apresenta o acesso público como autorização adequada para
+- [x] a interface não apresenta o acesso público como autorização adequada para
       dados reais, privados ou sensíveis;
-- [ ] CORS permanece explícito, sem credenciais, e coerente com o exemplo;
-- [ ] headers de segurança e CSP possuem configuração e verificação
+- [x] CORS permanece explícito, sem credenciais, e coerente com o exemplo;
+- [x] headers de segurança e CSP possuem configuração e verificação
       proporcionais ao ambiente do exemplo;
-- [ ] timeout, retry, cache e invalidação estão documentados por categoria;
-- [ ] `X-Request-Id` continua propagado ou registrado sem dados sensíveis;
-- [ ] logs e métricas não usam credenciais, dados pessoais, IDs ou URLs brutas
+- [x] timeout, retry, cache e invalidação estão documentados por categoria;
+- [x] `X-Request-Id` continua propagado ou registrado sem dados sensíveis;
+- [x] logs e métricas não usam credenciais, dados pessoais, IDs ou URLs brutas
       como labels;
-- [ ] regressões são comparadas em cenários equivalentes por percentis;
-- [ ] a revisão de produção do Next.js e da aplicação foi concluída dentro do
+- [x] os eventos possuem dimensões normalizadas para futura agregação por
+      percentis, e a amostra local não é apresentada como baseline estatístico;
+- [x] a revisão de produção do Next.js e da aplicação foi concluída dentro do
       escopo público definido.
+
+**Conclusão verificada em 13 de outubro de 2026**
+
+- a interface identifica o catálogo como demonstração pública e orienta o uso
+  exclusivo de dados fictícios;
+- a API aceita somente as origens configuradas em `CORS_ORIGINS`, mantém
+  `credentials: false`, limita métodos e headers e expõe `X-Request-Id`;
+- o Next.js remove `X-Powered-By` e aplica CSP, `Permissions-Policy`,
+  `Referrer-Policy`, `X-Content-Type-Options` e proteção contra framing;
+- a CSP de produção não permite `'unsafe-eval'`; o Zod usa `jitless` no cliente,
+  e o E2E confirma que `/produtos` não gera violação de CSP;
+- `NEXT_PUBLIC_APP_ENV` é validada contra valores conhecidos e recebe fallback
+  explícito, sem transformar variáveis públicas em canal para segredos;
+- timeout de 30 segundos, retry único somente para leituras transitórias,
+  ausência de retry em mutações e invalidação mínima permanecem documentados e
+  cobertos pela suíte;
+- Core Web Vitals usam nomes de rota normalizados, e operações HTTP registram
+  nome conhecido, origem, método, resultado, duração e concorrência sem IDs,
+  URLs brutas, payloads ou credenciais;
+- o exemplo registra esses eventos no console somente fora de produção; coleta,
+  retenção, alertas e metas de um provedor real continuam decisões do projeto;
+- a verificação integrada confirmou os três health checks, todas as rotas e
+  ações manuais, a CSP de produção, o artefato standalone com assets e o CI;
+- a amostra manual de desenvolvimento classificou os Web Vitals observados como
+  `good` e registrou operações bem-sucedidas, mas não é volume suficiente para
+  calcular p75, p95, p99, capacidade ou metas de produção;
+- a suíte Web possui 52 arquivos e 257 testes unitários/de componente e 20
+  cenários E2E no Chromium; lint, typecheck, build, formatação e o workflow de
+  CI foram aprovados.
 
 **Baseline preservado para aplicações derivadas autenticadas**
 
