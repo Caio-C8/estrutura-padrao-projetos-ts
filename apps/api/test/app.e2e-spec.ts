@@ -5,6 +5,7 @@ import request from "supertest";
 import * as z from "zod";
 import { AppModule } from "../src/app.module";
 import { DATABASE_CLIENT } from "../src/common/database/database.constants";
+import { configurarCors } from "../src/configurar-cors";
 
 describe("health endpoint", () => {
   let app: INestApplication;
@@ -24,6 +25,7 @@ describe("health endpoint", () => {
 
     app = module.createNestApplication();
     app.setGlobalPrefix("api");
+    configurarCors(app, "http://localhost:3000");
     await app.init();
   });
 
@@ -91,5 +93,56 @@ describe("health endpoint", () => {
     expect(response.status).toBe(200);
     expect(z.uuid().safeParse(requisicaoIdResposta).success).toBe(true);
     expect(requisicaoIdResposta).not.toBe(requisicaoIdCliente);
+  });
+
+  it("exposes public CORS headers without credentials", async () => {
+    const response = await request(app.getHttpServer())
+      .get("/api/health")
+      .set("Origin", "http://localhost:3000");
+
+    expect(response.status).toBe(200);
+    expect(response.headers["access-control-allow-origin"]).toBe(
+      "http://localhost:3000",
+    );
+    expect(
+      response.headers["access-control-allow-credentials"],
+    ).toBeUndefined();
+    expect(response.headers["access-control-expose-headers"]).toBe(
+      "X-Request-Id",
+    );
+  });
+
+  it("answers preflight with the explicitly supported methods and headers", async () => {
+    const response = await request(app.getHttpServer())
+      .options("/api/health")
+      .set("Origin", "http://localhost:3000")
+      .set("Access-Control-Request-Method", "PATCH")
+      .set("Access-Control-Request-Headers", "content-type");
+
+    expect(response.status).toBe(204);
+    expect(response.headers["access-control-allow-origin"]).toBe(
+      "http://localhost:3000",
+    );
+    expect(response.headers["access-control-allow-methods"]).toBe(
+      "GET,HEAD,POST,PATCH,DELETE",
+    );
+    expect(response.headers["access-control-allow-headers"]).toBe(
+      "Content-Type",
+    );
+    expect(
+      response.headers["access-control-allow-credentials"],
+    ).toBeUndefined();
+  });
+
+  it("does not expose CORS headers to an unconfigured origin", async () => {
+    const response = await request(app.getHttpServer())
+      .get("/api/health")
+      .set("Origin", "https://origem-nao-permitida.example");
+
+    expect(response.status).toBe(200);
+    expect(response.headers["access-control-allow-origin"]).toBeUndefined();
+    expect(
+      response.headers["access-control-allow-credentials"],
+    ).toBeUndefined();
   });
 });

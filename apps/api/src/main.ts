@@ -1,8 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
+import { configurarCors } from "./configurar-cors";
 import type { EnvironmentVariables } from "./environment";
-import { CABECALHO_REQUISICAO_ID } from "./common/middleware/requisicao-id.middleware";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,20 +10,11 @@ async function bootstrap() {
   const config = app.get(ConfigService<EnvironmentVariables, true>);
 
   const port = config.getOrThrow("API_PORT", { infer: true });
-
-  const origins = config
-    .getOrThrow("CORS_ORIGINS", { infer: true })
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+  const origensCors = config.getOrThrow("CORS_ORIGINS", { infer: true });
 
   app.setGlobalPrefix("api");
 
-  app.enableCors({
-    origin: origins,
-    credentials: true,
-    exposedHeaders: [CABECALHO_REQUISICAO_ID],
-  });
+  configurarCors(app, origensCors);
 
   app.enableShutdownHooks();
 
