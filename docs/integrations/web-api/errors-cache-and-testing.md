@@ -110,6 +110,13 @@ aplicação por conveniência.
 
 ## Autenticação e CSRF
 
+O exemplo didático atual não possui credencial de autenticação e `WEB-005` não
+adicionará identidade, sessão ou proteção CSRF. Portanto, esta seção não
+descreve uma capacidade já implementada nem um critério de conclusão dessa
+entrega; ela preserva o baseline obrigatório para aplicações derivadas
+autenticadas. Sem autorização, as mutações públicas continuam acessíveis a
+qualquer cliente que alcance a API.
+
 O baseline para navegadores é obrigatório: credenciais de autenticação ficam em
 cookies `HttpOnly` e nunca em `localStorage`, `sessionStorage` ou estado
 persistido legível por JavaScript. O mecanismo de autenticação ainda pode ser

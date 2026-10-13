@@ -81,7 +81,7 @@ marcada como concluída depois das verificações correspondentes.
 - [x] `WEB-003`: listagem e CRUD de Avaliação implementados;
 - [x] `WEB-003A`: criação e edição convertidas em modais roteáveis;
 - [x] `WEB-004`: testes da interface e dos fluxos críticos implementados;
-- [ ] `WEB-005`: preparação de produção explicitamente avaliada.
+- [ ] `WEB-005`: endurecimento e medição do exemplo público implementados.
 
 ## Plano da aplicação Web
 
@@ -100,8 +100,14 @@ cache remoto, formulários, mutações, modais roteáveis e testes E2E:
    completas — concluído em `WEB-003A`;
 5. consolidar testes de interface e fluxos críticos com Playwright — concluído
    em `WEB-004`;
-6. tomar as decisões de segurança, observabilidade e performance necessárias
-   antes de reutilizar o exemplo em produção — próxima entrega, `WEB-005`.
+6. endurecer e medir o exemplo público sem introduzir identidade, preservando o
+   baseline para aplicações derivadas autenticadas — próxima entrega,
+   `WEB-005`.
+
+`WEB-005` não tornará o CRUD público adequado para dados reais, privados ou
+sensíveis. Login, usuários, sessão, autenticação, autorização e CSRF continuam
+fora do domínio didático, mas permanecem documentados como requisitos para uma
+aplicação derivada que precise desses controles.
 
 As rotas implementadas de avaliação mantêm `produtoId` no path. A lista básica
 de Produto não incorpora uma coleção ilimitada de avaliações; a tela de detalhe

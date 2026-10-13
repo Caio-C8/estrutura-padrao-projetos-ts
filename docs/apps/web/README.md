@@ -76,10 +76,12 @@ No estado atual da base:
 
 O trabalho do domínio Produto foi dividido em entregas verificáveis.
 `WEB-001`, `WEB-002`, `WEB-003`, `WEB-003A` e `WEB-004` estão concluídas. A
-próxima entrega é `WEB-005`, dedicada às decisões explícitas de segurança,
-observabilidade e performance necessárias antes de reutilizar o exemplo em
-produção, conforme o [roadmap da aplicação Web](./roadmap.md). O estado
-operacional e a ordem exata de continuação estão no [handoff](./handoff.md).
+próxima entrega é `WEB-005`, dedicada a endurecer e medir o exemplo público sem
+adicionar login, usuários, sessão ou autorização ao domínio didático, conforme
+o [roadmap da aplicação Web](./roadmap.md). Os requisitos para aplicações
+derivadas autenticadas permanecem no baseline de segurança e não serão tratados
+como concluídos pelo exemplo público. O estado operacional e a ordem exata de
+continuação estão no [handoff](./handoff.md).
 
 As regras descritas nestes documentos representam o baseline desejado. Não
 presuma que uma dependência, diretório ou componente já exista sem conferir o

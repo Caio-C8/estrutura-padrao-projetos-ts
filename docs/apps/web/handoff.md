@@ -14,7 +14,7 @@ e critérios permanentes ficam no [roadmap](./roadmap.md).
 - `WEB-003 — Entregar o CRUD aninhado de avaliações`: concluída;
 - `WEB-003A — Converter criação e edição em modais roteáveis`: concluída;
 - `WEB-004 — Cobrir a interface e os fluxos críticos com testes`: concluída;
-- `WEB-005 — Preparar segurança, observabilidade e performance de produção`:
+- `WEB-005 — Endurecer e medir o exemplo público`:
   próxima entrega.
 
 A navegação implementada é:
@@ -214,16 +214,25 @@ motores de navegador adicionais e integração com uma API real.
 
 ## Próxima etapa: `WEB-005`
 
-Preparar explicitamente o exemplo para decisões de produção:
+Endurecer e medir o exemplo público sem introduzir identidade no domínio
+didático:
 
-1. definir autenticação, autorização por recurso, cookie `HttpOnly`,
-   `credentials` e proteção CSRF;
-2. revisar timeout, retry, cache e revalidação a partir de métricas reais;
-3. propagar ou registrar `X-Request-Id` sem expor dados sensíveis;
-4. definir observabilidade de duração, volume, falhas e saturação;
-5. medir Core Web Vitals e operações com cenários equivalentes;
-6. revisar CSP, headers, variáveis públicas, dependências e conteúdo de erros;
-7. registrar metas e alertas contextuais somente depois de obter um baseline.
+1. registrar que as rotas e mutações são públicas e inadequadas para dados
+   reais, privados ou sensíveis;
+2. revisar headers de segurança, divulgação de tecnologia e CSP;
+3. confirmar uma política CORS explícita e sem credenciais para o exemplo;
+4. revisar timeout, retry, cache e revalidação a partir de métricas reais;
+5. preservar ou propagar `X-Request-Id` sem expor dados sensíveis;
+6. definir observabilidade de duração, volume, falhas e saturação;
+7. medir Core Web Vitals e operações com cenários equivalentes;
+8. revisar variáveis públicas, dependências e conteúdo de erros;
+9. registrar metas e alertas contextuais somente depois de obter um baseline.
+
+Login, usuários, sessão, autenticação, autorização e CSRF não serão
+implementados nesta entrega porque o exemplo atual não possui identidade nem
+dados protegidos. O baseline correspondente continua documentado e deve ser
+aplicado por qualquer aplicação derivada que introduza esses requisitos; seus
+itens não contam como concluídos nem bloqueiam `WEB-005` no exemplo público.
 
 ## Limites mantidos
 
@@ -233,6 +242,7 @@ Preparar explicitamente o exemplo para decisões de produção:
 - não adicionar update otimista sem semântica de conflito definida;
 - os E2E atuais usam Chromium e API interceptada; outros navegadores e uma
   execução integrada com a API real continuam ampliações explícitas;
-- autenticação, autorização e CSRF permanecem fora do exemplo público e devem
-  ser decididos antes de reutilização real;
+- autenticação, autorização e CSRF permanecem fora do exemplo público, mas o
+  baseline documentado continua obrigatório quando uma aplicação derivada
+  introduzir identidade ou dados protegidos;
 - não alterar contratos compartilhados apenas para adaptar controles HTML.

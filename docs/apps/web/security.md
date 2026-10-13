@@ -14,7 +14,14 @@ Isso é uma limitação consciente e não um baseline seguro para produção.
 `browserApiClient` usa apenas a origem relativa `/api/backend` e não acessa
 `API_INTERNAL_URL`. `serverApiClient` importa `server-only`. A interface valida
 responses e apresenta mensagens públicas, sem expor o corpo bruto ou o `cause`
-interno dos erros. A revisão para um domínio autenticado pertence a `WEB-005`.
+interno dos erros.
+
+`WEB-005` endurecerá e medirá esse exemplo público, mas não implementará login,
+usuários, sessão, autenticação, autorização nem CSRF. Essa delimitação não
+remove o baseline deste documento: uma aplicação derivada que introduza
+identidade ou dados protegidos deve aplicar e testar os controles correspondentes
+antes de produção. CORS, CSP e a ocultação de controles na interface não
+transformam uma mutação pública em uma operação autorizada.
 
 ## Fronteira server e client
 
@@ -117,6 +124,12 @@ Evite preencher campos sensíveis indevidamente, preserve autocomplete quando
 ele aumenta segurança e não exponha senha em logs ou estado persistente.
 
 ## Checklist
+
+No exemplo público, os itens de autenticação, autorização e CSRF abaixo estão
+fora do escopo por decisão explícita; eles não devem ser interpretados como
+implementados. Os demais itens já se aplicam ao exemplo, e o conjunto completo
+passa a ser aplicável quando um projeto derivado introduzir identidade ou dados
+protegidos.
 
 - nenhum segredo no bundle;
 - dados passados ao cliente minimizados;

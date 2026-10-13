@@ -30,8 +30,8 @@ dependência de Produto.
 3. `WEB-003`: lista e CRUD de avaliações dentro do produto;
 4. `WEB-003A`: criação e edição em modais roteáveis;
 5. `WEB-004`: testes de interface e fluxos críticos;
-6. `WEB-005`: preparação explícita de segurança, observabilidade e performance
-   para uso além do exemplo público.
+6. `WEB-005`: endurecimento, observabilidade e medição do exemplo público, sem
+   introduzir identidade no domínio didático.
 
 Cada objetivo deve ser concluído e verificado antes de ampliar o seguinte.
 Correções necessárias no objetivo anterior podem ser feitas junto da entrega
@@ -525,38 +525,81 @@ versões instaladas.
   zoom e revisão completa de teclado continuam como ampliações ou verificações
   manuais.
 
-### WEB-005 — Preparar segurança, observabilidade e performance de produção
+### WEB-005 — Endurecer e medir o exemplo público
 
 **Status:** planejado
 
 **Contexto**
 
-As rotas são públicas apenas por decisão do exemplo didático. Antes de
-reutilizar o fluxo em um produto real, autenticação, autorização e proteção de
-operações de escrita precisam ser decididas de ponta a ponta. Performance deve
-ser medida com cenários equivalentes, e não presumida a partir da arquitetura.
+As rotas de Produto e Avaliação são públicas por decisão explícita do exemplo
+didático. Esta entrega não adicionará login, usuários, sessão, autenticação,
+autorização nem proteção CSRF, pois o exemplo não possui identidade ou dados
+protegidos. Isso não torna o CRUD apropriado para dados reais: qualquer cliente
+capaz de alcançar a API pode executar suas mutações.
+
+O repositório também serve de base para aplicações que podem exigir esses
+controles. Por isso, o baseline de credenciais `HttpOnly`, autorização na API e
+proteção CSRF permanece documentado, mas não integra os critérios de conclusão
+desta entrega. Performance deve ser medida com cenários equivalentes, e não
+presumida a partir da arquitetura.
 
 **Escopo**
 
-- definir autenticação, autorização por recurso, emissão de cookie `HttpOnly`,
-  política de `credentials` e proteção CSRF;
+- registrar a decisão de acesso público e seus limites para dados reais;
+- revisar headers de segurança e desabilitar divulgação desnecessária de
+  tecnologia;
+- definir e validar CSP, começando em modo de relatório quando necessário;
+- revisar CORS sem credenciais e sem sugerir que CORS substitui autorização;
 - definir timeout, retry de leitura, cache e revalidação a partir das
   características reais do ambiente;
 - propagar ou registrar `X-Request-Id` sem expor dados sensíveis;
 - medir Core Web Vitals, duração das operações, falhas, volume e saturação;
-- revisar CSP, headers, dependências, variáveis públicas e conteúdo de erros;
+- revisar dependências, variáveis públicas e conteúdo de erros;
 - registrar metas e alertas contextuais depois de obter baseline.
 
-**Critérios de aceite**
+**Fora do escopo do exemplo atual**
 
-- [ ] UI não é usada como mecanismo de autorização;
-- [ ] operações protegidas são rejeitadas pela API quando não autorizadas;
-- [ ] cookies e CSRF possuem fluxo testado para o modelo escolhido;
+- cadastro ou gerenciamento de usuários;
+- login, logout, renovação e sessão;
+- autenticação e autorização por recurso;
+- emissão de cookie de autenticação, política de `credentials` autenticada e
+  proteção CSRF;
+- integração com um provedor real de identidade ou observabilidade.
+
+**Critérios de aceite de `WEB-005`**
+
+- [ ] a decisão de acesso público e o risco das mutações públicas estão
+      documentados e refletidos nos testes;
+- [ ] a interface não apresenta o acesso público como autorização adequada para
+      dados reais, privados ou sensíveis;
+- [ ] CORS permanece explícito, sem credenciais, e coerente com o exemplo;
+- [ ] headers de segurança e CSP possuem configuração e verificação
+      proporcionais ao ambiente do exemplo;
 - [ ] timeout, retry, cache e invalidação estão documentados por categoria;
+- [ ] `X-Request-Id` continua propagado ou registrado sem dados sensíveis;
 - [ ] logs e métricas não usam credenciais, dados pessoais, IDs ou URLs brutas
       como labels;
 - [ ] regressões são comparadas em cenários equivalentes por percentis;
-- [ ] a revisão de produção do Next.js e da aplicação foi concluída.
+- [ ] a revisão de produção do Next.js e da aplicação foi concluída dentro do
+      escopo público definido.
+
+**Baseline preservado para aplicações derivadas autenticadas**
+
+Os itens abaixo não bloqueiam `WEB-005` e não serão marcados como concluídos
+pelo exemplo público. Eles passam a ser obrigatórios quando uma aplicação
+derivada introduzir identidade, sessão, dados protegidos ou autorização:
+
+- [ ] definir o modelo de identidade, autenticação e autorização por recurso;
+- [ ] rejeitar na API toda operação protegida que não esteja autorizada, sem
+      tratar a interface como barreira de segurança;
+- [ ] manter credenciais de autenticação do navegador somente em cookies
+      `HttpOnly`, com atributos e ciclo de vida documentados;
+- [ ] alinhar CORS, `credentials` e encaminhamento de cookies entre navegador,
+      Next.js e API;
+- [ ] definir e testar proteção CSRF para operações autenticadas que alterem
+      estado;
+- [ ] testar expiração, renovação, rotação, revogação, logout, `401` e `403`;
+- [ ] testar autorização horizontal, vertical e por propriedade do recurso.
 
 ## Regras de manutenção
 

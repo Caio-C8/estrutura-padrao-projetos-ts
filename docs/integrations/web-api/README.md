@@ -70,7 +70,14 @@ roteáveis reutilizam as mesmas operações, hooks, contratos, query keys e regr
 de cache das páginas completas. Playwright cobre os fluxos críticos por meio da
 interceptação estrita de `/api/backend`; essa cobertura verifica a Web, mas não
 substitui uma execução futura com os processos reais da Web e da API. A próxima
-entrega planejada é `WEB-005`.
+entrega planejada é `WEB-005`, que endurecerá e medirá o exemplo público sem
+introduzir login, usuários, sessão, autenticação, autorização ou CSRF.
+
+O baseline de credenciais `HttpOnly`, autorização na API, `credentials` e
+proteção CSRF permanece normativo para qualquer aplicação derivada que
+introduza identidade ou dados protegidos. Esses requisitos não serão marcados
+como implementados pelo exemplo público e não fazem parte dos critérios de
+conclusão de `WEB-005`.
 
 ## Decisões da primeira integração
 

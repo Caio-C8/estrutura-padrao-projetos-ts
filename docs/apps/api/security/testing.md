@@ -23,6 +23,12 @@ A exposição sem autenticação foi escolhida apenas para o exemplo didático d
 Uma coluna sem decisão deve ser tratada como pendência, não como autorização
 implícita.
 
+`WEB-005` preservará esta matriz, mas não adicionará identidade ao exemplo. Os
+testes de autenticação, autorização e CSRF descritos abaixo passam a ser
+aplicáveis quando uma aplicação derivada adotar esses controles; eles são
+mantidos para que o repositório de exemplo não perca os requisitos de segurança
+necessários a esse cenário.
+
 ## Testes mínimos por controle
 
 ### Autenticação
