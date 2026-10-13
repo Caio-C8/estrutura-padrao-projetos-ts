@@ -49,6 +49,22 @@ test.describe("Listagem de produtos", () => {
       }),
     ).toBeVisible();
 
+    const avisoExemploPublico = page.getByRole("note", {
+      name: "Exemplo público e didático",
+    });
+
+    await expect(avisoExemploPublico).toContainText(
+      "Este CRUD não exige autenticação.",
+    );
+
+    await expect(avisoExemploPublico).toContainText(
+      "Use apenas dados fictícios",
+    );
+
+    await expect(avisoExemploPublico).toContainText(
+      "não é adequado para informações reais, privadas ou sensíveis",
+    );
+
     await expect(
       page.getByRole("link", {
         name: PRODUTO_NOTEBOOK.nome,

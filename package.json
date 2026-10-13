@@ -14,7 +14,7 @@
     "dev:web": "dotenv -e .env.development -- turbo run dev --filter=@repo/web",
     "dev:api": "dotenv -e .env.development -- turbo run dev --filter=@repo/api",
     "build": "turbo run build",
-    "build:development": "dotenv -e .env.development -- turbo run build",
+    "build:development": "dotenv -e .env.development -v NODE_ENV=production -- turbo run build",
     "build:staging": "dotenv -e .env.staging -- turbo run build",
     "build:production": "dotenv -e .env.production -- turbo run build",
     "start:development": "dotenv -e .env.development -- turbo run start",

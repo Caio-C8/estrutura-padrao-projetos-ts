@@ -3,10 +3,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import styles from "./page.module.css";
+import { publicAppConfig } from "@/lib/config/public-app-config";
 
-const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Project Starter";
-
-const environment = process.env.NEXT_PUBLIC_APP_ENV ?? "development";
+const { appName, environment } = publicAppConfig;
 
 export const metadata: Metadata = {
   title: `Início | ${appName}`,
