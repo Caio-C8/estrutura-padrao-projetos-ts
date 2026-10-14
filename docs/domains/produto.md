@@ -11,6 +11,10 @@ baseline. Ao iniciar um projeto real, seus models, migrations, contratos, API,
 página e objetivo de roadmap devem ser removidos e substituídos pelo domínio do
 novo projeto.
 
+A preservação do exemplo antes dessa remoção, sua separação da `main` e a
+publicação de versões futuras seguem o guia de
+[manutenção da base e versionamento do exemplo](../template-and-example.md).
+
 O resultado planejado inclui:
 
 1. model e migration no PostgreSQL;

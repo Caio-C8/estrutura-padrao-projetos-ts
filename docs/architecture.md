@@ -17,9 +17,15 @@ Não existe um pacote `ui` inicialmente porque componentes React para web e comp
 
 ## Banco de dados
 
-O schema começa sem modelos. Adicione somente entidades do novo domínio. A aplicação da API também começa desacoplada do banco para que o health check continue útil durante falhas de infraestrutura.
+O schema começa sem modelos. Adicione somente entidades do novo domínio. A
+aplicação da API também começa desacoplada do banco para que o health check
+continue útil durante falhas de infraestrutura.
 
-Em aplicações NestJS, crie um módulo de persistência que instancie `createDatabaseClient()` e encerre a conexão no shutdown. Evite um singleton global escondido em importações, pois isso atrapalha testes, scripts e builds.
+Em aplicações NestJS, o módulo de persistência instancia
+`createDatabaseClient()` e encerra a conexão no shutdown. Cada módulo de domínio
+que usa persistência importa esse módulo explicitamente; a base vazia não o
+importa em `AppModule` apenas para manter uma conexão ociosa. Evite um singleton
+global escondido em importações, pois isso atrapalha testes, scripts e builds.
 
 ## Deploy
 

@@ -1,6 +1,9 @@
 # Project Starter
 
-Base neutra para iniciar produtos com múltiplas aplicações em um único monorepo. A estrutura vem com uma aplicação web mínima, uma API mínima, PostgreSQL/Prisma e pacotes compartilhados, sem regras de negócio do projeto que lhe deu origem.
+Base para iniciar produtos com múltiplas aplicações em um único monorepo. A
+estrutura reúne aplicação web, API, PostgreSQL/Prisma e pacotes compartilhados.
+O domínio `Produto`, quando presente na revisão consultada, é somente um exemplo
+didático e não faz parte do baseline de uma aplicação derivada.
 
 ## Tecnologias incluídas
 
@@ -35,6 +38,19 @@ Base neutra para iniciar produtos com múltiplas aplicações em um único monor
 ```
 
 Qualquer diretório adicionado diretamente em `apps/*` ou `packages/*` é descoberto automaticamente pelo workspace. Consulte [como adicionar apps](docs/adding-apps.md) antes de criar um novo web, worker ou mobile.
+
+## Reutilização e exemplo versionado
+
+A branch `main` destinada ao GitHub Template deve conter somente a base limpa.
+O exemplo completo de Produto deve ser preservado em tags anotadas como
+`exemplo-produto-v1.0.0`; essas tags permanecem no repositório de origem, mas
+não entram no código nem no histórico dos projetos gerados pelo template.
+
+Antes da primeira remoção do exemplo, e sempre que uma nova versão dele for
+necessária, siga o guia de
+[manutenção da base e versionamento do exemplo](docs/template-and-example.md).
+O guia também define o que deve permanecer configurado entre Web, API e banco
+de dados depois da limpeza.
 
 ## Pré-requisitos
 

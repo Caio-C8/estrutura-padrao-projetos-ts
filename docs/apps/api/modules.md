@@ -29,6 +29,29 @@ O módulo deve importar `DatabaseModule`, que disponibiliza o client Prisma
 compartilhado por token de injeção. Esse módulo não é global; cada módulo de
 domínio que usa banco declara o import explicitamente.
 
+A direção da dependência é `ModuloDeDominio -> DatabaseModule`. O módulo de
+banco não depende do domínio; ele apenas é alcançado e inicializado quando há
+um consumidor no grafo da aplicação. Módulos são singleton por padrão no
+NestJS, portanto vários módulos podem importar `DatabaseModule` e compartilhar
+o mesmo provider exportado.
+
+Na base vazia, não importe `DatabaseModule` diretamente em `AppModule` apenas
+para manter uma conexão ociosa. Essa importação não disponibiliza o provider
+aos módulos irmãos e faria o processo depender do PostgreSQL antes de existir
+um domínio persistente. Também não torne o módulo global somente para eliminar
+imports: a declaração explícita mantém dependências e testes compreensíveis.
+
+Ao criar o primeiro domínio que use persistência:
+
+1. importe `DatabaseModule` no módulo do domínio;
+2. injete `DATABASE_CLIENT` somente nos repositories que precisam dele;
+3. registre o módulo do domínio em `AppModule`;
+4. valide a inicialização e o encerramento da conexão no fluxo integrado.
+
+O health check básico não precisa consultar o banco. Se a operação exigir uma
+distinção entre liveness e readiness, crie checks separados e defina quais
+dependências tornam a instância pronta para receber tráfego.
+
 ## Dependências entre domínios
 
 Para usar dados ou comportamento de outro domínio:

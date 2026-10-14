@@ -12,6 +12,7 @@ Estas fontes fundamentam o padrão descrito neste diretório:
 - [NestJS: Request lifecycle](https://docs.nestjs.com/faq/request-lifecycle)
 - [NestJS: Circular dependency](https://docs.nestjs.com/fundamentals/circular-dependency)
 - [NestJS: Testing](https://docs.nestjs.com/fundamentals/testing)
+- [NestJS: Health checks](https://docs.nestjs.com/reliability/terminus)
 - [NestJS: Prisma recipe](https://docs.nestjs.com/recipes/prisma)
 - [NestJS: Authentication](https://docs.nestjs.com/security/authentication)
 - [NestJS: Authorization](https://docs.nestjs.com/security/authorization)
