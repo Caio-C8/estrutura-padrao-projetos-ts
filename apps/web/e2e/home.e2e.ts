@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "./support/test";
 
 test.describe("Página inicial", () => {
-  test("carrega a aplicação e oferece acesso ao catálogo", async ({ page }) => {
+  test("carrega a aplicação e apresenta os health checks", async ({ page }) => {
     await page.goto("/");
 
     await expect(page).toHaveTitle(/^Início \| .+/);
@@ -15,9 +15,15 @@ test.describe("Página inicial", () => {
 
     await expect(
       page.getByRole("link", {
-        name: "Ver produtos",
+        name: /Aplicação web/,
       }),
-    ).toHaveAttribute("href", "/produtos");
+    ).toHaveAttribute("href", "/api/health");
+
+    await expect(
+      page.getByRole("link", {
+        name: /API backend/,
+      }),
+    ).toHaveAttribute("href", "/api/backend/health");
   });
 
   test("não possui violações automatizáveis de acessibilidade", async ({

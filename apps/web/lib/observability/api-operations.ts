@@ -34,33 +34,9 @@ type InstrumentarApiClientOptions = Readonly<{
 
 const ROTAS_OBSERVAVEIS: readonly RotaObservavel[] = [
   {
-    pattern: /^\/produtos$/,
+    pattern: /^\/health$/,
     operacoes: {
-      GET: "produto.listar",
-      POST: "produto.criar",
-    },
-  },
-  {
-    pattern: /^\/produtos\/[^/]+$/,
-    operacoes: {
-      GET: "produto.consultar",
-      PATCH: "produto.atualizar",
-      DELETE: "produto.excluir",
-    },
-  },
-  {
-    pattern: /^\/produtos\/[^/]+\/avaliacoes$/,
-    operacoes: {
-      GET: "avaliacao.listar",
-      POST: "avaliacao.criar",
-    },
-  },
-  {
-    pattern: /^\/produtos\/[^/]+\/avaliacoes\/[^/]+$/,
-    operacoes: {
-      GET: "avaliacao.consultar",
-      PATCH: "avaliacao.atualizar",
-      DELETE: "avaliacao.excluir",
+      GET: "sistema.health",
     },
   },
 ];

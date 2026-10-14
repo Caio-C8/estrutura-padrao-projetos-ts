@@ -8,38 +8,6 @@ const ROTAS_OBSERVAVEIS: readonly RotaObservavel[] = [
     pattern: /^\/$/,
     nome: "inicio",
   },
-  {
-    pattern: /^\/produtos$/,
-    nome: "produto.lista",
-  },
-  {
-    pattern: /^\/produtos\/novo$/,
-    nome: "produto.criacao",
-  },
-  {
-    pattern: /^\/produtos\/[^/]+\/editar$/,
-    nome: "produto.edicao",
-  },
-  {
-    pattern: /^\/produtos\/[^/]+\/avaliacoes$/,
-    nome: "avaliacao.lista",
-  },
-  {
-    pattern: /^\/produtos\/[^/]+\/avaliacoes\/nova$/,
-    nome: "avaliacao.criacao",
-  },
-  {
-    pattern: /^\/produtos\/[^/]+\/avaliacoes\/[^/]+\/editar$/,
-    nome: "avaliacao.edicao",
-  },
-  {
-    pattern: /^\/produtos\/[^/]+\/avaliacoes\/[^/]+$/,
-    nome: "avaliacao.detalhe",
-  },
-  {
-    pattern: /^\/produtos\/[^/]+$/,
-    nome: "produto.detalhe",
-  },
 ];
 
 function removerBarrasFinais(pathname: string): string {

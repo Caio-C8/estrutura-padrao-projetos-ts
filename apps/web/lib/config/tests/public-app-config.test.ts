@@ -20,10 +20,8 @@ describe("obterConfiguracaoPublica", () => {
   });
 
   it("normaliza o nome público da aplicação", () => {
-    expect(
-      obterConfiguracaoPublica("  Catálogo de produtos  ", "staging"),
-    ).toEqual({
-      appName: "Catálogo de produtos",
+    expect(obterConfiguracaoPublica("  Minha aplicação  ", "staging")).toEqual({
+      appName: "Minha aplicação",
       environment: "staging",
     });
   });

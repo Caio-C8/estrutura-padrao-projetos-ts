@@ -58,13 +58,13 @@ describe("instrumentarApiClient", () => {
     );
 
     await apiClient.request({
-      path: "/produtos/produto-123/avaliacoes/avaliacao-456",
+      path: "/recursos/recurso-123",
       method: "PATCH",
     });
 
     expect(metricas).toEqual([
       {
-        nome: "avaliacao.atualizar",
+        nome: "api.desconhecida",
         origem: "navegador",
         metodo: "PATCH",
         resultado: "sucesso",
@@ -75,8 +75,7 @@ describe("instrumentarApiClient", () => {
     ]);
 
     expect(metricas[0]).not.toHaveProperty("path");
-    expect(JSON.stringify(metricas[0])).not.toContain("produto-123");
-    expect(JSON.stringify(metricas[0])).not.toContain("avaliacao-456");
+    expect(JSON.stringify(metricas[0])).not.toContain("recurso-123");
   });
 
   it("registra status e categoria de uma falha conhecida", async () => {
@@ -103,14 +102,14 @@ describe("instrumentarApiClient", () => {
 
     await expect(
       apiClient.request({
-        path: "/produtos",
+        path: "/health",
         method: "GET",
       }),
     ).rejects.toBe(error);
 
     expect(metricas).toEqual([
       {
-        nome: "produto.listar",
+        nome: "sistema.health",
         origem: "navegador",
         metodo: "GET",
         resultado: "erro",
@@ -147,13 +146,13 @@ describe("instrumentarApiClient", () => {
 
     await expect(
       apiClient.request({
-        path: "/produtos/produto-123",
+        path: "/recursos/recurso-123",
         method: "GET",
       }),
     ).rejects.toBe(error);
 
     expect(metricas[0]).toMatchObject({
-      nome: "produto.consultar",
+      nome: "api.desconhecida",
       resultado: "cancelada",
       categoriaErro: "cancelada",
     });
@@ -180,12 +179,12 @@ describe("instrumentarApiClient", () => {
     );
 
     const primeiraRequest = apiClient.request({
-      path: "/produtos",
+      path: "/health",
       method: "GET",
     });
 
     const segundaRequest = apiClient.request({
-      path: "/produtos/produto-123",
+      path: "/recursos/recurso-123",
       method: "GET",
     });
 
@@ -214,7 +213,7 @@ describe("instrumentarApiClient", () => {
 
     await expect(
       apiClient.request<string>({
-        path: "/produtos",
+        path: "/health",
         method: "GET",
       }),
     ).resolves.toBe("resultado");

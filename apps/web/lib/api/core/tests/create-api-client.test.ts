@@ -91,7 +91,7 @@ describe("createApiClient", () => {
         status: 200,
         sucesso: true,
         dados: {
-          id: "produto-1",
+          id: "recurso-1",
         },
       }),
     );
@@ -102,7 +102,7 @@ describe("createApiClient", () => {
     });
 
     const resultado = await client.request({
-      path: "/produtos",
+      path: "/recursos",
       query: {
         pesquisa: "café premium",
         pagina: 2,
@@ -113,14 +113,14 @@ describe("createApiClient", () => {
       responseSchema,
     });
 
-    expect(resultado.dados.id).toBe("produto-1");
+    expect(resultado.dados.id).toBe("recurso-1");
 
     expect(fetchMock).toHaveBeenCalledOnce();
 
     const [url, init] = fetchMock.mock.calls[0]!;
 
     expect(url).toBe(
-      "https://api.example.test/api/produtos" +
+      "https://api.example.test/api/recursos" +
         "?emDestaque=false&limite=20&pagina=2&pesquisa=caf%C3%A9+premium",
     );
 
@@ -134,8 +134,8 @@ describe("createApiClient", () => {
         {
           status: 409,
           sucesso: false,
-          codigo: "SKU_JA_CADASTRADO",
-          mensagem: "Já existe um produto com o SKU informado.",
+          codigo: "IDENTIFICADOR_JA_CADASTRADO",
+          mensagem: "O identificador informado já está em uso.",
           erros: [],
           requisicaoId: "req-123",
         },
@@ -153,13 +153,13 @@ describe("createApiClient", () => {
 
     await expect(
       client.request({
-        path: "/produtos",
+        path: "/recursos",
         responseSchema,
       }),
     ).rejects.toMatchObject({
       name: "ApiError",
       status: 409,
-      codigo: "SKU_JA_CADASTRADO",
+      codigo: "IDENTIFICADOR_JA_CADASTRADO",
       categoria: "http",
       requisicaoId: "req-123",
     });
@@ -168,7 +168,7 @@ describe("createApiClient", () => {
   it("rejeita uma resposta incompatível com o schema", async () => {
     const fetchMock = vi
       .fn<typeof fetch>()
-      .mockResolvedValue(criarRespostaJson({ produto: null }));
+      .mockResolvedValue(criarRespostaJson({ recurso: null }));
 
     const client = createApiClient({
       baseUrl: "/api/backend",
@@ -177,7 +177,7 @@ describe("createApiClient", () => {
 
     await expect(
       client.request({
-        path: "/produtos",
+        path: "/recursos",
         responseSchema,
       }),
     ).rejects.toMatchObject({
@@ -199,7 +199,7 @@ describe("createApiClient", () => {
 
     await expect(
       client.request({
-        path: "/produtos/produto-1",
+        path: "/recursos/recurso-1",
         method: "DELETE",
       }),
     ).resolves.toBeUndefined();
@@ -218,7 +218,7 @@ describe("createApiClient", () => {
     });
 
     const promise = client.request({
-      path: "/produtos",
+      path: "/recursos",
       timeoutMs: 120_000,
       responseSchema,
     });
@@ -246,7 +246,7 @@ describe("createApiClient", () => {
     });
 
     const promise = client.request({
-      path: "/produtos",
+      path: "/recursos",
       signal: controller.signal,
       responseSchema,
     });
@@ -271,9 +271,9 @@ describe("createApiClient", () => {
 
     await expect(
       client.request({
-        path: "/produtos",
+        path: "/recursos",
         body: {
-          nome: "Produto",
+          nome: "Recurso",
         },
         responseSchema,
       }),
@@ -297,9 +297,9 @@ describe("createApiClient", () => {
 
     await expect(
       client.request({
-        path: "/produtos",
+        path: "/recursos",
         method: "POST",
-        body: Symbol("produto"),
+        body: Symbol("recurso"),
         responseSchema,
       }),
     ).rejects.toMatchObject({

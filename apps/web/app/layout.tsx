@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: appName,
     template: `%s | ${appName}`,
   },
-  description: "Base reutilizável para iniciar um novo produto.",
+  description: "Base reutilizável para iniciar uma nova aplicação.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

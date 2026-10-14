@@ -1,4 +1,3 @@
-import { createListProdutosResponse } from "./fixtures/produtos";
 import { expect, test } from "./support/test";
 
 declare global {
@@ -33,10 +32,7 @@ for (const caminho of caminhos) {
   });
 }
 
-test("carrega schemas no navegador sem violar a CSP", async ({
-  page,
-  apiMock,
-}) => {
+test("carrega a aplicação sem violar a CSP", async ({ page }) => {
   await page.addInitScript(() => {
     window.__cspViolations = [];
 
@@ -47,23 +43,11 @@ test("carrega schemas no navegador sem violar a CSP", async ({
     });
   });
 
-  apiMock.expectGet("/produtos", ({ url }) => {
-    expect(Object.fromEntries(url.searchParams)).toEqual({
-      limite: "20",
-      pagina: "1",
-    });
-
-    return {
-      body: createListProdutosResponse(),
-    };
-  });
-
-  await page.goto("/produtos");
+  await page.goto("/");
 
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Produtos",
     }),
   ).toBeVisible();
 

@@ -18,19 +18,21 @@ function criarMetrica(
 
 describe("normalizarWebVital", () => {
   it("mantém somente campos seguros e úteis para agregação", () => {
-    const evento = normalizarWebVital(criarMetrica(), "/produtos/produto-123");
+    const evento = normalizarWebVital(criarMetrica(), "/");
 
     expect(evento).toEqual({
       name: "LCP",
       value: 2543.22,
       rating: "needs-improvement",
       navigationType: "navigate",
-      route: "produto.detalhe",
+      route: "inicio",
     });
 
     expect(evento).not.toHaveProperty("id");
     expect(evento).not.toHaveProperty("entries");
-    expect(JSON.stringify(evento)).not.toContain("produto-123");
+    expect(JSON.stringify(evento)).not.toContain(
+      "identificador-de-alta-cardinalidade",
+    );
   });
 
   it("preserva precisão adequada para CLS", () => {
@@ -40,11 +42,11 @@ describe("normalizarWebVital", () => {
         value: 0.123456,
         rating: "good",
       }),
-      "/produtos",
+      "/",
     );
 
     expect(evento.value).toBe(0.1235);
-    expect(evento.route).toBe("produto.lista");
+    expect(evento.route).toBe("inicio");
   });
 
   it("não expõe path de uma rota desconhecida", () => {
