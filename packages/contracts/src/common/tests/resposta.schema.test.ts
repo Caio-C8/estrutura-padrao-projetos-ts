@@ -200,8 +200,8 @@ describe("RespostaErroSchema", () => {
     const resultado = parseValido(RespostaErroSchema, {
       status: 404,
       sucesso: false,
-      codigo: "PRODUTO_NAO_ENCONTRADO",
-      mensagem: "Produto não encontrado.",
+      codigo: "RECURSO_NAO_ENCONTRADO",
+      mensagem: "Recurso não encontrado.",
       erros: [],
       requisicaoId: "request-123",
     });
@@ -233,9 +233,9 @@ describe("RespostaErroSchema", () => {
   it("rejeita códigos fora do padrão", () => {
     for (const codigo of [
       "",
-      "produto_nao_encontrado",
-      "PRODUTO-NAO-ENCONTRADO",
-      "1_PRODUTO",
+      "recurso_nao_encontrado",
+      "RECURSO-NAO-ENCONTRADO",
+      "1_RECURSO",
     ]) {
       esperaInvalido(
         RespostaErroSchema,
