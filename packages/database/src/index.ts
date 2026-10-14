@@ -13,5 +13,4 @@ export function createDatabaseClient(
 }
 
 export { Prisma, PrismaClient } from "@prisma/client";
-export type { AvaliacaoProduto, Produto } from "@prisma/client";
 export type DatabaseClient = ReturnType<typeof createDatabaseClient>;
