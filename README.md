@@ -115,7 +115,8 @@ Também é possível executar tudo em containers com `pnpm stack:development:up`
 Copy-Item .env.staging.example .env.staging
 ```
 
-Troque domínio, credenciais e portas no arquivo criado. Depois execute:
+Troque as credenciais no arquivo criado. O template usa `localhost:3100` para
+permitir a execução simultânea com desenvolvimento. Depois execute:
 
 ```bash
 pnpm stack:staging:up
@@ -133,7 +134,8 @@ pnpm stack:staging:down
 Copy-Item .env.production.example .env.production
 ```
 
-Preencha segredos fortes e URLs reais. Valide a configuração antes do deploy:
+Para teste local simultâneo, o template usa `localhost:3200`. Preencha segredos
+fortes e valide a configuração:
 
 ```bash
 docker compose --env-file .env.production -f compose.yaml -f compose.production.yaml config
@@ -141,6 +143,9 @@ pnpm stack:production:up
 ```
 
 Por padrão, as portas de produção são publicadas em `127.0.0.1`. Coloque Caddy, Nginx, Traefik, um ingress ou a plataforma de hospedagem na frente dos containers para TLS e domínio público.
+
+Ao fazer um deploy real, substitua `WEB_URL` e `CORS_ORIGINS` pelo domínio HTTPS
+público. Consulte a [lógica de portas e isolamento dos ambientes](docs/environments.md).
 
 ## Comandos principais
 
