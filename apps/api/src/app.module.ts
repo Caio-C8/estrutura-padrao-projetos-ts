@@ -12,7 +12,6 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod";
 import { ApiExceptionFilter } from "./common/filters/api-exception.filter";
 import { requisicaoIdMiddleware } from "./common/middleware/requisicao-id.middleware";
-import { ProdutoModule } from "./modules/produto/produto.module";
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { ProdutoModule } from "./modules/produto/produto.module";
       isGlobal: true,
       validate: validateEnvironment,
     }),
-    ProdutoModule,
   ],
   controllers: [AppController],
   providers: [

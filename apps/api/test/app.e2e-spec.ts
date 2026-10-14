@@ -4,24 +4,15 @@ import { RespostaErroSchema } from "@repo/contracts";
 import request from "supertest";
 import * as z from "zod";
 import { AppModule } from "../src/app.module";
-import { DATABASE_CLIENT } from "../src/common/database/database.constants";
 import { configurarCors } from "../src/configurar-cors";
 
 describe("health endpoint", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    const databaseClientMock = {
-      $connect: jest.fn(),
-      $disconnect: jest.fn(),
-    };
-
     const module = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(DATABASE_CLIENT)
-      .useValue(databaseClientMock)
-      .compile();
+    }).compile();
 
     app = module.createNestApplication();
     app.setGlobalPrefix("api");

@@ -164,13 +164,13 @@ describe("ApiExceptionFilter", () => {
     it("preserva uma resposta pública válida", () => {
       const exception = new HttpException(
         {
-          codigo: "SKU_PRODUTO_JA_EXISTE",
-          mensagem: "Já existe um produto com o SKU informado.",
+          codigo: "EMAIL_JA_UTILIZADO",
+          mensagem: "O e-mail informado já está em uso.",
           erros: [
             {
-              campo: "sku",
+              campo: "email",
               codigo: "VALOR_JA_UTILIZADO",
-              mensagem: "Este SKU já está sendo utilizado.",
+              mensagem: "Este e-mail já está sendo utilizado.",
             },
           ],
         },
@@ -182,13 +182,13 @@ describe("ApiExceptionFilter", () => {
       expect(corpo).toEqual({
         status: HttpStatus.CONFLICT,
         sucesso: false,
-        codigo: "SKU_PRODUTO_JA_EXISTE",
-        mensagem: "Já existe um produto com o SKU informado.",
+        codigo: "EMAIL_JA_UTILIZADO",
+        mensagem: "O e-mail informado já está em uso.",
         erros: [
           {
-            campo: "sku",
+            campo: "email",
             codigo: "VALOR_JA_UTILIZADO",
-            mensagem: "Este SKU já está sendo utilizado.",
+            mensagem: "Este e-mail já está sendo utilizado.",
           },
         ],
         requisicaoId: REQUISICAO_ID,
