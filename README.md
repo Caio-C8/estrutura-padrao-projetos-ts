@@ -2,8 +2,8 @@
 
 Base para iniciar produtos com múltiplas aplicações em um único monorepo. A
 estrutura reúne aplicação web, API, PostgreSQL/Prisma e pacotes compartilhados.
-O domínio `Produto`, quando presente na revisão consultada, é somente um exemplo
-didático e não faz parte do baseline de uma aplicação derivada.
+A branch `main` contém somente a estrutura reutilizável; o exemplo didático de
+Produto permanece preservado em uma tag versionada.
 
 ## Tecnologias incluídas
 
@@ -46,8 +46,8 @@ O exemplo completo de Produto deve ser preservado em tags anotadas como
 `exemplo-produto-v1.0.0`; essas tags permanecem no repositório de origem, mas
 não entram no código nem no histórico dos projetos gerados pelo template.
 
-Antes da primeira remoção do exemplo, e sempre que uma nova versão dele for
-necessária, siga o guia de
+Para consultar o procedimento da primeira separação ou publicar uma nova versão
+do exemplo, siga o guia de
 [manutenção da base e versionamento do exemplo](docs/template-and-example.md).
 O guia também define o que deve permanecer configurado entre Web, API e banco
 de dados depois da limpeza.

@@ -32,21 +32,6 @@ src/
     tests/
       paginacao-query.schema.test.ts
       resposta.schema.test.ts
-  produto/
-    tests/
-      avaliacao-produto.fixtures.ts
-      produto.fixtures.ts
-      avaliacao-produto-fields.schema.test.ts
-      avaliacao-produto-params.schema.test.ts
-      create-avaliacao-produto.schema.test.ts
-      update-avaliacao-produto.schema.test.ts
-      list-avaliacoes-produto-query.schema.test.ts
-      avaliacao-produto-response.schema.test.ts
-      produto-fields.schema.test.ts
-      create-produto.schema.test.ts
-      update-produto.schema.test.ts
-      list-produtos-query.schema.test.ts
-      produto-response.schema.test.ts
 ```
 
 Os testes unitários devem importar diretamente o módulo sob teste. Adicione um

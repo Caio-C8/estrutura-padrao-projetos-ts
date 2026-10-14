@@ -14,13 +14,6 @@
 - [Regras dos Hooks](https://react.dev/reference/rules/rules-of-hooks)
 - [Hooks customizados](https://react.dev/learn/reusing-logic-with-custom-hooks)
 
-## TanStack Query
-
-- [Visão geral para React](https://tanstack.com/query/latest/docs/framework/react/overview)
-- [Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
-- [Query retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries)
-- [Mutations](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)
-
 ## Plataforma web
 
 - [Fetch API](https://developer.mozilla.org/docs/Web/API/Fetch_API)

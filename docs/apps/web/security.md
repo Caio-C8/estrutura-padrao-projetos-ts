@@ -7,22 +7,19 @@ CSRF e respostas da API pertencem também à
 
 ## Estado atual
 
-As rotas de Produto e Avaliação são públicas somente no exemplo didático. Não
-há autenticação, autorização, cookie de sessão ou proteção CSRF implementados.
-Isso é uma limitação consciente e não um baseline seguro para produção.
+A base limpa não possui rotas de domínio. Não há autenticação, autorização,
+cookie de sessão ou proteção CSRF implementados. Isso é uma limitação consciente
+e não um baseline seguro para uma aplicação que introduza identidade ou dados
+protegidos.
 
 `browserApiClient` usa apenas a origem relativa `/api/backend` e não acessa
 `API_INTERNAL_URL`. `serverApiClient` importa `server-only`. A interface valida
 responses e apresenta mensagens públicas, sem expor o corpo bruto ou o `cause`
 interno dos erros.
 
-`WEB-005` endureceu e instrumentou esse exemplo público, mas não implementou
-login, usuários, sessão, autenticação, autorização nem CSRF. O catálogo exibe
-essa limitação e orienta o uso exclusivo de dados fictícios. Essa delimitação
-não remove o baseline deste documento: uma aplicação derivada que introduza
-identidade ou dados protegidos deve aplicar e testar os controles
-correspondentes antes de produção. CORS, CSP e a ocultação de controles na
-interface não transformam uma mutação pública em uma operação autorizada.
+A aplicação derivada que introduza identidade ou dados protegidos deve definir e
+testar esses controles antes de produção. CORS, CSP e a ocultação de controles
+na interface não transformam uma mutação pública em uma operação autorizada.
 
 ## Fronteira server e client
 
@@ -109,7 +106,7 @@ A política de produção não inclui `'unsafe-eval'`. Em desenvolvimento, o
 Webpack exige essa permissão para a experiência de desenvolvimento. No cliente,
 o Zod usa `z.config({ jitless: true })`, opção documentada para evitar geração
 dinâmica de função em ambientes CSP/no-eval. A suíte E2E confirma a política no
-build de produção e falha se `/produtos` emitir uma violação CSP.
+build de produção e falha se `/` emitir uma violação CSP.
 
 A verificação integrada de 13 de outubro de 2026 observou a seguinte política
 no build de produção:

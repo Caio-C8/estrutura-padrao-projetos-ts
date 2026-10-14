@@ -16,8 +16,7 @@ Os documentos abaixo tratam de decisões transversais e permanecem na raiz:
 
 - [Contratos compartilhados](./contracts/README.md);
 - [Aplicações](./apps/README.md);
-- [Integrações entre aplicações](./integrations/README.md);
-- [Domínio Produto (exemplo didático)](./domains/produto.md).
+- [Integrações entre aplicações](./integrations/README.md).
 
 Cada nova aplicação pode receber um diretório próprio em `docs/apps/<app>`.
 Crie documentação detalhada somente quando suas decisões forem conhecidas.

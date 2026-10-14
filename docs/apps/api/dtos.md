@@ -59,10 +59,10 @@ controller (z.output)
 service (z.output)
 ```
 
-No domínio `Produto`, essa diferença é observável mesmo quando vários campos
-continuam sendo strings: `sku` é normalizado, defaults tornam `status`,
-`emDestaque` e `estoque` obrigatórios no output, e query params como `pagina`,
-`limite` e `emDestaque` são transformados de strings HTTP em números ou boolean.
+Essa diferença aparece, por exemplo, quando uma string é normalizada, um campo
+recebe default ou query params de paginação são transformados de strings HTTP
+em números. Documente essas transformações no contrato do domínio e use o tipo
+de output depois do Pipe.
 
 Tipos TypeScript não executam validação. Ao chamar o service diretamente em um
 teste ou fluxo interno, o chamador deve fornecer dados já validados e

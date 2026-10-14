@@ -1,272 +1,87 @@
-# Arquitetura da aplicação web
+# Arquitetura da aplicação Web
 
-## Organização por responsabilidade
+## Princípios
 
-O App Router define rotas dentro de `app`, mas nem todo código da aplicação
-deve permanecer nesse diretório. Use a proximidade com a rota e o alcance real
-da responsabilidade para decidir a localização.
+- Use Server Components por padrão.
+- Adicione `"use client"` somente na menor fronteira que precise de estado,
+  efeitos ou APIs do navegador.
+- Mantenha contratos externos em `@repo/contracts` e valide dados recebidos da
+  API no boundary.
+- Separe infraestrutura HTTP, estado remoto, formulário e apresentação.
+- Não escolha biblioteca de cache ou formulário antes de existir uma feature
+  que justifique essa dependência.
+
+## Estrutura atual
 
 ```text
 apps/web/
 ├── app/
-│   ├── (grupo-de-rotas)/
-│   │   └── recurso/
-│   │       ├── _components/
-│   │       ├── loading.tsx
-│   │       ├── error.tsx
-│   │       └── page.tsx
+│   ├── api/health/route.ts
+│   ├── globals.css
 │   ├── layout.tsx
-│   └── globals.css
+│   ├── page.module.css
+│   └── page.tsx
 ├── components/
 │   ├── ui/
-│   └── shared/
-├── features/
-│   └── <dominio>/
-│       ├── api/
-│       ├── components/
-│       ├── forms/
-│       ├── hooks/
-│       ├── schemas/
-│       └── types/
-└── lib/
-    └── api/
+│   └── web-vitals-reporter.tsx
+├── e2e/
+│   ├── support/
+│   ├── home.e2e.ts
+│   └── security-headers.e2e.ts
+├── lib/
+│   ├── api/
+│   ├── config/
+│   ├── observability/
+│   └── utils.ts
+└── instrumentation-client.ts
 ```
 
-Crie diretórios somente quando houver conteúdo e responsabilidade concreta.
-Uma estrutura vazia não melhora a arquitetura.
+A base limpa não possui rota nem feature de domínio. Ela mantém a home, health
+check, clientes HTTP, configuração pública, observabilidade, testes e primitives
+visuais reutilizáveis.
 
-## Critérios de localização
+## Responsabilidades
 
-| Local                    | Conteúdo                                         |
-| ------------------------ | ------------------------------------------------ |
-| `app/<rota>/_components` | componente exclusivo da rota                     |
-| `features/<dominio>`     | UI e comportamento reutilizados no mesmo domínio |
-| `components/shared`      | composição usada por domínios diferentes         |
-| `components/ui`          | primitives do design system e shadcn/ui          |
-| `lib`                    | infraestrutura interna agnóstica de domínio      |
-
-Não mova um componente para `shared` porque ele pode ser reutilizado no
-futuro. Faça isso depois que a reutilização e a semântica comum existirem.
+- `app/`: rotas, layouts, metadata e composição de página.
+- `components/ui/`: primitives sem conhecimento de domínio.
+- `features/<dominio>/`: operações, formulários e componentes do domínio,
+  quando ele existir.
+- `lib/api/`: cliente HTTP de servidor e navegador, normalização de erros e
+  validação da resposta.
+- `lib/config/`: configuração pública validada.
+- `lib/observability/`: nomes de rota e operação com cardinalidade controlada.
+- `e2e/`: comportamento real no navegador e boundary HTTP estrito.
 
 ## Server e Client Components
 
-Páginas e layouts permanecem Server Components por padrão. Use Client
-Components somente quando precisar de:
-
-- estado ou event handlers;
-- hooks;
-- effects;
-- Context;
-- APIs do navegador;
-- biblioteca que dependa do ambiente cliente.
-
-Coloque `"use client"` na menor fronteira possível. Tudo que um Client
-Component importa passa a fazer parte do grafo cliente; marcar uma página
-inteira por conveniência aumenta hidratação e JavaScript enviado ao navegador.
-
-Um Server Component pode renderizar um Client Component e passar conteúdo
-server-rendered por props ou `children`. Não converta toda a árvore para Client
-apenas porque um botão, formulário ou dialog é interativo.
-
-## Páginas e composição
-
-`page.tsx` deve revelar a estrutura da tela. Extraia blocos quando isso:
-
-- nomeia uma responsabilidade visual;
-- isola interatividade;
-- reduz complexidade relevante;
-- permite reutilização real;
-- facilita testes;
-- cria uma fronteira Client menor.
-
-Não extraia automaticamente cada `div`, título ou trecho curto usado uma única
-vez. Componentização excessiva dificulta acompanhar o fluxo da página.
-
-### Página completa e modal roteável
-
-Desde `WEB-003A`, a mesma rota possui duas apresentações sem duplicar sua regra
-de negócio:
-
-```text
-rota canônica/page.tsx ───────┐
-                             ├── conteúdo reutilizável do fluxo
-slot interceptado/page.tsx ──┘
-              │
-              └── Dialog controlado pela navegação
-```
-
-`page.tsx` não é o componente compartilhado. O arquivo especial permanece
-responsável por params, metadata, `notFound()` e composição própria da rota. Os
-formulários e carregadores reutilizados pela página canônica e pela rota
-interceptada permanecem nos `_components` das respectivas features de rota.
-
-`RouteFormDialog`, em `app/produtos/_components`, é a menor fronteira Client
-responsável por fechar, proteger pending, confirmar descarte e integrar o
-histórico. Os formulários não descobrem se estão em página ou modal por leitura
-do DOM: recebem callbacks opcionais para cancelamento, sucesso e estado. As
-operações, hooks, schemas, mappers e query keys permanecem únicos.
+Página e layout permanecem no servidor sempre que possível. Um componente
+cliente não deve transformar toda a árvore acima dele em cliente. Passe apenas
+dados serializáveis pela fronteira e mantenha segredos, cookies sensíveis e
+acesso direto à infraestrutura no servidor.
 
 ## Estado
 
-Mantenha o estado no local mais próximo que atende os consumidores:
+Estado de rota pertence à URL; estado visual temporário pertence ao componente;
+estado remoto deve ter uma estratégia explícita de busca, invalidação e erro.
+A base não fixa uma biblioteca de estado remoto. Ao introduzir uma, limite seu
+provider ao segmento que realmente a utiliza e documente retries, stale time e
+invalidação.
 
-1. valor derivado não deve virar estado;
-2. estado exclusivo permanece no componente;
-3. estado da feature permanece na feature;
-4. filtros, ordenação, busca e paginação compartilháveis preferem a URL;
-5. Context atende estado transversal com consumidores conhecidos;
-6. uma biblioteca global exige necessidade concreta e decisão registrada.
+## Evolução por domínio
 
-Não copie respostas remotas para vários estados locais. TanStack Query é a
-fonte do estado remoto nos Client Components atuais. O provider deve continuar
-na menor fronteira que cubra os consumidores; hoje ele pertence ao layout de
-`/produtos`, não ao layout raiz.
-
-## Tipos e schemas locais
-
-Use `@repo/contracts` somente quando a representação atravessar realmente a
-integração. Tipos exclusivos de apresentação, props e estado visual permanecem
-no app.
-
-Um formulário pode precisar de campos auxiliares, previews ou representações do
-DOM que não pertencem ao contrato HTTP. Nesses casos, mantenha schema ou tipo
-local e converta explicitamente para a operação da integração.
-
-## Dependências
-
-Antes de adicionar uma dependência:
-
-- confirme que a plataforma não oferece a capacidade;
-- estime impacto no bundle cliente;
-- confirme compatibilidade com React 19 e Server Components;
-- verifique manutenção, licença e segurança;
-- determine se ela será carregada apenas onde necessária;
-- registre a decisão quando ela estabelecer um padrão transversal.
-
-Não crie wrappers genéricos sobre toda biblioteca. Crie uma fronteira quando
-ela centraliza configuração, protege uma regra do projeto ou permite trocar uma
-dependência sem espalhar seu uso.
-
-## Limite com a integração
-
-A página escolhe composição e apresenta estados. Operações HTTP, clientes,
-serialização, validação de responses e hooks remotos seguem
-[Integração web–API](../../integrations/web-api/README.md).
-
-Uma tarefa pode trabalhar nas duas áreas, mas a arquitetura continua separada:
+Uma feature nova pode começar assim:
 
 ```text
-page/component
-      ↓
-hook cliente ou operação servidor
-      ↓
-cliente HTTP padronizado
-      ↓
-API
-```
+app/<dominio>/
+├── page.tsx
+└── _components/
 
-## Implementação atual do domínio Produto
-
-`WEB-001`, `WEB-002`, `WEB-003` e `WEB-003A` materializam a
-separação desta forma:
-
-```text
-apps/web/
-├── app/produtos/
-│   ├── @modal/
-│   │   ├── (.)novo/
-│   │   ├── (.)[produtoId]/editar/
-│   │   ├── (.)[produtoId]/avaliacoes/nova/
-│   │   ├── (.)[produtoId]/avaliacoes/[avaliacaoId]/editar/
-│   │   ├── [...catchAll]/page.tsx
-│   │   ├── default.tsx
-│   │   └── page.tsx
-│   ├── _components/
-│   │   ├── produtos-filtros.tsx
-│   │   ├── produtos-listagem.tsx
-│   │   └── route-form-dialog.tsx
-│   ├── [produtoId]/
-│   │   ├── _components/
-│   │   │   ├── delete-produto-dialog.tsx
-│   │   │   └── produto-detalhe.tsx
-│   │   ├── editar/
-│   │   │   ├── _components/
-│   │   │   └── page.tsx
-│   │   ├── avaliacoes/
-│   │   │   ├── _components/
-│   │   │   ├── [avaliacaoId]/
-│   │   │   │   ├── _components/
-│   │   │   │   ├── editar/
-│   │   │   │   │   ├── _components/
-│   │   │   │   │   └── page.tsx
-│   │   │   │   └── page.tsx
-│   │   │   ├── nova/
-│   │   │   │   ├── _components/
-│   │   │   │   └── page.tsx
-│   │   │   └── page.tsx
-│   │   ├── not-found.tsx
-│   │   └── page.tsx
-│   ├── layout.tsx
-│   ├── novo/
-│   │   ├── _components/
-│   │   └── page.tsx
-│   ├── page.tsx
-│   └── query-provider.tsx
-├── components/ui/
-│   ├── dialog.tsx
-│   ├── radio-group.tsx
-│   └── sonner.tsx
-├── features/produto/
-│   ├── api/
-│   │   ├── avaliacao-produto-query-keys.ts
-│   │   ├── create-avaliacao-produto.ts
-│   │   ├── create-produto.ts
-│   │   ├── delete-avaliacao-produto.ts
-│   │   ├── delete-produto.ts
-│   │   ├── get-produto.ts
-│   │   ├── get-produtos.ts
-│   │   ├── get-avaliacao-produto.ts
-│   │   ├── get-avaliacoes-produto.ts
-│   │   ├── produto-query-keys.ts
-│   │   ├── update-avaliacao-produto.ts
-│   │   ├── update-produto.ts
-│   │   ├── use-*.ts
-│   │   ├── validar-avaliacao-produto-params.ts
-│   │   └── validar-produto-id.ts
-│   ├── forms/
-│   │   ├── avaliacao-produto-form-fields.schema.ts
-│   │   ├── avaliacao-produto-form-fields.tsx
-│   │   ├── create-avaliacao-produto-form.schema.ts
-│   │   ├── create-produto-form.schema.ts
-│   │   ├── decimal-input-mask.ts
-│   │   ├── produto-form-fields.schema.ts
-│   │   ├── produto-form-fields.tsx
-│   │   ├── update-avaliacao-produto-form.mapper.ts
-│   │   ├── update-avaliacao-produto-form.schema.ts
-│   │   ├── update-produto-form.mapper.ts
-│   │   └── update-produto-form.schema.ts
-│   └── lib/
-│       ├── list-avaliacoes-produto-search-params.ts
-│       ├── list-produtos-search-params.ts
-│       └── produto-formatters.ts
+features/<dominio>/
+├── api/
+├── components/
+├── forms/
 └── lib/
-    ├── api/
-    │   ├── core/
-    │   ├── browser-api-client.ts
-    │   └── server-api-client.ts
-    └── query/
-        └── query-client.ts
 ```
 
-Os arquivos `page.tsx` permanecem Server Components e validam params ou
-`searchParams`. Listagens, detalhes, formulários e diálogo destrutivo são as
-fronteiras Client que realmente precisam de hooks, estado ou APIs do navegador.
-O `Toaster` é uma única fronteira Client renderizada pelo layout raiz; isso não
-converte o layout nem seus `children` em Client Components. Os filtros usam
-navegação GET e continuam renderizáveis no servidor.
-
-Os campos compartilhados por criação e edição vivem na feature, enquanto os
-componentes que orquestram cada tela permanecem próximos das rotas. Isso ocorre
-no CRUD de Produto e nos formulários de criação e edição de Avaliação. O schema
-do formulário não substitui os contratos HTTP: mappers explícitos preservam a
-diferença entre string vazia, `null`, propriedade ausente e campo não alterado.
+Essa divisão é uma orientação, não uma obrigação de criar pastas vazias. Crie
+cada camada somente quando houver uma responsabilidade concreta.

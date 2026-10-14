@@ -136,20 +136,14 @@ encerra o servidor ao concluir. `PLAYWRIGHT_PORT` altera a porta local e
 `PLAYWRIGHT_BASE_URL` desativa o servidor local e aponta a suíte para uma URL
 externa.
 
-O script `test` executa `vitest run`. Em 13 de outubro de 2026, a suíte possui 52
-arquivos e 257 testes. Além dos CRUDs de Produto e Avaliação, ela cobre o
-`RouteFormDialog`, a confirmação de descarte e os callbacks que desacoplam os
-formulários da apresentação como página ou modal. Os testes dos componentes
-simulam somente `toast.success` e verificam a mensagem emitida: creates e
-updates com corpo recebem a mensagem da response, enquanto deletes usam
-conteúdo local correspondente ao `204`. Configuração pública, normalização de
-rotas, Web Vitals e observação das operações HTTP também possuem cobertura.
+O script `test` executa `vitest run`. Na base limpa, a suíte cobre configuração
+pública, cliente HTTP, normalização de rotas e operações, Web Vitals e
+observabilidade. Novas features devem adicionar testes proporcionais aos seus
+contratos e estados.
 
-A suíte Playwright possui 20 testes. Ela cobre home, metadata, listagem, filtros,
-retry manual, criação, edição, exclusão, falha destrutiva, navegação modal,
-refresh, histórico, foco, pending, viewport estreita, `404`, preservação dos
-valores após erro, CRUD de avaliações, headers de segurança e execução de
-`/produtos` sem violações CSP no build de produção.
+A suíte Playwright cobre a home, metadata, links de health, acessibilidade
+automatizável, headers de segurança e execução da home sem violações CSP no
+build de produção.
 
 O mock de rede registra expectations por método e path, aceita contagem exata,
 valida query e payload dentro do responder e falha no teardown quando recebe
@@ -165,10 +159,9 @@ exigindo revisão manual.
 O CI instala somente Chromium, executa os E2E com um worker e preserva retries e
 timeout finitos. A suíte foi aprovada localmente e no GitHub Actions.
 
-Os testes atuais interceptam `/api/backend` e verificam o comportamento da Web
-no navegador. A verificação manual final executou Web, rewrite e API reais, mas
-ela ainda não substitui uma suíte integrada automatizada nem os testes E2E HTTP
-pendentes na API.
+O suporte de rede pode interceptar `/api/backend` e verifica expectations por
+método e path. Ele deve ser usado por novas features sem transformar fixtures
+de exemplo em parte permanente da base.
 
 ### Verificação local do artefato standalone
 

@@ -224,29 +224,13 @@ Cubra fluxos críticos:
 Mocks não substituem pelo menos uma verificação real do acordo entre contratos,
 web e API.
 
-Em `WEB-001`, `WEB-002` e `WEB-003`, o cliente HTTP é testado com `fetch`
-injetado, todas as operações recebem um `ApiClient` por dependência e os hooks
-simulam o cliente central. Os testes cobrem leitura, criação, atualização,
-exclusão, invalidação e remoção de detalhes, erros públicos, formulários e
-toasts de sucesso. Criação e atualização de avaliação confirmam que somente
-listas do mesmo `produtoId` são invalidadas e que o detalhe retornado é escrito
-na chave aninhada correta; o update também comprova que listas de outro produto
-não são invalidadas e que falhas preservam o cache. Delete de avaliação
-comprova a mesma separação por produto, preserva caches em falha e remove
-somente a chave exata do detalhe depois do sucesso. Create e update com corpo
-verificam a mensagem da response validada; deletes de Produto e Avaliação
-verificam o título e a descrição locais usados depois de `204 No Content`.
+Na base atual, o cliente HTTP é testado com `fetch` injetado para cobrir URL,
+query, JSON, timeout, cancelamento, erros públicos, validação de response e
+`204 No Content`. Playwright cobre a página inicial, acessibilidade automatizada
+e headers de segurança. A integração Web → rewrite → API é verificada pelo
+health check e deve ganhar testes do novo domínio quando suas operações forem
+implementadas.
 
-`WEB-004` adicionou Playwright para os fluxos críticos no navegador. A suíte
-intercepta `/api/backend`, valida método, path, query e payload e usa responses
-criadas por fixtures analisadas pelos schemas compartilhados. Requests
-inesperadas e expectations não consumidas falham no teardown do teste.
-
-Os 17 cenários cobrem sucesso e falha em listagem e mutations, retry manual,
-navegação modal, refresh, histórico, foco, pending, viewport estreita e o CRUD
-de avaliações. O CI instala Chromium e executa a mesma suíte com um worker.
-
-A integração real Web → rewrite do Next.js → API foi exercitada manualmente
-durante o CRUD de Produto, mas os E2E automatizados atuais usam responses
-interceptadas. Eles não substituem testes futuros que inicializem Web e API
-reais nem os testes E2E HTTP ainda pendentes nas rotas da API.
+O mock estrito de `/api/backend` permanece disponível como infraestrutura E2E:
+requests inesperadas e expectativas não consumidas falham no teardown. Ele deve
+ser configurado somente pelos testes que realmente fazem chamadas de domínio.

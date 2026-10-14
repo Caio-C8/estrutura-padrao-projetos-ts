@@ -22,16 +22,14 @@ A regra central é:
 
 ## Estado atual
 
-O package já se chama `@repo/contracts`, é consumido por `apps/web` e
-`apps/api` e usa Zod 4 para os contratos runtime. Ele possui testes próprios
-com o runner nativo do Node executado por `tsx`. O domínio temporário de
-Produto validou a arquitetura na API e no CRUD Web completo: listagem, detalhe,
-criação, atualização e exclusão validam params, query, body ou response nos
-boundaries apropriados. Os formulários mantêm schemas locais quando a
-representação dos controles diverge do contrato HTTP, sem duplicar regras
-externas desnecessariamente. Avaliações possuem contratos e CRUD na API; na Web,
-`WEB-003` já integrou listagem, detalhe, criação e atualização, restando a
-exclusão do sub-recurso.
+O package se chama `@repo/contracts`, é consumido por `apps/web` e `apps/api` e
+usa Zod 4 para contratos runtime. Ele possui testes próprios executados por
+`tsx` e entrega somente o baseline genérico de respostas, erros, paginação e
+health check. Contratos de domínio devem ser adicionados pelo projeto derivado
+quando sua semântica estiver definida.
+
+O exemplo completo que validou essa arquitetura permanece disponível na tag
+`exemplo-produto-v1.0.0`, sem fazer parte da API pública atual.
 
 Os documentos deste diretório descrevem tanto as decisões aprovadas quanto o
 plano para construir a camada de validação. Exemplos marcados como conceituais

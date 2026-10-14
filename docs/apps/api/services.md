@@ -83,9 +83,9 @@ service. Preserve no service o que expressa o caso de uso:
 - cálculo e composição do resultado do caso de uso.
 
 Conversões puras entre representações podem ficar em um mapper direcional do
-próprio domínio. Por exemplo, um `ProdutoPersistenceMapper` pode converter
-`CreateProdutoData` e `UpdateProdutoData` em inputs Prisma, ou transformar uma
-query validada em `Prisma.ProdutoWhereInput`. Esse mapper não consulta o banco,
+próprio domínio. Por exemplo, um `RecursoPersistenceMapper` pode converter
+`CreateRecursoData` e `UpdateRecursoData` em inputs Prisma, ou transformar uma
+query validada em `Prisma.RecursoWhereInput`. Esse mapper não consulta o banco,
 não injeta dependências, não lança exceptions e não decide o fluxo do caso de
 uso.
 

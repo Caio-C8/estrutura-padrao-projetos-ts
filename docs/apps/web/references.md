@@ -34,8 +34,6 @@ conhecida ou alterar um padrão.
 
 ## Formulários e schemas
 
-- [React Hook Form](https://react-hook-form.com/docs)
-- [Resolvers e Zod](https://github.com/react-hook-form/resolvers#zod)
 - [Zod 4](https://zod.dev/)
 - [Zod: CSP e modo `jitless`](https://zod.dev/compile#content-security-policy)
 - [Contratos do projeto](../../contracts/README.md)
@@ -51,13 +49,6 @@ conhecida ou alterar um padrão.
 - [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [Web Content Accessibility Guidelines](https://www.w3.org/WAI/standards-guidelines/wcag/)
-
-## Estado remoto
-
-- [TanStack Query para React](https://tanstack.com/query/latest/docs/framework/react/overview)
-- [Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
-- [Retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries)
-- [Mutations](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)
 
 ## Testes
 

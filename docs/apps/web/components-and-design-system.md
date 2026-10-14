@@ -73,40 +73,15 @@ dependências e estilos sem consumidor.
 ### Estado implementado
 
 `components.json` usa o estilo `radix-nova`, Tailwind CSS 4, CSS variables,
-ícones Lucide e aliases locais. As primitives presentes possuem consumidores
-nas entregas concluídas da Web:
+ícones Lucide e aliases locais. A base preserva as primitives genéricas
+`AlertDialog`, `Alert`, `Badge`, `Button`, `Checkbox`, `Dialog`, `Field`,
+`Input`, `Label`, `RadioGroup`, `Select`, `Separator`, `Skeleton`, `Table`,
+`Textarea` e `Toaster`.
 
-- `Badge` para o status do produto;
-- `Button` para navegação, filtros, paginação, retry e ações;
-- `Input`, `Textarea`, `Checkbox`, `Label`, `Field` e `Select` nos formulários;
-- `RadioGroup` como base semântica e acessível do seletor de nota por estrelas
-  da avaliação;
-- `Separator` para organização visual dos campos;
-- `Skeleton` para carregamento;
-- `Table` para a listagem em telas largas;
-- `AlertDialog` para confirmar a exclusão e manter foco e contexto da ação
-  destrutiva;
-- `Dialog` como primitive acessível dos quatro formulários abertos por rotas
-  interceptadas;
-- `Toaster`, baseado em Sonner, para confirmações transitórias de sucesso.
-
-`components/ui/dialog.tsx` permanece agnóstico de domínio.
-`app/produtos/_components/route-form-dialog.tsx` compõe a primitive com título,
-descrição, conteúdo rolável, proteção de pending e confirmação de descarte. O
-`AlertDialog` continua separado para decisões destrutivas e para a confirmação
-secundária de descarte de alterações não salvas.
-
-Os `select` dos filtros da listagem continuam nativos porque são controles GET
-renderizáveis no servidor. A primitive `Select` atende os formulários
-interativos; não é necessário forçar a mesma implementação em contextos com
-comportamento diferente.
-
-O catálogo do shadcn/ui não oferece uma primitive específica de rating. A
-composição de estrelas permanece na feature de Avaliação, enquanto
-`components/ui/radio-group.tsx` conserva apenas a primitive genérica. Os radios
-transparentes são posicionados sobre as estrelas: não criam espaço visual
-extra, continuam presentes na árvore de acessibilidade e preservam seleção
-exclusiva e teclado.
+Não há composição de domínio no baseline. Ao iniciar uma aplicação derivada,
+remova primitives que não forem usadas ou mantenha-as somente quando fizerem
+parte conscientemente do kit visual do projeto. A presença de uma primitive não
+obriga seu uso em toda situação; controles nativos podem ser mais adequados.
 
 ### Toasts
 
@@ -117,15 +92,9 @@ páginas e layouts continuam Server Components; somente a primitive do Sonner é
 Client Component.
 
 O componente que orquestra a ação decide quando apresentar o toast. Operações
-HTTP e hooks TanStack Query continuam sem conhecimento de mensagem visual,
-navegação ou Sonner. No CRUD atual:
-
-- criação e atualização usam `response.mensagem`, depois que o envelope de
-  sucesso foi validado pelo schema compartilhado;
-- exclusão usa título e descrição definidos pela Web, pois a response
-  `204 No Content` não possui corpo;
-- erros de campo e falhas recuperáveis permanecem próximos do formulário ou do
-  diálogo; toast não é o único lugar para informação necessária à correção.
+HTTP permanecem sem conhecimento de mensagem visual, navegação ou Sonner. Erros
+de campo e falhas recuperáveis devem continuar próximos do formulário ou do
+diálogo; toast não é o único lugar para informação necessária à correção.
 
 ## Composição
 

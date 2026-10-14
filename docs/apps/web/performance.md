@@ -1,192 +1,36 @@
-# Desempenho
+# Performance da aplicação Web
 
-“Leve” deve ser observado por bundle, quantidade de JavaScript cliente,
-estabilidade visual, tempo de resposta e Core Web Vitals. Não aceite otimização
-ou regressão apenas por impressão.
+## Estado da base
 
-Siga também o [baseline transversal](../../performance/README.md), que define
-métricas, percentis, comparação e responsabilidades das demais camadas.
+A home é estática e a rota `/api/health` é dinâmica. Não há listagem, cache de
+domínio, provider global de estado remoto nem biblioteca de formulários no
+baseline. O Web Vitals Reporter normaliza nomes de rota antes de emitir métricas
+e evita identificadores de alta cardinalidade.
 
-## Estado atual
+O build de produção deve continuar sendo verificado sempre que rotas,
+dependências ou configuração do Next.js mudarem.
 
-O provider do TanStack Query permanece limitado ao segmento `/produtos`. A
-lista é paginada e o trabalho controlado pela URL possui limite máximo de 50
-itens; a interface oferece 10, 20 ou 50. Hooks de leitura encaminham
-cancelamento e permitem no máximo uma repetição transitória, enquanto mutations
-não possuem retry.
+## Princípios
 
-As páginas continuam Server Components. Somente listagem, detalhe, formulários,
-diálogo e o `Toaster` que usam hooks, eventos ou APIs do navegador entram no
-grafo cliente. Existe uma única instância global do Sonner; cada feature apenas
-dispara a confirmação necessária. Operações e campos compartilhados evitam
-duplicar infraestrutura ou formulários inteiros, sem adicionar estado global de
-domínio.
-
-Não foi introduzido prefetch no servidor, hydration, `staleTime`, cache
-persistente ou virtualização sem um gargalo medido. No build atual, `/` e
-`/produtos/novo` são estáticas; `/produtos`, `/produtos/[produtoId]` e
-`/produtos/[produtoId]/editar` são dinâmicas.
-
-`WebVitalsReporter` usa `useReportWebVitals` e associa os eventos a nomes de
-rota normalizados, sem registrar o path ou IDs. O observador das operações HTTP
-registra nome conhecido, origem navegador/servidor, método, resultado, duração,
-concorrência, status e categoria de erro quando aplicáveis. Payloads,
-credenciais, URLs brutas, IDs de recurso e `X-Request-Id` não entram nas
-dimensões. Falhas do observador são isoladas da operação de negócio.
-
-No exemplo, os eventos são enviados ao console somente fora de produção. Isso
-prova o ponto de instrumentação, mas não fornece coleta durável, agregação,
-retenção ou alertas. Um projeto derivado deve conectar um provedor real antes de
-depender desses dados operacionalmente.
-
-## Amostra manual de desenvolvimento
-
-Em 13 de outubro de 2026, uma navegação manual com Web e API locais registrou:
-
-| Fluxo normalizado | Amostras observadas                                                               |
-| ----------------- | --------------------------------------------------------------------------------- |
-| `produto.lista`   | TTFB 11,8 ms; FCP/LCP 64 ms; INP 8 ms; CLS entre 0 e 0,0002                       |
-| `avaliacao.lista` | TTFB entre 13,1 e 17,4 ms; FCP entre 56 e 76 ms; LCP entre 64 e 76 ms; FID 0,3 ms |
-
-Todas as classificações emitidas pelo navegador nessa amostra foram `good`. As
-operações de Produto e Avaliação também concluíram com sucesso; as durações
-observadas variaram de 7,5 ms a 45,4 ms e a concorrência visível permaneceu em
-
-1. Os três health checks e os fluxos CRUD foram verificados no mesmo ambiente.
-
-Esses números são um smoke test local isolado. Eles não representam dados de
-campo, p75, p95, p99, capacidade, SLO ou meta de produção e não devem ser
-comparados a outro cenário sem controlar ambiente, dados, versão, rede e
-volume. Quando houver tráfego representativo, agregue Core Web Vitals por p75 e
-operações por p50/p95/p99, além de volume, erros, saturação e tempo das
-dependências.
-
-## Métricas mínimas
-
-Use dados de campo no percentil 75, separados ao menos entre mobile e desktop,
-quando houver volume suficiente. O baseline público dos Core Web Vitals é:
-
-| Métrica | Experiência considerada boa |
-| ------- | --------------------------- |
-| LCP     | até 2,5 segundos            |
-| INP     | até 200 milissegundos       |
-| CLS     | até 0,1                     |
-
-Esses limites classificam experiência e não substituem metas do projeto.
-Acompanhe também:
-
-- TTFB e duração de renderização server quando aplicável;
-- JavaScript e bytes transferidos por rota;
-- quantidade de requests e chamadas duplicadas;
-- duração e falhas das operações de API;
-- cache hit/miss no Next.js e no cliente quando esses caches existirem;
-- tamanho de imagens, fontes e scripts de terceiros;
-- memória e long tasks no navegador em fluxos críticos.
-
-Teste de laboratório ajuda a diagnosticar, mas não substitui dados de campo.
-Registre versão ou deploy para relacionar uma regressão à mudança que a causou.
-
-## Renderização
-
-- Prefira Server Components.
-- Coloque `"use client"` na menor fronteira interativa.
-- Não envolva toda a aplicação em providers quando poucos segmentos precisam
-  deles.
-- Use layouts para compartilhar UI estável.
-- Use Suspense e loading significativo para streaming.
-- Inicie operações independentes em paralelo quando a integração permitir.
-- Defina cache e revalidação conscientemente; não presuma defaults antigos do
-  Next.js.
-
-## JavaScript cliente
-
-- Não adicione biblioteca para uma função pequena da plataforma.
-- Importe entrypoints específicos quando a biblioteca permitir.
-- Carregue componente pesado somente onde usado.
-- Use import dinâmico para editores, gráficos ou recursos raros quando houver
-  benefício mensurável.
-- Não aplique `useMemo`, `useCallback` ou memoização indiscriminadamente.
-- Remova effects usados apenas para derivar estado.
-- Evite duplicar a mesma biblioteca por versões ou alternativas diferentes.
-
-## Imagens
-
-- Use `next/image` quando aplicável.
-- Informe dimensões ou preserve proporção.
-- Use `sizes` coerente com o layout responsivo.
-- Não envie imagem muito maior que sua exibição.
-- Comprima assets e prefira formatos adequados.
-- Defina `priority` somente para conteúdo crítico acima da dobra.
-- Use alt significativo sem repetir texto ao redor.
-
-## Fontes
-
-- Use `next/font` para self-host e redução de layout shift.
-- Limite famílias, pesos e subconjuntos.
-- Defina fallback compatível.
-- Não carregue um peso para cada pequena diferença visual.
-
-## Scripts e terceiros
-
-- Use `next/script` e estratégia adequada.
-- Não bloqueie a thread principal com script não essencial.
-- Adie analytics e widgets quando possível.
-- Meça o custo de chat, mapa, editor, captcha e embeds.
-- Remova scripts sem uso e revise implicações de privacidade e CSP.
-
-## CSS e layout
-
-- Evite CSS global para comportamento local.
-- Reutilize tokens em vez de repetir valores semânticos.
-- Preserve espaço para conteúdo assíncrono.
-- Evite animações de propriedades que causam layout quando transform e opacity
-  atendem o caso.
-- Virtualize listas somente quando volume e medição justificarem a complexidade.
-
-## Rede
-
-A estratégia detalhada está na integração, mas a página deve:
-
-- evitar waterfalls causados por dependências sequenciais artificiais;
-- não refazer a mesma operação sem necessidade;
-- cancelar ou ignorar resultado obsoleto quando aplicável;
-- paginar dados volumosos;
-- fornecer feedback durante latência;
-- não fazer retry agressivo de mutações.
+- use Server Components por padrão e mantenha fronteiras Client pequenas;
+- não adicione cache, memoização ou paralelismo sem identificar o gargalo;
+- evite waterfalls artificiais;
+- carregue componentes pesados apenas onde usados;
+- use `next/image` e `next/font` quando aplicáveis;
+- preserve espaço para conteúdo assíncrono;
+- pagine volumes controlados por entrada externa;
+- não aplique retries agressivos a mutações;
+- compare cenários equivalentes antes e depois de otimizar.
 
 ## Medição
 
-Antes de produção:
+Antes de produção, execute o build, confira quais rotas são estáticas ou
+dinâmicas, analise bundle após dependências relevantes e teste rede e CPU
+limitadas. Em produção, acompanhe percentis — especialmente p75 de LCP, INP e
+CLS — segmentados por ambiente e rota normalizada.
 
-- execute `next build`;
-- inspecione páginas estáticas e dinâmicas inesperadas;
-- meça Lighthouse em janela anônima;
-- acompanhe Core Web Vitals com dados de campo quando disponíveis;
-- analise o bundle após dependência relevante;
-- teste rede e CPU limitadas;
-- compare antes e depois de uma otimização.
+Metas numéricas pertencem ao produto derivado. A base exige medição,
+justificativa para regressões e labels sem credenciais, dados pessoais, IDs ou
+URLs brutas.
 
-Depois de produção:
-
-- acompanhe p75 de LCP, INP e CLS com dados reais;
-- segmente mobile e desktop sem labels sensíveis ou de alta cardinalidade;
-- relacione versão, rota normalizada e ambiente;
-- investigue regressões junto da API e das dependências, não somente no bundle;
-- preserve um orçamento explícito para cada fluxo crítico.
-
-Metas numéricas pertencem ao projeto. O baseline exige medição, justificativa
-para regressões e ausência de dependência pesada introduzida sem análise.
-
-## Checklist
-
-- Server Component por padrão;
-- Client boundary mínima;
-- nenhuma dependência desnecessária;
-- imagens e fontes otimizadas;
-- script de terceiro justificado;
-- loading sem layout shift relevante;
-- operações paralelas quando independentes;
-- build e bundle revisados;
-- fluxo principal medido em condição realista;
-- Core Web Vitals medidos ou plano de coleta documentado;
-- regressões comparadas por versão ou deploy.
+Consulte também [Performance](../../performance/README.md).

@@ -32,65 +32,28 @@ a resposta e a observabilidade; não são revisões executadas somente ao final.
 
 No estado atual:
 
-- a API expõe o health check, o CRUD de Produto e o CRUD aninhado de
-  `AvaliacaoProduto` sob o prefixo global `/api`;
-- `apps/api/src/modules/produto` possui module, controller, service, repository,
-  tipos Prisma, mappers, DTOs de entrada e response e testes unitários das
-  camadas com comportamento próprio;
-- o `ProdutoModule` está registrado no `AppModule`, importa o `DatabaseModule`
-  e disponibiliza as rotas `POST /produtos`, `GET /produtos`,
-  `GET /produtos/:id`, `PATCH /produtos/:id` e `DELETE /produtos/:id`;
-- o mesmo módulo registra controller, service e repository de
-  `AvaliacaoProduto` e disponibiliza `POST` e `GET` na coleção
-  `/produtos/:produtoId/avaliacoes`, além de `GET`, `PATCH` e `DELETE` no item
-  `/produtos/:produtoId/avaliacoes/:avaliacaoId`;
-- `apps/api` usa Zod 4 e depende de `nestjs-zod` 5;
-- `@repo/contracts` usa Zod 4 e já possui contratos runtime de `Produto` e do
-  sub-recurso `AvaliacaoProduto`;
-- o schema Prisma já possui os models `Produto` e `AvaliacaoProduto`;
-- `@repo/database` expõe o namespace `Prisma`, o `PrismaClient` e os tipos dos
-  models didáticos `Produto` e `AvaliacaoProduto`;
-- a API já possui um `DatabaseModule` que cria, injeta e encerra um único
-  Prisma Client por processo;
-- `ZodValidationPipe` e `ZodSerializerInterceptor` já estão registrados
-  globalmente no `AppModule`;
-- o filtro responsável por converter exceções para `RespostaErroSchema` está
-  implementado em `src/common/filters` e registrado globalmente no `AppModule`;
-- o middleware funcional de `requisicaoId` está implementado em
-  `src/common/middleware` e registrado no `AppModule` para todos os métodos e
-  caminhos;
-- a API gera seu próprio UUID por requisição, ignora `X-Request-Id` enviado pelo
-  cliente, devolve o identificador nesse header e o expõe pela configuração de
-  CORS;
-- os caminhos do filtro e do middleware possuem testes unitários; testes E2E
-  confirmam o header em sucesso, o mesmo identificador no header e no corpo de
-  erro e a rejeição do identificador enviado pelo cliente;
-- os mappers de persistência e response de `Produto` possuem testes unitários
-  que cobrem campos opcionais e anuláveis, filtros, conversões de tipos do
-  Prisma e validação das respostas pelos contratos compartilhados;
-- os mappers de `AvaliacaoProduto` também possuem testes unitários para criação,
-  atualização, filtros, preservação de `false` e `null`, datas UTC e validação
-  das responses pelos contratos compartilhados;
-- o `ProdutoService` possui testes isolados de orquestração, paginação e
-  tradução dos erros Prisma `P2002` e `P2025`;
-- o `AvaliacaoProdutoService` verifica a existência do produto, mantém as
-  operações de item restritas por `produtoId` e `avaliacaoId`, pagina a
-  coleção e traduz `P2003` e `P2025` para erros de domínio conhecidos;
-- o controller usa `@ZodSerializerDto`, envelopes explícitos nas respostas com
-  corpo e `204 No Content` na exclusão;
-- as mensagens amigáveis dos contratos de Produto já chegam ao filtro sem
-  alterar os tipos aceitos pelo body JSON;
-- lint, typecheck, as 11 suítes com 97 testes e o build da API passam;
-- o CRUD aninhado de `AvaliacaoProduto` possui testes unitários de controller,
-  service e mappers; testes de repository com banco controlado e testes E2E
-  específicos das rotas de Produto e Avaliação permanecem pendentes;
-- a integração Web continua deliberadamente adiada;
-- o `DatabaseModule` é importado pelo `ProdutoModule`; o `AppModule` registra
-  apenas o módulo de domínio, evitando uma dependência redundante de
-  infraestrutura.
+- a API expõe somente `GET /api/health`;
+- não existe módulo de domínio registrado em `AppModule`;
+- `apps/api` usa Zod 4 e `nestjs-zod` 5;
+- `ZodValidationPipe` e `ZodSerializerInterceptor` estão registrados
+  globalmente;
+- o filtro de exceções produz o formato definido por `RespostaErroSchema`;
+- o middleware de request ID cria um UUID por requisição, devolve
+  `X-Request-Id` e o inclui nas respostas de erro;
+- CORS usa a allowlist de `CORS_ORIGINS`, não aceita credenciais e expõe somente
+  `X-Request-Id` ao navegador;
+- `DatabaseModule` cria, exporta e encerra um único Prisma Client quando um
+  módulo consumidor o importa;
+- a base vazia não importa `DatabaseModule` diretamente em `AppModule`;
+- o schema Prisma não contém models de domínio;
+- testes unitários cobrem filtro e middleware, e testes E2E cobrem health,
+  request ID, erro público e CORS.
+
+O exemplo completo que validou modules, DTOs, services, repositories, mappers e
+rotas permanece disponível na tag `exemplo-produto-v1.0.0`.
 
 Os exemplos desta documentação representam o padrão desejado, não código já
-implementado.
+implementado na base vazia.
 
 ## Pré-requisitos para um módulo
 
@@ -100,13 +63,12 @@ Antes de desenvolver rotas de um domínio:
    `@repo/contracts`;
 2. confirme que os tipos de input e output foram derivados desses schemas;
 3. confirme que o model e os tipos necessários existem no Prisma;
-4. confirme que o client Prisma foi gerado;
-5. confirme que o provider singleton de banco pode ser injetado;
-6. confirme que `nestjs-zod` e o Pipe de validação estão configurados.
+4. confirme que o Prisma Client foi gerado;
+5. confirme que `DatabaseModule` pode ser importado pelo módulo do domínio;
+6. confirme que os controles de acesso e limites da rota foram decididos.
 
-Se os contratos ainda não existirem, um agente deve interromper a implementação
-do módulo e avisar o usuário. Não crie silenciosamente contratos ou semânticas de
-campos para desbloquear a API.
+Se os contratos ainda não existirem, interrompa a implementação do módulo. Não
+crie silenciosamente contratos ou semânticas de campos para desbloquear a API.
 
 ## Documentos
 
@@ -133,22 +95,18 @@ compartilhados seguem as regras de
 
 ## Decisões pendentes por projeto
 
-Esta estrutura não deve escolher antecipadamente políticas que dependem do
-produto. Antes de implementar recursos relacionados, documente:
+Esta estrutura não escolhe antecipadamente políticas que dependem da aplicação.
+Antes de implementar recursos relacionados, documente:
 
 - autenticação, autorização e significado de rota pública;
-- catálogo de erros, exceptions e filtros HTTP;
-- formato comum de paginação;
-- limites e propagação de transações entre services e repositories;
+- catálogo de erros e exceptions de domínio;
+- formato e limites de paginação;
+- limites e propagação de transações;
 - upload, armazenamento e entrega de arquivos;
 - logging, observabilidade e dados sensíveis;
-- metas, limites e alertas de performance para os fluxos críticos;
-- versionamento de API e geração de OpenAPI.
+- metas e alertas de performance para fluxos críticos;
+- versionamento da API e geração de OpenAPI.
 
-As decisões de segurança devem seguir o processo descrito em
-[Segurança da API](./security/README.md). Elas são definidas durante o baseline
-e a implementação de cada rota, não somente em uma revisão posterior.
-
-Quando uma dessas decisões afetar os consumidores, registre-a também em
+Quando uma decisão afetar consumidores, registre-a também em
 [Integrações](../../integrations/README.md) e, se mudar formatos compartilhados,
 em [Contratos](../../contracts/README.md).

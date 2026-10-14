@@ -1,70 +1,14 @@
 # Formulários e validação
 
-## Baseline
+## Estado da base
 
-Formulários interativos devem usar:
+A base limpa não possui formulários de domínio e não instala React Hook Form ou
+resolvers. Escolha a solução quando uma feature concreta exigir gerenciamento
+de formulário; valide compatibilidade com React e Zod nas versões do projeto.
 
-- React Hook Form para estado, registro, submissão e erros;
-- `@hookform/resolvers` com `zodResolver`;
-- schemas de `@repo/contracts` quando formulário e operação compartilham
-  verdadeiramente a mesma representação e semântica;
-- primitives de formulário do design system.
-
-Essas dependências estão instaladas no `@repo/web` e foram validadas com React
-19 e Zod 4 nos formulários de criação e edição de Produto e Avaliação de
-Produto. Os filtros GET de `/produtos` e da lista de avaliações continuam sem
-React Hook Form: são controles nativos submetidos pela URL e validados no
-Server Component.
-
-## Implementação atual de Produto
-
-- `ProdutoFormFields` concentra apenas os controles e grupos semânticos comuns;
-- criação e edição mantêm schemas próprios, pois seus payloads e a semântica de
-  ausência são diferentes;
-- o formulário de edição envia somente campos marcados como alterados pelo
-  React Hook Form;
-- apagar um campo anulável no update produz `null`; deixar um campo intacto o
-  mantém ausente do `PATCH`;
-- erros da API cujo `campo` corresponde a um controle são exibidos junto dele e
-  recebem foco; erros sem correspondência permanecem no feedback geral;
-- `preco` e `pesoKg` usam máscara decimal preenchida da direita para a esquerda,
-  com apresentação em reais e quilogramas;
-- `datetime-local` representa a data no fuso local do navegador e o mapper a
-  converte para ISO 8601 UTC no payload;
-- datas e horários recebidos são formatados no fuso local para apresentação;
-- o formulário inteiro fica protegido por `fieldset disabled` durante a
-  mutation, evitando submissão duplicada sem propagar `disabled` manualmente a
-  cada controle.
-
-## Implementação atual de Avaliação de Produto
-
-- `AvaliacaoProdutoFormFields` concentra autor, nota, comentário e recomendação
-  e é reutilizado por create e update sem igualar os contratos completos das
-  duas operações;
-- o estado visual representa `nota` como string de `"1"` a `"5"`, enquanto o
-  output validado enviado à operação usa número;
-- a nota usa `RadioGroup` com cinco alvos do tamanho da estrela; cada radio
-  invisível permanece focável, cobre sua estrela e conserva nome acessível,
-  navegação por teclado e foco visível;
-- estrelas até a opção selecionada ficam preenchidas, e uma mensagem viva
-  informa a quantidade atual sem depender somente de cor;
-- comentário vazio ou composto apenas por espaços é omitido no create; texto
-  presente é normalizado e limitado a 1.000 caracteres;
-- erros de autor e nota são produzidos no schema visual antes do `pipe`, para
-  que uma falha em um campo não impeça a coleta do erro do outro;
-- o schema do formulário transforma seu input e depois aplica
-  `CreateAvaliacaoProdutoSchema`; a API continua validando novamente;
-- durante o envio, o formulário bloqueia repetição, associa erros públicos aos
-  campos, exibe falhas gerais inline, confirma sucesso em toast e navega para o
-  detalhe criado.
-- o schema de update transforma a mesma representação visual, mas converte
-  comentário vazio em `null` para expressar limpeza explícita;
-- o mapper de update usa `dirtyFields`: campo intacto fica ausente do `PATCH`,
-  comentário apagado vira `null` e recomendação alterada para `false` permanece
-  presente;
-- a edição inicia com os valores atuais, impede submissão sem mudanças,
-  bloqueia o `fieldset` durante a mutation, mapeia erros públicos aos campos e
-  retorna ao detalhe após o toast com a mensagem validada da API.
+Independentemente da biblioteca, dados externos devem ser validados no boundary
+e a API deve repetir a validação. Validação no navegador melhora a experiência,
+mas não autoriza uma operação.
 
 ## Contrato não é automaticamente formulário
 
@@ -74,32 +18,15 @@ Não presuma:
 estado do formulário = body HTTP = output Zod = model do banco
 ```
 
-Um formulário pode conter:
+O estado visual pode conter confirmações, strings vazias, datas em texto,
+arquivos, previews ou passos intermediários. Quando a representação divergir,
+use um schema ou tipo local e faça a conversão explícita para o contrato da
+operação.
 
-- confirmação de campo;
-- seleção visual temporária;
-- `FileList`, preview e estado de upload;
-- etapas de wizard;
-- switches que alteram campos exibidos;
-- strings vazias que serão normalizadas;
-- datas ou números representados como texto.
+Quando um schema transforma, aplica default, coerção, preprocess, pipe ou codec,
+diferencie `z.input<typeof Schema>` de `z.output<typeof Schema>`.
 
-Quando a representação divergir, use schema ou tipo local de formulário e uma
-conversão explícita para o contrato da operação. Reutilize primitives dos
-contratos em vez de forçar equivalência do objeto inteiro.
-
-## Input e output
-
-Quando o schema transforma, aplica default, coercion, preprocess, pipe ou codec,
-diferencie:
-
-- `z.input<typeof Schema>`: valor aceito antes da validação;
-- `z.output<typeof Schema>`: valor validado e normalizado.
-
-O `defaultValues` do React Hook Form normalmente representa o input visual.
-A função que executa a operação deve receber o output produzido pelo parse.
-
-Não trate automaticamente como equivalentes:
+Também preserve a semântica de:
 
 | Valor               | Significado possível         |
 | ------------------- | ---------------------------- |
@@ -108,95 +35,37 @@ Não trate automaticamente como equivalentes:
 | `null`              | limpar ou ausência explícita |
 | `""`                | controle textual vazio       |
 
-## Estrutura
-
-Um formulário de feature pode ser organizado em:
+## Organização sugerida
 
 ```text
 features/<dominio>/
 ├── forms/
 │   ├── recurso-form.tsx
 │   ├── recurso-form.schema.ts
-│   ├── recurso-form.mapper.ts
-│   └── recurso-form.types.ts
+│   └── recurso-form.mapper.ts
 └── api/
-    ├── create-recurso.ts
-    └── use-create-recurso.ts
+    └── create-recurso.ts
 ```
 
-Não crie mapper ou schema local se o contrato já atender exatamente o
-formulário. Também não coloque chamada HTTP diretamente no componente visual;
-use a operação e o hook documentados na integração.
+Não crie mapper ou schema local quando o contrato compartilhado atender
+exatamente ao formulário. Não coloque a chamada HTTP diretamente no componente
+visual; use uma operação com entrada e saída explícitas.
 
-## Submissão
+## Submissão e acessibilidade
 
-Durante a submissão:
-
-- valide pelo resolver;
-- transforme para o contrato quando necessário;
 - impeça submissões duplicadas;
-- mantenha feedback perceptível;
-- preserve valores diante de erro recuperável;
-- mapeie erros de campos somente quando o formato estiver acordado;
-- apresente erro geral quando não houver campo correspondente;
+- preserve valores após erro recuperável;
+- diferencie erro geral de erro de campo;
 - não limpe o formulário antes da confirmação de sucesso;
-- restaure foco ou navegue de forma previsível.
-
-Não capture silenciosamente erros. A interface precisa diferenciar, quando
-possível, validação, autenticação, autorização, conflito, limite e
-indisponibilidade.
-
-## Acessibilidade
-
-Todo campo deve ter:
-
-- label programaticamente associado;
-- instrução antes do erro quando necessária;
-- mensagem de erro vinculada ao controle;
-- `aria-invalid` no controle inválido;
-- foco visível;
-- ordem de tabulação lógica;
-- agrupamento semântico com `fieldset` e `legend` quando aplicável.
-
-Ao falhar a submissão, direcione o foco ao primeiro campo inválido ou anuncie um
-resumo de erros. Não use apenas cor, tooltip ou placeholder como explicação.
-
-## Campos dinâmicos
-
-- Preserve dados somente quando isso fizer sentido para o usuário.
-- Não registre campos ocultos que possam enviar valores inesperados.
-- Defina o comportamento de `shouldUnregister` conscientemente.
-- Use identificadores estáveis em listas de campos.
-- Confirme como defaults e reset funcionam no modo edição.
-- Não use effects para sincronizar valores quando uma derivação ou API do React
-  Hook Form resolver de forma mais clara.
-
-## Arquivos
-
-Valide no cliente tipo, quantidade e tamanho para feedback rápido, mas repita a
-validação na API. Nunca confie no MIME informado pelo navegador como barreira de
-segurança. Preview de arquivo deve liberar URLs temporárias quando não forem
-mais usadas.
-
-## Segurança
-
-Validação cliente não autoriza operação nem torna o payload confiável. O backend
-deve validar novamente o contrato e aplicar regras de negócio e permissão.
-
-Não renderize conteúdo retornado pelo usuário como HTML. Não registre valores,
-tokens, arquivos ou payloads sensíveis em console.
+- associe `label`, descrição e mensagem de erro ao controle;
+- use `aria-invalid` e foco visível;
+- agrupe campos relacionados com `fieldset` e `legend`;
+- mova o foco ao primeiro erro quando isso ajudar a recuperação;
+- não use apenas cor, tooltip ou placeholder para explicar um erro.
 
 ## Testes
 
-Cubra:
-
-- defaults;
-- valores válidos;
-- cada erro corrigível;
-- transformação entre input e output;
-- campos condicionais;
-- submissão duplicada;
-- erro geral e erro de campo;
-- reset e edição;
-- teclado e foco;
-- arquivo, quando aplicável.
+Cubra defaults, valores válidos, erros corrigíveis, transformação de input para
+output, campos condicionais, submissão duplicada, reset, teclado e foco. Para
+uploads, cubra também tipo, quantidade e tamanho no cliente e repita as regras
+de segurança na API.

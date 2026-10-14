@@ -60,7 +60,7 @@ uma responsabilidade concreta.
 
 ## Segurança em três momentos
 
-1. **Baseline:** configure controles globais antes dos módulos de produto.
+1. **Baseline:** configure controles globais antes dos módulos de domínio.
 2. **Feature:** defina acesso, exposição e abuso enquanto cada rota é criada.
 3. **Revisão:** procure falhas de composição e regressões antes da entrega.
 

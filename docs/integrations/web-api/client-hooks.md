@@ -22,7 +22,7 @@ Exemplos:
 | `DELETE /recursos/:id` | `useDeleteRecurso` |
 
 Não crie um `useApi(url, method)` genérico para as páginas. O nome do hook
-deve comunicar a operação do produto.
+deve comunicar a operação do domínio.
 
 ## Limite do React
 
@@ -113,28 +113,21 @@ permissões ou efeitos distintos.
 
 ## Biblioteca de estado remoto
 
-TanStack Query 5 é a biblioteca adotada. Não implemente manualmente cache,
-deduplicação, retry e invalidação com vários `useEffect` e `useState`.
-
-O estado atual define:
-
-- `QueryClientProvider` no layout de `/produtos`;
-- cliente novo no servidor e singleton no navegador;
-- query keys por domínio;
-- uma tentativa adicional somente para leitura com falha transitória;
-- mutations sem retry.
-
-Cada nova feature ainda deve documentar conscientemente:
+A base limpa não escolhe uma biblioteca de estado remoto sem um domínio
+consumidor. Quando a primeira feature interativa exigir cache, deduplicação,
+retry e invalidação, compare as alternativas com os requisitos reais e
+documente:
 
 - query keys;
+- política de retry;
 - stale time;
 - invalidação;
 - hydration;
 - tratamento de erro;
 - ferramentas de desenvolvimento.
 
-Não configure `staleTime`, prefetch, hydration ou ferramentas de
-desenvolvimento apenas para uniformidade; adote-os quando o fluxo justificar.
+Não reimplemente essas capacidades com vários `useEffect` e `useState`, nem
+instale uma biblioteca apenas para uniformidade.
 
 ## Nomes e arquivos
 
@@ -152,9 +145,9 @@ Use nomes de domínio, não nomes técnicos vagos como `useRequest1`.
 O formulário valida e transforma seu estado antes de chamar a mutation:
 
 ```text
-React Hook Form input
+estado do formulário
         ↓
-Zod resolver
+validação local
         ↓
 output ou mapper
         ↓

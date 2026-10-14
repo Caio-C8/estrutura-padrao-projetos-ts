@@ -15,9 +15,9 @@ Uma tag é um snapshot imutável por convenção, não uma linha de desenvolvime
 Para atualizar um exemplo já publicado, crie uma branch temporária a partir da
 última tag e publique outra tag ao concluir.
 
-## Estado desejado da `main`
+## Estado atual da `main`
 
-Depois da primeira separação, a `main` deve continuar contendo:
+Depois da primeira separação, a `main` contém:
 
 - workspaces pnpm, Turborepo, lint, TypeScript, testes, formatação e CI;
 - versões fixadas de Node.js, pnpm e dependências de infraestrutura;
@@ -36,7 +36,7 @@ Depois da primeira separação, a `main` deve continuar contendo:
   dependam de Produto;
 - documentação arquitetural genérica.
 
-A `main` não deve conter models, migrations, contratos, módulos, rotas, páginas,
+A `main` não contém models, migrations, contratos, módulos, rotas, páginas,
 operações, testes, seeds, objetivos de roadmap nem documentação específicos de
 Produto ou Avaliação.
 
@@ -102,9 +102,9 @@ código genérico ainda a utiliza.
 
 ### 4. Manter a integração API e banco pronta
 
-No exemplo atual, `ProdutoModule` importa `DatabaseModule`. A dependência está
-no sentido correto: o domínio depende da infraestrutura de persistência;
-`DatabaseModule` não conhece nem depende de Produto.
+Na tag `exemplo-produto-v1.0.0`, `ProdutoModule` importa `DatabaseModule`. A
+dependência está no sentido correto: o domínio depende da infraestrutura de
+persistência; `DatabaseModule` não conhece nem depende de Produto.
 
 Ao remover o exemplo, remova `ProdutoModule` de `AppModule`, mas não coloque
 `DatabaseModule` em seu lugar. A base vazia preserva toda a configuração do
